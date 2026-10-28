@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
+import org.learnbetter.project.model.Acid
 import org.learnbetter.project.model.ExperimentState
 import org.learnbetter.project.model.Metal
 import org.learnbetter.project.ui.theme.ChemistryColors
@@ -31,10 +32,12 @@ fun LabScreen(
 ) {
     var state by remember { mutableStateOf(ExperimentState()) }
 
-    // Coroutine für die chemische Reaktion
-    LaunchedEffect(state.isReacting, state.selectedMetal) {
+    // Coroutine für die chemische Reaktion basierend auf Metall AND Säure
+    LaunchedEffect(state.isReacting, state.selectedMetal, state.selectedAcid) {
         if (state.isReacting && state.selectedMetal.isBaseMetal) {
-            val speed = state.selectedMetal.reactivitySpeed
+            val acidSpeedFactor = if (state.selectedAcid.isStrong) 1.0f else 0.3f
+            val speed = state.selectedMetal.reactivitySpeed * acidSpeedFactor
+
             while (state.reactionProgress < 1.0f && state.isReacting) {
                 delay(100)
                 val newProgress = (state.reactionProgress + 0.05f * speed).coerceAtMost(1.0f)
@@ -60,7 +63,7 @@ fun LabScreen(
     ) {
         // Titel
         Text(
-            text = "🧪 Virtuelles Säure-Labor",
+            text = "🧪 Säure & Metall-Labor",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
@@ -68,7 +71,7 @@ fun LabScreen(
         )
 
         Text(
-            text = "Wähle ein Metall und gib Salzsäure (HCl) hinzu, um die Wasserstoff-Entwicklung zu beobachten!",
+            text = "Wähle eine Säure und ein Metall, um deren Reaktion zu erforschen!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -80,7 +83,7 @@ fun LabScreen(
         // 2. Info-Panel (Temperatur & Gasmenge)
         ExperimentStatsRow(state = state)
 
-        // 3. Knallgasprobe Banner (falls Gas vorhanden)
+        // 3. Knallgasprobe Banner
         if (state.hydrogenGasAmount > 5.0f && !state.popTestDone) {
             PopTestBanner(
                 onPerformPopTest = {
@@ -97,34 +100,42 @@ fun LabScreen(
             PopTestResultCard(success = state.popTestSuccess)
         }
 
-        // 4. Metallauswahl
+        // 4. Säure-Auswahl
+        AcidSelectionSection(
+            selectedAcid = state.selectedAcid,
+            enabled = !state.isReacting,
+            onAcidSelected = { acid ->
+                state = ExperimentState(selectedAcid = acid, selectedMetal = state.selectedMetal)
+            }
+        )
+
+        // 5. Metall-Auswahl
         MetalSelectionSection(
             selectedMetal = state.selectedMetal,
             enabled = !state.isReacting,
             onMetalSelected = { metal ->
-                state = ExperimentState(selectedMetal = metal)
+                state = ExperimentState(selectedAcid = state.selectedAcid, selectedMetal = metal)
             }
         )
 
-        // 5. Steuerungs-Buttons
+        // 6. Steuerungs-Buttons
         ControlButtons(
             state = state,
             onStartReaction = {
                 state = state.copy(isReacting = true)
             },
             onReset = {
-                state = ExperimentState(selectedMetal = state.selectedMetal)
+                state = ExperimentState(selectedAcid = state.selectedAcid, selectedMetal = state.selectedMetal)
             }
         )
 
-        // 6. Reaktionsgleichung & Didaktik
-        ReactionFormulaCard(metal = state.selectedMetal)
+        // 7. Reaktionsgleichung & Didaktik
+        ReactionFormulaCard(acid = state.selectedAcid, metal = state.selectedMetal)
     }
 }
 
 @Composable
 private fun TestTubeVisualizer(state: ExperimentState) {
-    // Bläschen Partikel-Animation
     val transition = rememberInfiniteTransition(label = "bubbleTransition")
     val offsetY by transition.animateFloat(
         initialValue = 0f,
@@ -149,7 +160,6 @@ private fun TestTubeVisualizer(state: ExperimentState) {
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // Reagenzglas Kontur
             Box(
                 modifier = Modifier
                     .width(70.dp)
@@ -163,8 +173,8 @@ private fun TestTubeVisualizer(state: ExperimentState) {
                     .background(Color.White.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                // Flüssigkeit (Salzsäure)
-                val acidColor = ChemistryColors.AcidRed.copy(alpha = 0.35f)
+                // Säure-Flüssigkeit
+                val acidColor = if (state.selectedAcid.isStrong) ChemistryColors.AcidRed.copy(alpha = 0.35f) else ChemistryColors.AcidOrange.copy(alpha = 0.35f)
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -195,7 +205,7 @@ private fun TestTubeVisualizer(state: ExperimentState) {
                     )
                 }
 
-                // Wasserstoff-Bläschen (Animation)
+                // Wasserstoff-Bläschen
                 if (state.isReacting && state.selectedMetal.isBaseMetal && state.reactionProgress < 1.0f) {
                     Row(
                         modifier = Modifier
@@ -216,7 +226,6 @@ private fun TestTubeVisualizer(state: ExperimentState) {
                 }
             }
 
-            // Gas-Anzeige oben am Reagenzglas
             if (state.hydrogenGasAmount > 0f) {
                 Surface(
                     modifier = Modifier
@@ -226,7 +235,7 @@ private fun TestTubeVisualizer(state: ExperimentState) {
                     color = ChemistryColors.HydrogenCyan.copy(alpha = 0.2f)
                 ) {
                     Text(
-                        text = "💨 H₂ Gas gesammelt: ${(state.hydrogenGasAmount * 10).toInt() / 10.0} ml",
+                        text = "💨 H₂ Gas: ${(state.hydrogenGasAmount * 10).toInt() / 10.0} ml",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface,
@@ -244,13 +253,10 @@ private fun ExperimentStatsRow(state: ExperimentState) {
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Temperatur
         Card(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Row(
                 modifier = Modifier.padding(12.dp),
@@ -259,27 +265,16 @@ private fun ExperimentStatsRow(state: ExperimentState) {
             ) {
                 Text("🌡️", fontSize = 20.sp)
                 Column {
-                    Text(
-                        text = "Temperatur",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = "${state.temperatureCelsius.toInt()} °C",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Temperatur", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("${state.temperatureCelsius.toInt()} °C", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
             }
         }
 
-        // Reaktionstyp
         Card(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            )
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Row(
                 modifier = Modifier.padding(12.dp),
@@ -288,16 +283,8 @@ private fun ExperimentStatsRow(state: ExperimentState) {
             ) {
                 Text("⚡", fontSize = 20.sp)
                 Column {
-                    Text(
-                        text = "Typ",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Text(
-                        text = if (state.selectedMetal.isBaseMetal) "Exotherm" else "Keine Reakti.",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Text("Säuretyp", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(if (state.selectedAcid.isStrong) "Stark" else "Schwach", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -311,9 +298,7 @@ private fun PopTestBanner(onPerformPopTest: () -> Unit) {
             .fillMaxWidth()
             .clickable { onPerformPopTest() },
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = ChemistryColors.ReactionHeat
-        )
+        colors = CardDefaults.cardColors(containerColor = ChemistryColors.ReactionHeat)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -322,29 +307,11 @@ private fun PopTestBanner(onPerformPopTest: () -> Unit) {
         ) {
             Text("🔥", fontSize = 28.sp)
             Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Knallgasprobe bereit!",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-                Text(
-                    text = "Klicke hier, um ein brennendes Spanholz hinzuzuhalten.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.9f)
-                )
+                Text("Knallgasprobe bereit!", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                Text("Klicke hier für die Wasserstoff-Probe.", style = MaterialTheme.typography.bodySmall, color = Color.White.copy(alpha = 0.9f))
             }
-            Surface(
-                shape = RoundedCornerShape(12.dp),
-                color = Color.White
-            ) {
-                Text(
-                    text = "Testen",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = ChemistryColors.ReactionHeat,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                )
+            Surface(shape = RoundedCornerShape(12.dp), color = Color.White) {
+                Text("Testen", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold, color = ChemistryColors.ReactionHeat, modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp))
             }
         }
     }
@@ -366,15 +333,46 @@ private fun PopTestResultCard(success: Boolean) {
         ) {
             Text(if (success) "💥" else "❓", fontSize = 28.sp)
             Column {
-                Text(
-                    text = if (success) "PLOPP! Knallgasprobe positiv! 🎉" else "Kein Knallgeräusch.",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = if (success) "Der Wasserstoff (H₂) hat pfeifend mit dem Sauerstoff reagiert! (+50 XP)" else "Es hat sich noch nicht genügend Gas gesammelt.",
-                    style = MaterialTheme.typography.bodyMedium
-                )
+                Text(if (success) "PLOPP! Knallgasprobe positiv! 🎉" else "Kein Knallgeräusch.", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Text(if (success) "Wasserstoff (H₂) hat gepufft! (+50 XP)" else "Nicht genügend Gas vorhanden.", style = MaterialTheme.typography.bodyMedium)
+            }
+        }
+    }
+}
+
+@Composable
+private fun AcidSelectionSection(
+    selectedAcid: Acid,
+    enabled: Boolean,
+    onAcidSelected: (Acid) -> Unit
+) {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text("Säure auswählen:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Acid.entries.take(4).forEach { acid ->
+                val isSelected = acid == selectedAcid
+                Surface(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable(enabled = enabled) { onAcidSelected(acid) },
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isSelected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Column(
+                        modifier = Modifier.padding(vertical = 10.dp, horizontal = 2.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(acid.formula, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = if (isSelected) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(acid.displayName, style = MaterialTheme.typography.labelSmall, fontSize = 10.sp, color = if (isSelected) MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                }
             }
         }
     }
@@ -390,11 +388,7 @@ private fun MetalSelectionSection(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(
-            text = "Metall auswählen:",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
+        Text("Metall auswählen:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -413,17 +407,8 @@ private fun MetalSelectionSection(
                         modifier = Modifier.padding(vertical = 10.dp, horizontal = 4.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = metal.symbol,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = metal.displayName,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = if (isSelected) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        Text(metal.symbol, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant)
+                        Text(metal.displayName, style = MaterialTheme.typography.labelSmall, color = if (isSelected) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
@@ -449,53 +434,38 @@ private fun ControlButtons(
                 .height(50.dp),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text(
-                text = "🧪 Säure hinzugeben",
-                fontWeight = FontWeight.Bold
-            )
+            Text("🧪 Reaktion starten", fontWeight = FontWeight.Bold)
         }
 
         OutlinedButton(
             onClick = onReset,
-            modifier = Modifier
-                .height(50.dp),
+            modifier = Modifier.height(50.dp),
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text(text = "🔄 Reset")
+            Text("🔄 Reset")
         }
     }
 }
 
 @Composable
-private fun ReactionFormulaCard(metal: Metal) {
+private fun ReactionFormulaCard(acid: Acid, metal: Metal) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            Text("Gekoppelte Reaktion (${acid.displayName} + ${metal.displayName}):", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSecondaryContainer)
             Text(
-                text = "Reaktionsgleichung:",
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSecondaryContainer
-            )
-            Text(
-                text = metal.reactionFormula,
+                text = if (acid == Acid.HYDROCHLORIC) metal.reactionFormula else "${metal.symbol} + ${acid.formula} -> Salze + H₂ ↑",
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSecondaryContainer
             )
-            Text(
-                text = metal.description,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f)
-            )
+            Text(acid.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.9f))
         }
     }
 }

@@ -16,8 +16,15 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
   - **Große Atom-Strichmännchen mit Gesichtern, Armen & Beinen:**
     - Vor der Bindung: Trauriges Gesicht (🥺) wegen fehlender Außenelektronen.
     - Nach der Bindung: Jubelnde Strichmännchen-Arme & strahlendes Lächeln (😄)!
-  - **Ionenbindung:** Ein Außenelektron wandert in flüssiger Animation von Natrium ($Na$) zu Chlor ($Cl$) $\rightarrow Kochsalz (NaCl)$. Chlor zeigt exakt die 3 vollen Elektronenpaare + 1 freies Elektron!
-  - **Atombindung / Elektronenpaarbindung:** Wasserstoff-Atome ($H$) nähern sich Sauerstoff ($O$) und bilden gemeinsame Elektronenpaare $\rightarrow Wasser (H_2O)$.
+  - **Erweiterte Bindungs-Beispiele:**
+    - **Ionenbindungen (Salze):**
+      1. Kochsalz ($NaCl$) – $Na$ gibt 1 Elektron an $Cl$ ab.
+      2. Magnesiumoxid ($MgO$) – $Mg$ gibt 2 Elektronen an $O$ ab.
+      3. Lithiumfluorid ($LiF$) – $Li$ gibt 1 Elektron an $F$ ab.
+    - **Atombindungen (Moleküle):**
+      1. Wasser ($H_2O$) – $O$ teilt Elektronenpaare mit $2\times H$.
+      2. Methan ($CH_4$) – $C$ teilt Elektronenpaare mit $4\times H$.
+      3. Sauerstoff ($O_2$) – Doppelbindung zwischen zwei $O$-Atomen.
 - **Schwefelsäure ($H_2SO_4$) & Kontaktverfahren:**
   - Erläuterung der 3 Stufen ($S \rightarrow SO_2 \rightarrow SO_3 \rightarrow H_2SO_4$).
   - Verkohlungseffekt auf Puderzucker (starker Wasserentzug $\rightarrow$ Kohlenstoff-Säule $C$).

@@ -1,61 +1,83 @@
-# LearnBetter – Chemie Lernapp (10. Klasse Gesamtschule)
+# LearnBetter – Multi-Fach Lernapp (10. Klasse Gesamtschule)
 
-Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule im Fach Chemie.
+Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
 
-Der erste Schwerpunkt liegt auf dem Thema **Salzsäure ($HCl$), Metallreaktionen, pH-Werte und Indikatoren**.
-
----
-
-## 🎯 Didaktisches & Fachliches Konzept
-
-### 1. Modul: Salzsäure ($HCl$) Grundlagen
-- **Eigenschaften:** Lösung von Chlorwasserstoffgas ($HCl$) in Wasser, stark ätzend, saurer Geschmack.
-- **Dissoziation:** $HCl + H_2O \rightarrow H_3O^+ + Cl^-$ (Entstehung von Oxonium- und Chlorid-Ionen).
-- **Sicherheit im Labor:** Piktogramme (Ätzend), Schutzbrille, Handhabung von Säuren.
-
-### 2. Modul: Reaktion von Salzsäure mit Metallen
-- **Unedle vs. Edle Metalle:**
-  - Unedle Metalle ($Mg$, $Zn$, $Fe$) reagieren unter Bildung von Wasserstoffgas ($H_2$) und Metallsalzen (z. B. Magnesiumchlorid $MgCl_2$).
-  - Reaktionsgleichung: $Mg + 2\,HCl \rightarrow MgCl_2 + H_2 \uparrow$
-  - Edle Metalle ($Cu$) reagieren nicht mit verdünnter Salzsäure.
-- **Gasnachweis:** Die **Knallgasprobe** zum eindeutigen Nachweis von Wasserstoff ("Plopp!").
-
-### 3. Modul: pH-Wert & Messmethoden
-- **Die pH-Skala (0–14):**
-  - $< 7$: Sauer (hohe $H_3O^+$-Konzentration)
-  - $= 7$: Neutral (z. B. reines Wasser)
-  - $> 7$: Basisch / Alkalisch (z. B. Natronlauge)
-- **Indikatoren:** Universalindikator, Lackmus, Phenolphthalein.
-- **Messmethoden:** Indikator-Teststreifen (Farbvergleich) und digitale pH-Elektrode.
+Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
 
 ---
 
-## 🎨 UI/UX & Interaktive Features
+## 📚 Fächerübersicht & Werkstätten
 
-- **Modernes Material 3 Dashboard:**
-  - Übersicht über Lernfortschritt, Tages-Streak (🔥) und Erfahrungspunkte (XP).
-  - Themenkarten mit Fortschrittsbalken.
-- **Virtuelles Chemie-Labor (Lab-Simulator):**
-  - Interaktives Reagenzglas: Metall wählen ($Mg$, $Zn$, $Cu$), Salzsäure hinzugeben.
-  - Bläschen-Animation, Erwärmung & Knallgasprobe-Auslöser.
-  - Virtueller pH-Teststreifen zum Eintauchen in Alltagsflüssigkeiten.
-- **Interaktiver Formel-Builder & Quiz:**
-  - Reaktionsgleichungen durch Drag & Drop / Buttons vervollständigen.
-  - Quiz mit unmittelbarem visuellen Feedback.
+### 🧪 1. Chemie
+- **Säuren & Säurerest-Ionen Trainer:**
+  - Die 7 geforderten Säuren: Salzsäure ($HCl$), Schwefelsäure ($H_2SO_4$), Phosphorsäure ($H_3PO_4$), Salpetersäure ($HNO_3$), Kohlensäure ($H_2CO_3$), Schweflige Säure ($H_2SO_3$) und Salpetrige Säure ($HNO_2$).
+  - Säurerest-Ionen: Chlorid ($Cl^-$), Sulfat ($SO_4^{2-}$), Phosphat ($PO_4^{3-}$), Nitrat ($NO_3^-$), Carbonat ($CO_3^{2-}$), Sulfit ($SO_3^{2-}$), Nitrit ($NO_2^-$).
+- **Atombinder - Das Bindungs-Spiel (⚛️):**
+  - **Ionenbindung:** Natrium ($Na$) gibt Elektron an Chlor ($Cl$) ab $\rightarrow Kochsalz (NaCl)$.
+  - **Atombindung / Elektronenpaarbindung:** Wasserstoff ($H$) teilt Elektronenpaare mit Sauerstoff ($O$) $\rightarrow Wasser (H_2O)$.
+- **Schwefelsäure ($H_2SO_4$) & Kontaktverfahren:**
+  - Erläuterung der 3 Stufen ($S \rightarrow SO_2 \rightarrow SO_3 \rightarrow H_2SO_4$).
+  - Verkohlungseffekt auf Puderzucker (starker Wasserentzug $\rightarrow$ Kohlenstoff-Säule $C$).
+- **Säure vs. Marmorfliesen ($CaCO_3$):**
+  - Reaktion von Säuren auf Marmor (Kohlendioxid-Schäumen $CO_2$).
+  - Alltags-Erkenntnis: Marmor nie mit sauren Reinigern/Essig putzen, da sich der Kalk zersetzt!
+- **pH-Test Simulator (15 Flüssigkeiten):**
+  - Testen von Batteriesäure, Magensäure, Essig, Orangensaft, Tomatensaft, Kaffee, Urin, Wasser, Meerwasser, Backpulver, Verdauungstabletten, Salmiakgeist, Seifenlauge, Bleichmittel und Rohrreiniger.
+- **Magnesiumband entzünden:**
+  - Verbrennung über der Bunsenbrennerflamme unter gleißendem Licht zu Magnesiumoxid ($2\,Mg + O_2 \rightarrow 2\,MgO$).
+
+### 🧬 2. Biologie
+- **Virtuelles Mikroskop:**
+  - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
+  - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
+  - Erforschung aller Organellen (Chloroplast, Zellkern, Mitochondrium, Vakuole, Zellwand).
+
+### 📐 3. Mathematik
+- **Interaktiver Parabel-Plotter:**
+  - Untersuchung quadratischer Funktionen $f(x) = a \cdot x^2 + c$.
+  - Schieberegler für $a$ (Öffnung/Streckung) und $c$ (Y-Verschiebung).
+  - Live-Anzeige von Scheitelpunkt $S(0|c)$ und reellen Nullstellen.
+
+### 🌍 4. Gesellschaftslehre (GL)
+- **Historische Zeitleiste & Grundgesetz-Explorer:**
+  - Meilensteine von 1914 bis 1990 (Erster Weltkrieg, Weimarer Republik, NS-Diktatur, Grundgesetz 1949, Mauerfall 1989, Wiedervereinigung 1990).
+  - Verankerung von Artikel 1 Abs. 1 GG (*"Die Würde des Menschen ist unantastbar"*).
+
+### 🎵 5. Musik
+- **Virtuelles Piano & Dreiklang-Trainer:**
+  - Interaktives Klaviatur-Tastenfeld ($C, D, E, F, G, A, H, C'$).
+  - Gehör- und Bautrainer für $C$-Dur ($C-E-G$) und $A$-Moll ($A-C-E$).
+
+### 📖 6. Deutsch
+- **Stilmittel- & Rhetorik-Baukasten:**
+  - Interaktives Zuordnen von Stilmitteln aus Gedichten und Texten (Alliteration, Metapher, Personifikation, Anapher) mit Erklärungsboxen.
+
+---
+
+## 🎮 Computerzeit-Belohnungssystem (Gamification)
+
+- **XP-Gutschrift:** Punkte gibt es für gelöste Quizfragen, erforschte Organellen und durchgeführte Experimente.
+- **Wechselkurs:** Konfigurierbar über die **Eltern-Einstellung (⚙️)**:
+  - *Leicht:* $25\text{ XP} = 5\text{ Min.}$
+  - *Ausgewogen (Standard):* $50\text{ XP} = 5\text{ Min.}$
+  - *Anspruchsvoll:* $100\text{ XP} = 5\text{ Min.}$
+- **Einlösen-Dialog:** Generiert eine Bestätigungskarte für die Eltern zum Freischalten der PC-Zeit.
 
 ---
 
 ## 🏗️ Architektur & Tech-Stack
 
 - **Framework:** Kotlin Multiplatform (KMP) & Compose Multiplatform
-- **Design System:** Material 3 mit speziellem Chemie-Farbschema (Neon-Säuregrün, Wasserstoff-Cyan, Indikator-Violett/Orange)
-- **Architekturmuster:** MVI / MVVM mit `StateFlow` und Compose State
+- **Design System:** Material 3 mit Fach-spezifischen Farbwelten (Säuregrün, Smaragdgrün, Violett, Amber, Karmesinrot, Königsblau)
+- **Repository:** Synchronisiert auf GitHub (`https://github.com/mniedling/LearnBetter.git`)
 
 ---
 
-## 🚀 App ausführen
+## 🚀 App & APK ausführen
 
-- **Android App:**
+- **Android App Bauen:**
   ```bash
   ./gradlew :androidApp:assembleDebug
   ```
+- **Fertige APK-Datei:**
+  `androidApp/build/outputs/apk/debug/androidApp-debug.apk`

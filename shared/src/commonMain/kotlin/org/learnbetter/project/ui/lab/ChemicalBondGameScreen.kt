@@ -5,7 +5,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -20,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.learnbetter.project.model.Subject
+import org.learnbetter.project.ui.theme.ChemistryColors
 
 @Composable
 fun ChemicalBondGameScreen(
@@ -55,7 +55,7 @@ fun ChemicalBondGameScreen(
         )
 
         Text(
-            text = "Beobachte, wie Außenelektronen wandern, um Ionenbindungen oder gemeinsame Elektronenpaare zu bilden!",
+            text = "Schau, wie die traurigen Atome glücklich werden, wenn sie Elektronen paaren!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -120,7 +120,7 @@ private fun IonicBondGameCanvas(
 
     val electronProgress by animateFloatAsState(
         targetValue = if (animateElectron || isDone) 1.0f else 0.0f,
-        animationSpec = tween(durationMillis = 1500, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 1800, easing = FastOutSlowInEasing)
     )
 
     LaunchedEffect(electronProgress) {
@@ -140,16 +140,16 @@ private fun IonicBondGameCanvas(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isDone) "🎉 Kochsalz (NaCl) entstanden!" else "1. Ionenbindung: Elektron von Na ➔ Cl",
+                text = if (isDone) "🎉 Beide Atome sind jetzt glücklich!" else "1. Ionenbindung: Trauriges Na ➔ Trauriges Cl",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
 
-            // Canvas for Animated Atoms & Electrons
+            // Canvas für große Atome mit Gesichtern & Paarelektronen
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
+                    .height(210.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFF1B2631))
             ) {
@@ -159,35 +159,71 @@ private fun IonicBondGameCanvas(
                 val clCenterX = width * 0.72f
                 val centerY = height * 0.5f
 
-                // Natrium Atom
-                drawCircle(color = Color(0xFFFFB74D), radius = 45f, center = Offset(naCenterX, centerY))
-                drawCircle(color = Color(0xFFFF9800), radius = 60f, center = Offset(naCenterX, centerY), style = androidx.compose.ui.graphics.drawscope.Stroke(2f))
+                // Große Atomkerne
+                val naRadius = 60f
+                val clRadius = 75f
 
-                // Chlor Atom
-                drawCircle(color = Color(0xFF81C784), radius = 55f, center = Offset(clCenterX, centerY))
-                drawCircle(color = Color(0xFF4CAF50), radius = 70f, center = Offset(clCenterX, centerY), style = androidx.compose.ui.graphics.drawscope.Stroke(2f))
+                // 1. Natrium Atom (Na)
+                drawCircle(color = Color(0xFFFFB74D), radius = naRadius, center = Offset(naCenterX, centerY))
+                drawCircle(color = Color(0xFFFF9800), radius = naRadius + 18f, center = Offset(naCenterX, centerY), style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
 
-                // Chlor 7 Außenelektronen
-                val clRadius = 70f
-                for (i in 0 until 7) {
-                    val angle = (i * 51.4f) * (3.14159f / 180f)
-                    val x = clCenterX + clRadius * kotlin.math.cos(angle)
-                    val y = centerY + clRadius * kotlin.math.sin(angle)
-                    drawCircle(color = Color(0xFF00E5FF), radius = 7f, center = Offset(x, y))
+                // 2. Chlor Atom (Cl)
+                drawCircle(color = Color(0xFF81C784), radius = clRadius, center = Offset(clCenterX, centerY))
+                drawCircle(color = Color(0xFF4CAF50), radius = clRadius + 18f, center = Offset(clCenterX, centerY), style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
+
+                // --- 6 Paarelektronen bei Chlor (3 Paare: oben, unten, rechts) ---
+                val r = clRadius + 18f
+                val eRadius = 10f
+                val pairColor = Color(0xFF00E5FF)
+
+                // Paar 1: Oben
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 12f, centerY - r))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 12f, centerY - r))
+
+                // Paar 2: Unten
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 12f, centerY + r))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 12f, centerY + r))
+
+                // Paar 3: Rechts
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY - 12f))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY + 12f))
+
+                // Einzelnes 7. Elektron bei Chlor (Links, wartet auf Partner)
+                if (electronProgress < 0.9f) {
+                    drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY + 15f))
+                } else {
+                    // Sobald da, bilden sie ein volles Paar links!
+                    drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY - 10f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset(clCenterX - r, centerY + 10f))
                 }
 
-                // Wandernes Außenelektron von Na -> Cl
-                val currentElectronX = naCenterX + (clCenterX - clRadius - naCenterX) * electronProgress
-                val currentElectronY = centerY - (kotlin.math.sin(electronProgress * 3.14159f) * 30f)
-                drawCircle(color = Color(0xFFFFD700), radius = 10f, center = Offset(currentElectronX, currentElectronY))
+                // --- Wandernes Außenelektron von Natrium ---
+                val startX = naCenterX + naRadius + 18f
+                val targetX = clCenterX - r
+                val currentX = startX + (targetX - startX) * electronProgress
+                val currentY = centerY - (kotlin.math.sin(electronProgress * 3.14159f) * 35f)
+
+                if (electronProgress < 0.9f) {
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius + 2f, center = Offset(currentX, currentY))
+                }
             }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Text("Na (Natrium - 1 Außenelektron)", style = MaterialTheme.typography.labelSmall)
-                Text("Cl (Chlor - 7 Außenelektronen)", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = if (isDone) "Na⁺ (Glücklich 😄)" else "Na (Einsam 🥺 - 1 Elektron zu viel)",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isDone) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = if (isDone) "Cl⁻ (Glücklich 😄)" else "Cl (Traurig 🥺 - sucht 1 Elektron)",
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isDone) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
             if (!isDone) {
@@ -196,7 +232,7 @@ private fun IonicBondGameCanvas(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("⚡ Elektron von Na an Cl abgeben!", fontWeight = FontWeight.Bold)
+                    Text("⚡ Einzel-Elektron übertragen & Atome glücklich machen!", fontWeight = FontWeight.Bold)
                 }
             } else {
                 Card(
@@ -205,8 +241,8 @@ private fun IonicBondGameCanvas(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("💡 Erklärung Ionenbindung:", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        Text("Natrium (Na) gibt sein 1 Außenelektron vollständig an Chlor (Cl) ab. Es entstehen Na⁺ (Kation) und Cl⁻ (Anion). Die gegenseitige Anziehung bildet das Kochsalz-Ionengitter!", style = MaterialTheme.typography.bodySmall)
+                        Text("💡 Chlor hat jetzt 4 volle Elektronenpaare (Edelgaszustand)! 🎉", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                        Text("Chlor besaß 3 Paare (6 Elektronen) + 1 einzelnes Elektron. Durch die Übertragung von Natrium hat Chlor nun 8 Außenelektronen (Edelgaskonfiguration)!", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
@@ -223,7 +259,7 @@ private fun CovalentBondGameCanvas(
 
     val covalentProgress by animateFloatAsState(
         targetValue = if (animateCovalent || isDone) 1.0f else 0.0f,
-        animationSpec = tween(durationMillis = 1500, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 1800, easing = FastOutSlowInEasing)
     )
 
     LaunchedEffect(covalentProgress) {
@@ -243,7 +279,7 @@ private fun CovalentBondGameCanvas(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isDone) "🎉 Wasser-Molekül (H₂O) entstanden!" else "2. Atombindung: Gemeinsame Elektronenpaare",
+                text = if (isDone) "🎉 Wasser-Molekül (H₂O) ist glücklich!" else "2. Atombindung: H-Atome teilen Elektronen mit O",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -251,7 +287,7 @@ private fun CovalentBondGameCanvas(
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
+                    .height(210.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFF1B2631))
             ) {
@@ -260,8 +296,8 @@ private fun CovalentBondGameCanvas(
                 val oCenterX = width * 0.5f
                 val oCenterY = height * 0.5f
 
-                val h1TargetX = oCenterX - 60f
-                val h2TargetX = oCenterX + 60f
+                val h1TargetX = oCenterX - 65f
+                val h2TargetX = oCenterX + 65f
 
                 val h1StartX = width * 0.18f
                 val h2StartX = width * 0.82f
@@ -269,20 +305,30 @@ private fun CovalentBondGameCanvas(
                 val h1CurrentX = h1StartX + (h1TargetX - h1StartX) * covalentProgress
                 val h2CurrentX = h2StartX + (h2TargetX - h2StartX) * covalentProgress
 
+                val eRadius = 10f
+
                 // Sauerstoff Atom O
-                drawCircle(color = Color(0xFFE57373), radius = 55f, center = Offset(oCenterX, oCenterY))
+                drawCircle(color = Color(0xFFE57373), radius = 65f, center = Offset(oCenterX, oCenterY))
+                drawCircle(color = Color(0xFFEF5350), radius = 83f, center = Offset(oCenterX, oCenterY), style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
+
+                // Sauerstoff 2 freie Elektronenpaare (oben und unten)
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 12f, oCenterY - 83f))
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 12f, oCenterY - 83f))
+
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 12f, oCenterY + 83f))
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 12f, oCenterY + 83f))
 
                 // Wasserstoff Atome H1 und H2
-                drawCircle(color = Color(0xFF64B5F6), radius = 35f, center = Offset(h1CurrentX, oCenterY))
-                drawCircle(color = Color(0xFF64B5F6), radius = 35f, center = Offset(h2CurrentX, oCenterY))
+                drawCircle(color = Color(0xFF64B5F6), radius = 45f, center = Offset(h1CurrentX, oCenterY))
+                drawCircle(color = Color(0xFF64B5F6), radius = 45f, center = Offset(h2CurrentX, oCenterY))
 
                 // Gemeinsame Elektronenpaare im Überlappungsbereich
                 if (covalentProgress > 0.5f) {
-                    drawCircle(color = Color(0xFFFFD700), radius = 6f, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY - 10f))
-                    drawCircle(color = Color(0xFFFFD700), radius = 6f, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY + 10f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY - 12f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY + 12f))
 
-                    drawCircle(color = Color(0xFFFFD700), radius = 6f, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY - 10f))
-                    drawCircle(color = Color(0xFFFFD700), radius = 6f, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY + 10f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY - 12f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY + 12f))
                 }
             }
 
@@ -292,7 +338,7 @@ private fun CovalentBondGameCanvas(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("🤝 H-Atome annähern & Elektronenpaare teilen!", fontWeight = FontWeight.Bold)
+                    Text("🤝 H-Atome teilen Elektronenpaare mit O!", fontWeight = FontWeight.Bold)
                 }
             } else {
                 Card(
@@ -301,8 +347,8 @@ private fun CovalentBondGameCanvas(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("💡 Erklärung Elektronenpaarbindung:", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        Text("Bei Nichtmetallen teilen sich die Atome Außenelektronen. Es entstehen gemeinsame Elektronenpaare, sodass jedes Atom die vollbesetzte Edelgasschale erreicht!", style = MaterialTheme.typography.bodySmall)
+                        Text("💡 Erklärung Atombindung (H₂O):", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                        Text("Sauerstoff hatte 2 freie Elektronenpaare und 2 einzelne Elektronen. Durch das Teilen mit den zwei H-Atomen entstehen 2 gemeinsame Elektronenpaare!", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }

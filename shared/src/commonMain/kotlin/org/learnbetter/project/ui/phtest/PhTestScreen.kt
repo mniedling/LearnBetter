@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.learnbetter.project.model.Subject
 import org.learnbetter.project.model.TestSolution
 import org.learnbetter.project.model.TestSolutionsData
 import org.learnbetter.project.ui.theme.getPhColor
@@ -34,14 +36,23 @@ fun PhTestScreen(
     val solutions = TestSolutionsData.sampleSolutions
     var selectedSolution by remember { mutableStateOf(solutions.first()) }
     var isDipped by remember { mutableStateOf(false) }
+    var selectedFilterCategory by remember { mutableStateOf("Alle") }
 
-    // Strip dipping animation & color transition
+    val filteredSolutions = remember(selectedFilterCategory) {
+        when (selectedFilterCategory) {
+            "Sauer" -> solutions.filter { it.phValue < 6.5f }
+            "Neutral" -> solutions.filter { it.phValue in 6.5f..7.5f }
+            "Basisch" -> solutions.filter { it.phValue > 7.5f }
+            else -> solutions
+        }
+    }
+
     val stripOffset by animateDpAsState(
         targetValue = if (isDipped) 60.dp else 0.dp,
         animationSpec = tween(durationMillis = 800)
     )
 
-    val defaultStripColor = Color(0xFFFFF1C5) // Gelblicher Roh-Teststreifen
+    val defaultStripColor = Color(0xFFFFF1C5)
     val targetStripColor = getPhColor(selectedSolution.phValue)
     val animatedStripColor by animateColorAsState(
         targetValue = if (isDipped) targetStripColor else defaultStripColor,
@@ -57,25 +68,23 @@ fun PhTestScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (onBackToHub != null) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            Row(modifier = Modifier.fillMaxWidth()) {
                 TextButton(onClick = onBackToHub) {
                     Text("◀️ Zurück zum Labor-Zentrum")
                 }
             }
         }
+
         Text(
             text = "🎨 Interaktiver pH-Test",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            color = Subject.CHEMISTRY.primaryColor,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "Tauche den Universalindikator-Teststreifen in verschiedene Lösungen und vergleiche die Verfärbung mit der pH-Skala!",
+            text = "Tauche den Universalindikator-Teststreifen in 15 verschiedene Alltags- und Laborflüssigkeiten!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -93,16 +102,17 @@ fun PhTestScreen(
             onClick = {
                 isDipped = !isDipped
                 if (isDipped) {
-                    onXpEarned(25)
+                    onXpEarned(5)
                 }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Subject.CHEMISTRY.primaryColor)
         ) {
             Text(
-                text = if (isDipped) "🔄 Streifen herausziehen" else "🧪 Teststreifen eintauchen!",
+                text = if (isDipped) "🔄 Streifen herausziehen" else "🧪 Teststreifen in ${selectedSolution.name} eintauchen!",
                 fontWeight = FontWeight.Bold
             )
         }
@@ -112,9 +122,34 @@ fun PhTestScreen(
             MeasurementResultCard(solution = selectedSolution)
         }
 
-        // 4. Lösungsauswahl
+        // Filter Pills
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            listOf("Alle", "Sauer", "Neutral", "Basisch").forEach { category ->
+                val isSelected = category == selectedFilterCategory
+                Surface(
+                    modifier = Modifier.clickable { selectedFilterCategory = category },
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isSelected) Subject.CHEMISTRY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = category,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
+        }
+
+        // 4. Lösungsauswahl Liste
         SolutionSelectionGrid(
-            solutions = solutions,
+            solutions = filteredSolutions,
             selectedSolution = selectedSolution,
             onSolutionSelected = {
                 selectedSolution = it
@@ -143,7 +178,6 @@ private fun BeakerVisualizer(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // Indikatorstreifen
             Box(
                 modifier = Modifier
                     .offset(y = (-30).dp + stripOffset)
@@ -154,7 +188,6 @@ private fun BeakerVisualizer(
                     .border(1.dp, Color.Gray.copy(alpha = 0.5f), RoundedCornerShape(6.dp)),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                // Das eintauchende Ende des Teststreifens
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -163,7 +196,6 @@ private fun BeakerVisualizer(
                 )
             }
 
-            // Becherglas Kontur
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -179,7 +211,6 @@ private fun BeakerVisualizer(
                     .background(Color.White.copy(alpha = 0.3f)),
                 contentAlignment = Alignment.BottomCenter
             ) {
-                // Flüssigkeit
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -237,7 +268,7 @@ private fun MeasurementResultCard(solution: TestSolution) {
                         color = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
-                        text = getPhLabel(solution.phValue),
+                        text = "${solution.category} • ${getPhLabel(solution.phValue)}",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
                     )
@@ -266,7 +297,7 @@ private fun SolutionSelectionGrid(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "Prüfflüssigkeit wählen:",
+            text = "Prüfflüssigkeit wählen (${solutions.size} verfügbar):",
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold
         )
@@ -282,7 +313,7 @@ private fun SolutionSelectionGrid(
                         .clickable { onSolutionSelected(sol) },
                     shape = RoundedCornerShape(12.dp),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+                        containerColor = if (isSelected) Subject.CHEMISTRY.primaryColor else MaterialTheme.colorScheme.surface
                     ),
                     elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
                 ) {
@@ -297,27 +328,28 @@ private fun SolutionSelectionGrid(
                                 text = sol.name,
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                                color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
                             )
                             Text(
                                 text = sol.category,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = if (isSelected) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
+                                color = if (isSelected) Color.White.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
 
                         Box(
                             modifier = Modifier
-                                .size(28.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                                 .background(getPhColor(sol.phValue)),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "${sol.phValue.toInt()}",
+                                text = "${sol.phValue}",
                                 style = MaterialTheme.typography.labelSmall,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = Color.White,
+                                fontSize = 10.sp
                             )
                         }
                     }

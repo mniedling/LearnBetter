@@ -1,6 +1,6 @@
 # LearnBetter – Multi-Fach Lernapp (10. Klasse Gesamtschule)
 
-Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
+Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
 
 Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
 
@@ -8,7 +8,13 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 
 ## 📚 Fächerübersicht & Werkstätten
 
-### 🧪 1. Chemie
+### ⚙️ 1. Physik (NEU!)
+- **Hookesches Gesetz & Federdehnungs-Werkstatt ($F = D \cdot \Delta s$):**
+  - **Spiralfeder-Simulator:** Hänge Gewichte ($0\,\text{N}$ bis $10\,\text{N}$) an die Feder und stelle die Federkonstante $D$ ein.
+  - **Elastische Dehnung:** Visualisiert die proportionale Verlängerung $\Delta s$ in cm.
+  - **Physik-Quiz:** Fragen zur Federkraft $F$, Federhärte $D$ und Hookeschem Gesetz.
+
+### 🧪 2. Chemie
 - **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**
   - **Erlenmeyerkolben-Werkstatt:** Interaktives Zuordnen von Säureformeln ($HCl, H_2SO_4, H_3PO_4, HNO_3, H_2CO_3, H_2SO_3, HNO_2$).
   - **Wasser-Dissoziation:** Wasser dazugießen ($H_2O$), Reaktionen beobachten und Säurerest-Ionen ($Cl^-, SO_4^{2-}, PO_4^{3-}, NO_3^-, CO_3^{2-}, SO_3^{2-}, NO_2^-$) sowie deren Namen (*Chlorid, Sulfat, Phosphat, Nitrat, Carbonat, Sulfit, Nitrit*) zuordnen.
@@ -16,15 +22,8 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
   - **Große Atom-Strichmännchen mit Gesichtern, Armen & Beinen:**
     - Vor der Bindung: Trauriges Gesicht (🥺) wegen fehlender Außenelektronen.
     - Nach der Bindung: Jubelnde Strichmännchen-Arme & strahlendes Lächeln (😄)!
-  - **Erweiterte Bindungs-Beispiele:**
-    - **Ionenbindungen (Salze):**
-      1. Kochsalz ($NaCl$) – $Na$ gibt 1 Elektron an $Cl$ ab.
-      2. Magnesiumoxid ($MgO$) – $Mg$ gibt 2 Elektronen an $O$ ab.
-      3. Lithiumfluorid ($LiF$) – $Li$ gibt 1 Elektron an $F$ ab.
-    - **Atombindungen (Moleküle):**
-      1. Wasser ($H_2O$) – $O$ teilt Elektronenpaare mit $2\times H$.
-      2. Methan ($CH_4$) – $C$ teilt Elektronenpaare mit $4\times H$.
-      3. Sauerstoff ($O_2$) – Doppelbindung zwischen zwei $O$-Atomen.
+  - **Ionenbindungen (Salze):** Natriumchlorid ($NaCl$), Magnesiumoxid ($MgO$), Lithiumfluorid ($LiF$).
+  - **Atombindungen (Moleküle):** Wasser ($H_2O$), Methan ($CH_4$), Sauerstoff-Doppelbindung ($O_2$).
 - **Schwefelsäure ($H_2SO_4$) & Kontaktverfahren:**
   - Erläuterung der 3 Stufen ($S \rightarrow SO_2 \rightarrow SO_3 \rightarrow H_2SO_4$).
   - Verkohlungseffekt auf Puderzucker (starker Wasserentzug $\rightarrow$ Kohlenstoff-Säule $C$).
@@ -36,29 +35,29 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 - **Magnesiumband entzünden:**
   - Verbrennung über der Bunsenbrennerflamme unter gleißendem Licht zu Magnesiumoxid ($2\,Mg + O_2 \rightarrow 2\,MgO$).
 
-### 🧬 2. Biologie
+### 📐 3. Mathematik (Erweitert!)
+- **Interaktiver Parabel-Plotter:**
+  - Untersuchung quadratischer Funktionen $f(x) = a \cdot x^2 + c$.
+- **3D-Geometrie & Oberflächenrechner (NEU!):**
+  - **Zylinder Oberflächenberechnung:** Grundfläche $G = \pi r^2$, Mantelfläche $M = 2\pi r h$, Oberfläche $O = 2G + M$, Volumen $V$.
+  - **Quadratische Pyramide Oberflächenberechnung:** Grundfläche $G = a^2$, Seitenhöhe $h_s = \sqrt{h^2 + (a/2)^2}$, Mantelfläche $M = 2 a h_s$, Oberfläche $O = G + M$, Volumen $V = \frac{1}{3} a^2 h$.
+
+### 🧬 4. Biologie
 - **Virtuelles Mikroskop:**
   - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
   - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
-  - Erforschung aller Organellen (Chloroplast, Zellkern, Mitochondrium, Vakuole, Zellwand).
 
-### 📐 3. Mathematik
-- **Interaktiver Parabel-Plotter:**
-  - Untersuchung quadratischer Funktionen $f(x) = a \cdot x^2 + c$.
-  - Schieberegler für $a$ (Öffnung/Streckung) und $c$ (Y-Verschiebung).
-  - Live-Anzeige von Scheitelpunkt $S(0|c)$ und reellen Nullstellen.
-
-### 🌍 4. Gesellschaftslehre (GL)
+### 🌍 5. Gesellschaftslehre (GL)
 - **Historische Zeitleiste & Grundgesetz-Explorer:**
   - Meilensteine von 1914 bis 1990 (Erster Weltkrieg, Weimarer Republik, NS-Diktatur, Grundgesetz 1949, Mauerfall 1989, Wiedervereinigung 1990).
   - Verankerung von Artikel 1 Abs. 1 GG (*"Die Würde des Menschen ist unantastbar"*).
 
-### 🎵 5. Musik
+### 🎵 6. Musik
 - **Virtuelles Piano & Dreiklang-Trainer:**
   - Interaktives Klaviatur-Tastenfeld ($C, D, E, F, G, A, H, C'$).
   - Gehör- und Bautrainer für $C$-Dur ($C-E-G$) und $A$-Moll ($A-C-E$).
 
-### 📖 6. Deutsch
+### 📖 7. Deutsch
 - **Stilmittel- & Rhetorik-Baukasten:**
   - Interaktives Zuordnen von Stilmitteln aus Gedichten und Texten (Alliteration, Metapher, Personifikation, Anapher) mit Erklärungsboxen.
 
@@ -78,7 +77,7 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 ## 🏗️ Architektur & Tech-Stack
 
 - **Framework:** Kotlin Multiplatform (KMP) & Compose Multiplatform
-- **Design System:** Material 3 mit Fach-spezifischen Farbwelten (Säuregrün, Smaragdgrün, Violett, Amber, Karmesinrot, Königsblau)
+- **Design System:** Material 3 mit Fach-spezifischen Farbwelten (Säuregrün, Rot, Smaragdgrün, Violett, Amber, Karmesinrot, Königsblau)
 - **Repository:** Synchronisiert auf GitHub (`https://github.com/mniedling/LearnBetter.git`)
 
 ---

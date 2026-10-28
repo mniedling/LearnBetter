@@ -12,15 +12,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import org.learnbetter.project.model.RewardExchangeRate
 import org.learnbetter.project.model.RewardState
 import org.learnbetter.project.ui.theme.ChemistryColors
 
 @Composable
 fun RewardCard(
     rewardState: RewardState,
+    onRateChanged: (RewardExchangeRate) -> Unit,
     onRedeemMinutes: (Int) -> Unit
 ) {
     var showRedeemDialog by remember { mutableStateOf(false) }
+    var showSettingsDialog by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -44,14 +47,25 @@ fun RewardCard(
                 ) {
                     Text("🎮", fontSize = 28.sp)
                     Column {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Text(
+                                text = "PC-Zeit Belohnung",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onTertiaryContainer
+                            )
+                            IconButton(
+                                onClick = { showSettingsDialog = true },
+                                modifier = Modifier.size(24.dp)
+                            ) {
+                                Text("⚙️", fontSize = 14.sp)
+                            }
+                        }
                         Text(
-                            text = "Computerzeit-Belohnung",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onTertiaryContainer
-                        )
-                        Text(
-                            text = "25 XP = 5 Minuten PC-Zeit",
+                            text = "${rewardState.exchangeRate.xpPer5Minutes} XP = 5 Min. PC-Zeit",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.8f)
                         )
@@ -73,7 +87,7 @@ fun RewardCard(
             }
 
             // Fortschritt bis zu den nächsten 5 Minuten
-            val currentProgressInPackage = (rewardState.totalXp % 25) / 25.0f
+            val currentProgressInPackage = (rewardState.totalXp % rewardState.xpFor5Minutes) / rewardState.xpFor5Minutes.toFloat()
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -115,16 +129,28 @@ fun RewardCard(
                 )
             ) {
                 Text(
-                    text = if (rewardState.availableMinutes >= 5) "💻 PC-Zeit jetzt einlösen!" else "Erspiele mindestens 5 Min (25 XP)",
+                    text = if (rewardState.availableMinutes >= 5) "💻 PC-Zeit jetzt einlösen!" else "Erspiele mind. 5 Min (${rewardState.xpFor5Minutes} XP)",
                     fontWeight = FontWeight.Bold
                 )
             }
         }
     }
 
+    if (showSettingsDialog) {
+        RewardSettingsDialog(
+            currentRate = rewardState.exchangeRate,
+            onDismiss = { showSettingsDialog = false },
+            onRateSelected = { rate ->
+                onRateChanged(rate)
+                showSettingsDialog = false
+            }
+        )
+    }
+
     if (showRedeemDialog) {
         RedeemDialog(
             availableMinutes = rewardState.availableMinutes,
+            xpPer5Minutes = rewardState.xpFor5Minutes,
             onDismiss = { showRedeemDialog = false },
             onConfirmRedeem = { minutes ->
                 onRedeemMinutes(minutes)
@@ -135,8 +161,50 @@ fun RewardCard(
 }
 
 @Composable
+private fun RewardSettingsDialog(
+    currentRate: RewardExchangeRate,
+    onDismiss: () -> Unit,
+    onRateSelected: (RewardExchangeRate) -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text("⚙️ Belohnungskurs anpassen (Eltern)", fontWeight = FontWeight.Bold)
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Wähle aus, wie viele XP für 5 Minuten Computerzeit erforderlich sind:", style = MaterialTheme.typography.bodySmall)
+
+                RewardExchangeRate.entries.forEach { rate ->
+                    val isSelected = rate == currentRate
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                        onClick = { onRateSelected(rate) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(
+                            text = rate.displayName,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(12.dp)
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Schließen")
+            }
+        }
+    )
+}
+
+@Composable
 private fun RedeemDialog(
     availableMinutes: Int,
+    xpPer5Minutes: Int,
     onDismiss: () -> Unit,
     onConfirmRedeem: (Int) -> Unit
 ) {
@@ -208,7 +276,7 @@ private fun RedeemDialog(
                                         color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                     Text(
-                                        text = "${mins * 5} XP",
+                                        text = "${mins / 5 * xpPer5Minutes} XP",
                                         style = MaterialTheme.typography.labelSmall,
                                         color = if (isSelected) MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
                                     )

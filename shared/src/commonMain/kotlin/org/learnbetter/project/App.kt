@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import org.learnbetter.project.model.RewardExchangeRate
 import org.learnbetter.project.model.RewardState
 import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.lab.LabHubScreen
@@ -40,12 +41,13 @@ enum class NavigationTab(val label: String, val icon: String) {
 fun App() {
     var selectedSubject by remember { mutableStateOf(Subject.CHEMISTRY) }
     var selectedTab by remember { mutableStateOf(NavigationTab.DASHBOARD) }
-    var totalXp by remember { mutableIntStateOf(250) }
-    var streakDays by remember { mutableIntStateOf(3) }
+    var totalXp by remember { mutableIntStateOf(0) } // Startet bei 0 XP
+    var streakDays by remember { mutableIntStateOf(1) }
     var redeemedMinutes by remember { mutableIntStateOf(0) }
+    var exchangeRate by remember { mutableStateOf(RewardExchangeRate.BALANCED) } // Default 50 XP = 5 Min
 
-    val rewardState = remember(totalXp, redeemedMinutes) {
-        RewardState(totalXp = totalXp, redeemedMinutes = redeemedMinutes)
+    val rewardState = remember(totalXp, redeemedMinutes, exchangeRate) {
+        RewardState(totalXp = totalXp, redeemedMinutes = redeemedMinutes, exchangeRate = exchangeRate)
     }
 
     LearnBetterTheme {
@@ -76,6 +78,7 @@ fun App() {
                         rewardState = rewardState,
                         streakDays = streakDays,
                         onSubjectSelected = { selectedSubject = it },
+                        onRateChanged = { exchangeRate = it },
                         onNavigateToLab = { selectedTab = NavigationTab.LAB },
                         onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ },
                         onRedeemMinutes = { mins -> redeemedMinutes += mins }
@@ -100,6 +103,7 @@ private fun DashboardContent(
     rewardState: RewardState,
     streakDays: Int,
     onSubjectSelected: (Subject) -> Unit,
+    onRateChanged: (RewardExchangeRate) -> Unit,
     onNavigateToLab: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onRedeemMinutes: (Int) -> Unit
@@ -113,15 +117,14 @@ private fun DashboardContent(
     ) {
         HeaderSection(rewardState = rewardState, streakDays = streakDays)
 
-        // Fach-Auswahl Pills Row
         SubjectSelectorRow(
             selectedSubject = selectedSubject,
             onSubjectSelected = onSubjectSelected
         )
 
-        // PC-Zeit Belohnungs-System Card
         RewardCard(
             rewardState = rewardState,
+            onRateChanged = onRateChanged,
             onRedeemMinutes = onRedeemMinutes
         )
 

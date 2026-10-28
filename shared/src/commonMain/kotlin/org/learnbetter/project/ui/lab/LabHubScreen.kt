@@ -18,8 +18,10 @@ import org.learnbetter.project.model.LabExperimentsData
 import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.biology.BiologyMicroscopeScreen
 import org.learnbetter.project.ui.german.GermanRhetoricScreen
+import org.learnbetter.project.ui.math.MathGeometryScreen
 import org.learnbetter.project.ui.math.MathParabolaScreen
 import org.learnbetter.project.ui.music.MusicPianoScreen
+import org.learnbetter.project.ui.physics.PhysicsHookeScreen
 import org.learnbetter.project.ui.phtest.PhTestScreen
 import org.learnbetter.project.ui.socialstudies.SocialStudiesTimelineScreen
 
@@ -29,14 +31,49 @@ fun LabHubScreen(
     onXpEarned: (Int) -> Unit = {}
 ) {
     var activeExperimentId by remember(currentSubject) { mutableStateOf<String?>(null) }
+    var mathToolMode by remember { mutableIntStateOf(1) } // 1 = Parabeln, 2 = Geometrie Zylinder/Pyramide
 
     when {
+        currentSubject == Subject.PHYSICS -> PhysicsHookeScreen(
+            onXpEarned = onXpEarned
+        )
         currentSubject == Subject.BIOLOGY -> BiologyMicroscopeScreen(
             onXpEarned = onXpEarned
         )
-        currentSubject == Subject.MATH -> MathParabolaScreen(
-            onXpEarned = onXpEarned
-        )
+        currentSubject == Subject.MATH -> Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = { mathToolMode = 1 },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (mathToolMode == 1) Subject.MATH.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("📉 Parabeln", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (mathToolMode == 1) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { mathToolMode = 2 },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (mathToolMode == 2) Subject.MATH.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("📐 Zylinder & Pyramide", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (mathToolMode == 2) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+
+            if (mathToolMode == 1) {
+                MathParabolaScreen(onXpEarned = onXpEarned)
+            } else {
+                MathGeometryScreen(onXpEarned = onXpEarned)
+            }
+        }
         currentSubject == Subject.SOCIAL_STUDIES -> SocialStudiesTimelineScreen(
             onXpEarned = onXpEarned
         )

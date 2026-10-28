@@ -16,6 +16,13 @@ enum class Subject(
         primaryColor = Color(0xFF006C4C),
         subtitle = "Salzsäure, Säuren & Reaktionen"
     ),
+    PHYSICS(
+        id = "physics",
+        displayName = "Physik",
+        icon = "⚙️",
+        primaryColor = Color(0xFFD32F2F),
+        subtitle = "Kräfte & Hookesches Gesetz (F = k · Δs)"
+    ),
     BIOLOGY(
         id = "biology",
         displayName = "Biologie",
@@ -28,7 +35,7 @@ enum class Subject(
         displayName = "Mathematik",
         icon = "📐",
         primaryColor = Color(0xFF6A1B9A),
-        subtitle = "Parabeln & Funktions-Plotter"
+        subtitle = "Parabeln, Zylinder & Pyramiden"
     ),
     SOCIAL_STUDIES(
         id = "social_studies",

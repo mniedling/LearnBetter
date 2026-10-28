@@ -2,6 +2,8 @@ package org.learnbetter.project
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -18,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import org.learnbetter.project.model.RewardState
+import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.lab.LabHubScreen
 import org.learnbetter.project.ui.quiz.QuizScreen
 import org.learnbetter.project.ui.rewards.RewardCard
@@ -28,13 +31,14 @@ import org.learnbetter.project.ui.theme.getPhLabel
 
 enum class NavigationTab(val label: String, val icon: String) {
     DASHBOARD("Übersicht", "🏠"),
-    LAB("Virtuelles Labor", "🧪"),
+    LAB("Werkstatt", "🧪"),
     QUIZ("Quiz", "📝")
 }
 
 @Composable
 @Preview
 fun App() {
+    var selectedSubject by remember { mutableStateOf(Subject.CHEMISTRY) }
     var selectedTab by remember { mutableStateOf(NavigationTab.DASHBOARD) }
     var totalXp by remember { mutableIntStateOf(250) }
     var streakDays by remember { mutableIntStateOf(3) }
@@ -68,16 +72,20 @@ fun App() {
             ) {
                 when (selectedTab) {
                     NavigationTab.DASHBOARD -> DashboardContent(
+                        selectedSubject = selectedSubject,
                         rewardState = rewardState,
                         streakDays = streakDays,
+                        onSubjectSelected = { selectedSubject = it },
                         onNavigateToLab = { selectedTab = NavigationTab.LAB },
                         onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ },
                         onRedeemMinutes = { mins -> redeemedMinutes += mins }
                     )
                     NavigationTab.LAB -> LabHubScreen(
+                        currentSubject = selectedSubject,
                         onXpEarned = { earned -> totalXp += earned }
                     )
                     NavigationTab.QUIZ -> QuizScreen(
+                        currentSubject = selectedSubject,
                         onXpEarned = { earned -> totalXp += earned }
                     )
                 }
@@ -88,8 +96,10 @@ fun App() {
 
 @Composable
 private fun DashboardContent(
+    selectedSubject: Subject,
     rewardState: RewardState,
     streakDays: Int,
+    onSubjectSelected: (Subject) -> Unit,
     onNavigateToLab: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onRedeemMinutes: (Int) -> Unit
@@ -103,19 +113,25 @@ private fun DashboardContent(
     ) {
         HeaderSection(rewardState = rewardState, streakDays = streakDays)
 
+        // Fach-Auswahl Pills Row
+        SubjectSelectorRow(
+            selectedSubject = selectedSubject,
+            onSubjectSelected = onSubjectSelected
+        )
+
         // PC-Zeit Belohnungs-System Card
         RewardCard(
             rewardState = rewardState,
             onRedeemMinutes = onRedeemMinutes
         )
 
-        WelcomeCard()
+        SubjectWelcomeCard(subject = selectedSubject)
 
-        QuickLabCard(onNavigateToLab = onNavigateToLab)
+        QuickLabCard(subject = selectedSubject, onNavigateToLab = onNavigateToLab)
 
         PhScalePreviewCard()
 
-        ModulesSection(onNavigateToQuiz = onNavigateToQuiz)
+        ModulesSection(subject = selectedSubject, onNavigateToQuiz = onNavigateToQuiz)
     }
 }
 
@@ -134,7 +150,7 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "Chemie • 10. Klasse",
+                text = "Gesamtschule • 10. Klasse",
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -144,7 +160,6 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Streak
             Surface(
                 shape = RoundedCornerShape(14.dp),
                 color = MaterialTheme.colorScheme.secondaryContainer
@@ -164,7 +179,6 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
                 }
             }
 
-            // XP
             Surface(
                 shape = RoundedCornerShape(14.dp),
                 color = MaterialTheme.colorScheme.tertiaryContainer
@@ -184,7 +198,6 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
                 }
             }
 
-            // PC-Zeit
             Surface(
                 shape = RoundedCornerShape(14.dp),
                 color = ChemistryColors.AchievementGold
@@ -208,11 +221,56 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
 }
 
 @Composable
-private fun WelcomeCard() {
+private fun SubjectSelectorRow(
+    selectedSubject: Subject,
+    onSubjectSelected: (Subject) -> Unit
+) {
+    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Text(
+            text = "Fach auswählen:",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Subject.entries.forEach { subject ->
+                val isSelected = subject == selectedSubject
+                Surface(
+                    modifier = Modifier.clickable { onSubjectSelected(subject) },
+                    shape = RoundedCornerShape(16.dp),
+                    color = if (isSelected) subject.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(subject.icon, fontSize = 16.sp)
+                        Text(
+                            text = subject.displayName,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SubjectWelcomeCard(subject: Subject) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = subject.primaryColor.copy(alpha = 0.15f)
         ),
         shape = RoundedCornerShape(20.dp)
     ) {
@@ -221,22 +279,22 @@ private fun WelcomeCard() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "🧪 Säuren, Laugen & PC-Zeit erspielen",
+                text = "${subject.icon} ${subject.displayName}",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                color = subject.primaryColor
             )
             Text(
-                text = "Lerne Chemie, löse Experimente & Quizze und wandle deine XP direkt in Computerzeit um (25 XP = 5 Minuten)!",
+                text = subject.subtitle,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
 }
 
 @Composable
-private fun QuickLabCard(onNavigateToLab: () -> Unit) {
+private fun QuickLabCard(subject: Subject, onNavigateToLab: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -249,23 +307,24 @@ private fun QuickLabCard(onNavigateToLab: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("🥼", fontSize = 36.sp)
+            Text(subject.icon, fontSize = 36.sp)
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = "Virtuelles Chemie-Labor",
+                    text = "${subject.displayName}-Werkstatt",
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Text(
-                    text = "Wähle aus verschiedenen Experimenten (Säuren, pH-Test, Magnesium brennen)!",
+                    text = "Starte die interaktive Werkstatt für ${subject.displayName}!",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
                 )
             }
             Button(
                 onClick = onNavigateToLab,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = subject.primaryColor)
             ) {
                 Text("Starten", fontWeight = FontWeight.Bold)
             }
@@ -345,7 +404,7 @@ private fun PhScalePreviewCard() {
 }
 
 @Composable
-private fun ModulesSection(onNavigateToQuiz: () -> Unit) {
+private fun ModulesSection(subject: Subject, onNavigateToQuiz: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -355,7 +414,7 @@ private fun ModulesSection(onNavigateToQuiz: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Lerneinheiten",
+                text = "Lerneinheiten (${subject.displayName})",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -366,27 +425,19 @@ private fun ModulesSection(onNavigateToQuiz: () -> Unit) {
         }
 
         ModuleItem(
-            icon = "🧪",
-            title = "1. Säuren & Basen Übersicht",
-            subtitle = "HCl, H₂SO₄, HNO₃, CH₃COOH",
+            icon = subject.icon,
+            title = "1. Grundlagen ${subject.displayName}",
+            subtitle = "Kernkonzepte & Grundwissen",
             progress = 0.85f,
-            accentColor = ChemistryColors.AcidRed
+            accentColor = subject.primaryColor
         )
 
         ModuleItem(
-            icon = "💥",
-            title = "2. Säuren & Metallreaktionen",
-            subtitle = "Magnesium, Wasserstoff & Knallgasprobe",
+            icon = "⚡",
+            title = "2. Interaktive Werkstatt",
+            subtitle = "Aufgaben & Simulationen",
             progress = 0.5f,
-            accentColor = ChemistryColors.HydrogenCyan
-        )
-
-        ModuleItem(
-            icon = "🔥",
-            title = "3. Verbrennung & Oxidation",
-            subtitle = "Magnesiumband & Magnesiumoxid (MgO)",
-            progress = 0.25f,
-            accentColor = ChemistryColors.ReactionHeat
+            accentColor = subject.primaryColor
         )
     }
 }

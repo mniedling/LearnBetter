@@ -11,23 +11,27 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.learnbetter.project.model.QuizData
+import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.theme.ChemistryColors
 
 @Composable
 fun QuizScreen(
+    currentSubject: Subject = Subject.CHEMISTRY,
     onXpEarned: (Int) -> Unit = {}
 ) {
-    val questions = QuizData.sampleQuestions
-    var currentIndex by remember { mutableIntStateOf(0) }
-    var selectedAnswerIndex by remember { mutableStateOf<Int?>(null) }
-    var score by remember { mutableIntStateOf(0) }
-    var quizFinished by remember { mutableStateOf(false) }
+    val questions = remember(currentSubject) {
+        QuizData.getQuestionsForSubject(currentSubject.id)
+    }
+
+    var currentIndex by remember(currentSubject) { mutableIntStateOf(0) }
+    var selectedAnswerIndex by remember(currentSubject) { mutableStateOf<Int?>(null) }
+    var score by remember(currentSubject) { mutableIntStateOf(0) }
+    var quizFinished by remember(currentSubject) { mutableStateOf(false) }
 
     val currentQuestion = questions.getOrNull(currentIndex)
 
@@ -35,6 +39,7 @@ fun QuizScreen(
         QuizResultScreen(
             score = score,
             totalQuestions = questions.size,
+            subject = currentSubject,
             onRestart = {
                 currentIndex = 0
                 selectedAnswerIndex = null
@@ -59,10 +64,10 @@ fun QuizScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "📝 Chemie-Quiz",
+                    text = "📝 ${currentSubject.displayName}-Quiz",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    color = currentSubject.primaryColor
                 )
                 Text(
                     text = "Frage ${currentIndex + 1} von ${questions.size}",
@@ -76,7 +81,8 @@ fun QuizScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp))
+                    .clip(RoundedCornerShape(4.dp)),
+                color = currentSubject.primaryColor
             )
 
             // Frage Card
@@ -107,13 +113,13 @@ fun QuizScreen(
 
                     val backgroundColor = when {
                         hasAnswered && isCorrect -> ChemistryColors.NeutralGreen.copy(alpha = 0.25f)
-                        hasAnswered && isSelected && !isCorrect -> MaterialTheme.colorScheme.errorContainer
+                        hasAnswered && isSelected -> MaterialTheme.colorScheme.errorContainer
                         else -> MaterialTheme.colorScheme.surface
                     }
 
                     val borderColor = when {
                         hasAnswered && isCorrect -> ChemistryColors.NeutralGreen
-                        hasAnswered && isSelected && !isCorrect -> MaterialTheme.colorScheme.error
+                        hasAnswered && isSelected -> MaterialTheme.colorScheme.error
                         else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
                     }
 
@@ -175,7 +181,7 @@ fun QuizScreen(
                             text = "💡 Erklärung:",
                             style = MaterialTheme.typography.labelMedium,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
+                            color = currentSubject.primaryColor
                         )
                         Text(
                             text = currentQuestion.explanation,
@@ -198,7 +204,8 @@ fun QuizScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = RoundedCornerShape(16.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = currentSubject.primaryColor)
                 ) {
                     Text(
                         text = if (currentIndex + 1 < questions.size) "Nächste Frage ➔" else "Ergebnis anzeigen 🎉",
@@ -214,6 +221,7 @@ fun QuizScreen(
 private fun QuizResultScreen(
     score: Int,
     totalQuestions: Int,
+    subject: Subject,
     onRestart: () -> Unit,
     onAwardXp: () -> Unit
 ) {
@@ -233,10 +241,10 @@ private fun QuizResultScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Quiz abgeschlossen!",
+            text = "${subject.displayName}-Quiz geschafft!",
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary
+            color = subject.primaryColor
         )
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -269,7 +277,8 @@ private fun QuizResultScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = subject.primaryColor)
         ) {
             Text(
                 text = "Quiz nochmal versuchen 🔄",

@@ -15,28 +15,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.learnbetter.project.model.LabExperiment
 import org.learnbetter.project.model.LabExperimentsData
+import org.learnbetter.project.model.Subject
+import org.learnbetter.project.ui.biology.BiologyMicroscopeScreen
+import org.learnbetter.project.ui.math.MathParabolaScreen
 import org.learnbetter.project.ui.phtest.PhTestScreen
 
 @Composable
 fun LabHubScreen(
+    currentSubject: Subject = Subject.CHEMISTRY,
     onXpEarned: (Int) -> Unit = {}
 ) {
-    var activeExperimentId by remember { mutableStateOf<String?>(null) }
+    var activeExperimentId by remember(currentSubject) { mutableStateOf<String?>(null) }
 
-    when (activeExperimentId) {
-        "acid_metal" -> LabScreen(
+    when {
+        currentSubject == Subject.BIOLOGY -> BiologyMicroscopeScreen(
+            onXpEarned = onXpEarned
+        )
+        currentSubject == Subject.MATH -> MathParabolaScreen(
+            onXpEarned = onXpEarned
+        )
+        activeExperimentId == "acid_metal" -> LabScreen(
             onXpEarned = onXpEarned,
             onBackToHub = { activeExperimentId = null }
         )
-        "ph_indicator" -> PhTestScreen(
+        activeExperimentId == "ph_indicator" -> PhTestScreen(
             onXpEarned = onXpEarned,
             onBackToHub = { activeExperimentId = null }
         )
-        "magnesium_burn" -> MagnesiumBurnScreen(
+        activeExperimentId == "magnesium_burn" -> MagnesiumBurnScreen(
             onXpEarned = onXpEarned,
             onBackToHub = { activeExperimentId = null }
         )
         else -> ExperimentSelectionGrid(
+            subject = currentSubject,
             experiments = LabExperimentsData.experiments,
             onExperimentSelected = { activeExperimentId = it.id }
         )
@@ -45,6 +56,7 @@ fun LabHubScreen(
 
 @Composable
 private fun ExperimentSelectionGrid(
+    subject: Subject,
     experiments: List<LabExperiment>,
     onExperimentSelected: (LabExperiment) -> Unit
 ) {
@@ -57,15 +69,15 @@ private fun ExperimentSelectionGrid(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "🧪 Virtuelles Chemie-Labor",
+            text = "🧪 ${subject.displayName}-Werkstatt",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.primary,
+            color = subject.primaryColor,
             textAlign = TextAlign.Center
         )
 
         Text(
-            text = "Wähle ein Experiment aus, das du im virtuellen Labor durchführen möchtest:",
+            text = "Wähle ein interaktives Experiment für ${subject.displayName} aus:",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -135,7 +147,7 @@ private fun ExperimentSelectionGrid(
                             Text(
                                 text = exp.subtitle,
                                 style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary,
+                                color = subject.primaryColor,
                                 fontWeight = FontWeight.Bold
                             )
 
@@ -147,7 +159,7 @@ private fun ExperimentSelectionGrid(
                         }
 
                         if (exp.isAvailable) {
-                            Text("➔", fontSize = 20.sp, color = MaterialTheme.colorScheme.primary)
+                            Text("➔", fontSize = 20.sp, color = subject.primaryColor)
                         }
                     }
                 }

@@ -17,8 +17,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import org.learnbetter.project.model.RewardState
 import org.learnbetter.project.ui.lab.LabHubScreen
 import org.learnbetter.project.ui.quiz.QuizScreen
+import org.learnbetter.project.ui.rewards.RewardCard
 import org.learnbetter.project.ui.theme.ChemistryColors
 import org.learnbetter.project.ui.theme.LearnBetterTheme
 import org.learnbetter.project.ui.theme.getPhColor
@@ -36,6 +38,11 @@ fun App() {
     var selectedTab by remember { mutableStateOf(NavigationTab.DASHBOARD) }
     var totalXp by remember { mutableIntStateOf(250) }
     var streakDays by remember { mutableIntStateOf(3) }
+    var redeemedMinutes by remember { mutableIntStateOf(0) }
+
+    val rewardState = remember(totalXp, redeemedMinutes) {
+        RewardState(totalXp = totalXp, redeemedMinutes = redeemedMinutes)
+    }
 
     LearnBetterTheme {
         Scaffold(
@@ -61,10 +68,11 @@ fun App() {
             ) {
                 when (selectedTab) {
                     NavigationTab.DASHBOARD -> DashboardContent(
-                        totalXp = totalXp,
+                        rewardState = rewardState,
                         streakDays = streakDays,
                         onNavigateToLab = { selectedTab = NavigationTab.LAB },
-                        onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ }
+                        onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ },
+                        onRedeemMinutes = { mins -> redeemedMinutes += mins }
                     )
                     NavigationTab.LAB -> LabHubScreen(
                         onXpEarned = { earned -> totalXp += earned }
@@ -80,10 +88,11 @@ fun App() {
 
 @Composable
 private fun DashboardContent(
-    totalXp: Int,
+    rewardState: RewardState,
     streakDays: Int,
     onNavigateToLab: () -> Unit,
-    onNavigateToQuiz: () -> Unit
+    onNavigateToQuiz: () -> Unit,
+    onRedeemMinutes: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -92,7 +101,13 @@ private fun DashboardContent(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        HeaderSection(totalXp = totalXp, streakDays = streakDays)
+        HeaderSection(rewardState = rewardState, streakDays = streakDays)
+
+        // PC-Zeit Belohnungs-System Card
+        RewardCard(
+            rewardState = rewardState,
+            onRedeemMinutes = onRedeemMinutes
+        )
 
         WelcomeCard()
 
@@ -105,7 +120,7 @@ private fun DashboardContent(
 }
 
 @Composable
-private fun HeaderSection(totalXp: Int, streakDays: Int) {
+private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -126,21 +141,22 @@ private fun HeaderSection(totalXp: Int, streakDays: Int) {
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            // Streak
             Surface(
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(14.dp),
                 color = MaterialTheme.colorScheme.secondaryContainer
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text("🔥", fontSize = 14.sp)
+                    Text("🔥", fontSize = 12.sp)
                     Text(
-                        text = "$streakDays Tage",
+                        text = "$streakDays T.",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSecondaryContainer
@@ -148,21 +164,42 @@ private fun HeaderSection(totalXp: Int, streakDays: Int) {
                 }
             }
 
+            // XP
             Surface(
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(14.dp),
                 color = MaterialTheme.colorScheme.tertiaryContainer
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text("⭐", fontSize = 14.sp)
+                    Text("⭐", fontSize = 12.sp)
                     Text(
-                        text = "$totalXp XP",
+                        text = "${rewardState.totalXp} XP",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                }
+            }
+
+            // PC-Zeit
+            Surface(
+                shape = RoundedCornerShape(14.dp),
+                color = ChemistryColors.AchievementGold
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text("💻", fontSize = 12.sp)
+                    Text(
+                        text = "${rewardState.availableMinutes}m",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
                     )
                 }
             }
@@ -184,13 +221,13 @@ private fun WelcomeCard() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "🧪 Säuren, Laugen & Oxidation",
+                text = "🧪 Säuren, Laugen & PC-Zeit erspielen",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Text(
-                text = "Erforsche Säure-Metallreaktionen, entzünde Magnesiumbänder und messe den pH-Wert im virtuellen Labor!",
+                text = "Lerne Chemie, löse Experimente & Quizze und wandle deine XP direkt in Computerzeit um (25 XP = 5 Minuten)!",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
             )

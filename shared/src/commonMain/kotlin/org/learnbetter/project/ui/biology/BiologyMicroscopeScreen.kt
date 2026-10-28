@@ -35,7 +35,7 @@ fun BiologyMicroscopeScreen(
 ) {
     var zoomLevel by remember { mutableIntStateOf(100) } // 10x, 100x, 1000x
     var selectedOrganelle by remember { mutableStateOf<Organelle?>(null) }
-    val discoveredOrganelles = remember { mutableStateListOf<String>() }
+    var exploredEvents by remember { mutableStateOf(setOf<String>()) }
 
     val organelles = listOf(
         Organelle("Chloroplast", "🟢", Color(0xFF2E7D32), "Fotosynthese: Wandelt CO₂ + Wasser mit Sonnenlicht in Glucose (Zucker) und Sauerstoff (O₂) um."),
@@ -70,7 +70,7 @@ fun BiologyMicroscopeScreen(
         )
 
         Text(
-            text = "Erforsche den Aufbau einer Pflanzenzelle! Wähle die Zoomstufe und tippe auf die Organellen.",
+            text = "Erforsche den Aufbau einer Pflanzenzelle! Wähle die Zoomstufe (10x, 100x, 1000x) und tippe auf die Organellen.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -108,9 +108,9 @@ fun BiologyMicroscopeScreen(
             organelles = organelles,
             onOrganelleClicked = { organelle ->
                 selectedOrganelle = organelle
-                if (organelle.name !in discoveredOrganelles) {
-                    discoveredOrganelles.add(organelle.name)
-                    onXpEarned(10)
+                if (!exploredEvents.contains(organelle.name)) {
+                    exploredEvents = exploredEvents + organelle.name
+                    onXpEarned(3)
                 }
             }
         )
@@ -180,65 +180,113 @@ private fun MicroscopeLensVisualizer(
                     .background(Color(0xFF253B2A)),
                 contentAlignment = Alignment.Center
             ) {
-                if (zoomLevel == 10) {
-                    // 10x: Gewebeübersicht mit mehreren kleinen Zellen
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text("🧫 Pflanzengewebe", color = Color.White, fontWeight = FontWeight.Bold)
-                        Text("Wechsle auf 100x oder 1000x für Details!", color = Color.LightGray, fontSize = 11.sp)
-                    }
-                } else {
-                    // 100x / 1000x: Einzelne Zelle mit anklickbaren Organellen
-                    Column(
-                        modifier = Modifier.padding(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Pflanzenzelle (Elodea)",
-                            color = Color.White,
-                            style = MaterialTheme.typography.labelSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                when (zoomLevel) {
+                    10 -> {
+                        // 10x: Gewebeübersicht mit mehreren kleinen Zellen
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
-                            organelles.take(3).forEach { org ->
-                                Surface(
-                                    modifier = Modifier.clickable { onOrganelleClicked(org) },
-                                    shape = CircleShape,
-                                    color = org.color.copy(alpha = 0.85f)
-                                ) {
-                                    Text(
-                                        text = "${org.icon} ${org.name}",
-                                        color = Color.White,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                    )
+                            Text("🧫 Pflanzengewebe", color = Color.White, fontWeight = FontWeight.Bold)
+                            Text("Pflanzenzellen mit Zellwänden", color = Color.LightGray, fontSize = 12.sp)
+                            Spacer(modifier = Modifier.height(4.dp))
+                            Text("Wechsle auf 100x oder 1000x!", color = Color(0xFFFFD700), fontSize = 11.sp)
+                        }
+                    }
+                    100 -> {
+                        // 100x: Einzelne Zelle mit anklickbaren Organellen
+                        Column(
+                            modifier = Modifier.padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "100x: Pflanzenzelle (Elodea)",
+                                color = Color.White,
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                organelles.take(3).forEach { org ->
+                                    Surface(
+                                        modifier = Modifier.clickable { onOrganelleClicked(org) },
+                                        shape = CircleShape,
+                                        color = org.color.copy(alpha = 0.85f)
+                                    ) {
+                                        Text(
+                                            text = "${org.icon} ${org.name}",
+                                            color = Color.White,
+                                            style = MaterialTheme.typography.labelSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
+                                        )
+                                    }
+                                }
+                            }
+
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                organelles.drop(3).forEach { org ->
+                                    Surface(
+                                        modifier = Modifier.clickable { onOrganelleClicked(org) },
+                                        shape = CircleShape,
+                                        color = org.color.copy(alpha = 0.85f)
+                                    ) {
+                                        Text(
+                                            text = "${org.icon} ${org.name}",
+                                            color = Color.White,
+                                            style = MaterialTheme.typography.labelSmall,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 4.dp)
+                                        )
+                                    }
                                 }
                             }
                         }
-
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    }
+                    else -> {
+                        // 1000x: Nahaufnahme von Chloroplast & Zellkern (Subzelluläre Ebene)
+                        Column(
+                            modifier = Modifier.padding(12.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            organelles.drop(3).forEach { org ->
+                            Text(
+                                text = "1000x: Nahaufnahme Organell-Inhalt",
+                                color = Color(0xFFFFD700),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                val chloroplast = organelles.first { it.name == "Chloroplast" }
                                 Surface(
-                                    modifier = Modifier.clickable { onOrganelleClicked(org) },
-                                    shape = CircleShape,
-                                    color = org.color.copy(alpha = 0.85f)
+                                    modifier = Modifier.clickable { onOrganelleClicked(chloroplast) },
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = Color(0xFF1B5E20)
                                 ) {
-                                    Text(
-                                        text = "${org.icon} ${org.name}",
-                                        color = Color.White,
-                                        style = MaterialTheme.typography.labelSmall,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                                    )
+                                    Column(
+                                        modifier = Modifier.padding(10.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text("🟢 Chloroplast (Thylakoid)", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                                        Text("Fotosynthese-Komplex & Chlorophyll", color = Color.LightGray, fontSize = 9.sp)
+                                    }
+                                }
+
+                                val nucleus = organelles.first { it.name == "Zellkern" }
+                                Surface(
+                                    modifier = Modifier.clickable { onOrganelleClicked(nucleus) },
+                                    shape = RoundedCornerShape(12.dp),
+                                    color = Color(0xFF4A148C)
+                                ) {
+                                    Column(
+                                        modifier = Modifier.padding(10.dp),
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text("🟣 Zellkern (DNA)", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                                        Text("Chromatin & Doppelhelix", color = Color.LightGray, fontSize = 9.sp)
+                                    }
                                 }
                             }
                         }

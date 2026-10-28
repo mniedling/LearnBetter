@@ -12,9 +12,12 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 - **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**
   - **Erlenmeyerkolben-Werkstatt:** Interaktives Zuordnen von Säureformeln ($HCl, H_2SO_4, H_3PO_4, HNO_3, H_2CO_3, H_2SO_3, HNO_2$).
   - **Wasser-Dissoziation:** Wasser dazugießen ($H_2O$), Reaktionen beobachten und Säurerest-Ionen ($Cl^-, SO_4^{2-}, PO_4^{3-}, NO_3^-, CO_3^{2-}, SO_3^{2-}, NO_2^-$) sowie deren Namen (*Chlorid, Sulfat, Phosphat, Nitrat, Carbonat, Sulfit, Nitrit*) zuordnen.
-- **Atombinder - Das Bindungs-Spiel mit Elektronen-Animation (⚛️):**
-  - **Ionenbindung:** Ein gelbes Außenelektron wandert in einer flüssigen Animation von Natrium ($Na$) rüber zu Chlor ($Cl$) $\rightarrow Kochsalz (NaCl)$.
-  - **Atombindung / Elektronenpaarbindung:** Wasserstoff-Atome ($H$) nähern sich Sauerstoff ($O$) und bilden sichtbare gemeinsame Elektronenpaare $\rightarrow Wasser (H_2O)$.
+- **Atombinder - Atom-Strichmännchen Bindungs-Spiel (⚛️):**
+  - **Große Atom-Strichmännchen mit Gesichtern, Armen & Beinen:**
+    - Vor der Bindung: Trauriges Gesicht (🥺) wegen fehlender Außenelektronen.
+    - Nach der Bindung: Jubelnde Strichmännchen-Arme & strahlendes Lächeln (😄)!
+  - **Ionenbindung:** Ein Außenelektron wandert in flüssiger Animation von Natrium ($Na$) zu Chlor ($Cl$) $\rightarrow Kochsalz (NaCl)$. Chlor zeigt exakt die 3 vollen Elektronenpaare + 1 freies Elektron!
+  - **Atombindung / Elektronenpaarbindung:** Wasserstoff-Atome ($H$) nähern sich Sauerstoff ($O$) und bilden gemeinsame Elektronenpaare $\rightarrow Wasser (H_2O)$.
 - **Schwefelsäure ($H_2SO_4$) & Kontaktverfahren:**
   - Erläuterung der 3 Stufen ($S \rightarrow SO_2 \rightarrow SO_3 \rightarrow H_2SO_4$).
   - Verkohlungseffekt auf Puderzucker (starker Wasserentzug $\rightarrow$ Kohlenstoff-Säule $C$).

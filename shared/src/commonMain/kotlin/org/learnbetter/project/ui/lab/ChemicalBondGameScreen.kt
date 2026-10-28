@@ -14,6 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -55,7 +57,7 @@ fun ChemicalBondGameScreen(
         )
 
         Text(
-            text = "Schau, wie die traurigen Atome glücklich werden, wenn sie Elektronen paaren!",
+            text = "Schau, wie die traurigen Atom-Strichmännchen glücklich werden und jubeln!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -140,16 +142,16 @@ private fun IonicBondGameCanvas(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isDone) "🎉 Beide Atome sind jetzt glücklich!" else "1. Ionenbindung: Trauriges Na ➔ Trauriges Cl",
+                text = if (isDone) "🎉 Beide Atom-Männchen jubeln!" else "1. Ionenbindung: Elektron von Na ➔ Cl",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
 
-            // Canvas für große Atome mit Gesichtern & Paarelektronen
+            // Canvas mit doppelt so großen Atom-Strichmännchen & Gesichtern
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(210.dp)
+                    .height(260.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFF1B2631))
             ) {
@@ -157,54 +159,122 @@ private fun IonicBondGameCanvas(
                 val height = size.height
                 val naCenterX = width * 0.28f
                 val clCenterX = width * 0.72f
-                val centerY = height * 0.5f
+                val centerY = height * 0.45f
 
-                // Große Atomkerne
-                val naRadius = 60f
-                val clRadius = 75f
+                val isHappy = electronProgress > 0.8f
 
-                // 1. Natrium Atom (Na)
+                // Doppelt so große Radien
+                val naRadius = 85f
+                val clRadius = 100f
+
+                // --- 1. NATRIUM (Na) STRICHMÄNNCHEN ---
+                // Strichmännchen Beine Na
+                drawLine(Color.White, start = Offset(naCenterX - 20f, centerY + naRadius), end = Offset(naCenterX - 45f, centerY + naRadius + 60f), strokeWidth = 5f)
+                drawLine(Color.White, start = Offset(naCenterX + 20f, centerY + naRadius), end = Offset(naCenterX + 45f, centerY + naRadius + 60f), strokeWidth = 5f)
+
+                // Strichmännchen Arme Na
+                if (isHappy) {
+                    // Arme jubelnd nach oben!
+                    drawLine(Color.White, start = Offset(naCenterX - naRadius, centerY), end = Offset(naCenterX - naRadius - 35f, centerY - 45f), strokeWidth = 5f)
+                    drawLine(Color.White, start = Offset(naCenterX + naRadius, centerY), end = Offset(naCenterX + naRadius + 35f, centerY - 45f), strokeWidth = 5f)
+                } else {
+                    // Arme traurig nach unten
+                    drawLine(Color.White, start = Offset(naCenterX - naRadius, centerY), end = Offset(naCenterX - naRadius - 30f, centerY + 30f), strokeWidth = 5f)
+                    drawLine(Color.White, start = Offset(naCenterX + naRadius, centerY), end = Offset(naCenterX + naRadius + 30f, centerY + 30f), strokeWidth = 5f)
+                }
+
+                // Natrium Körper/Kopf
                 drawCircle(color = Color(0xFFFFB74D), radius = naRadius, center = Offset(naCenterX, centerY))
-                drawCircle(color = Color(0xFFFF9800), radius = naRadius + 18f, center = Offset(naCenterX, centerY), style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
+                drawCircle(color = Color(0xFFFF9800), radius = naRadius + 22f, center = Offset(naCenterX, centerY), style = Stroke(4f))
 
-                // 2. Chlor Atom (Cl)
+                // Natrium Gesicht (Augen & Mund)
+                drawCircle(Color.Black, radius = 7f, center = Offset(naCenterX - 25f, centerY - 20f))
+                drawCircle(Color.Black, radius = 7f, center = Offset(naCenterX + 25f, centerY - 20f))
+
+                val naMouthPath = Path()
+                if (isHappy) {
+                    // Lachelnder Mund 😄
+                    naMouthPath.moveTo(naCenterX - 25f, centerY + 15f)
+                    naMouthPath.quadraticTo(naCenterX, centerY + 45f, naCenterX + 25f, centerY + 15f)
+                } else {
+                    // Trauriger Mund 🥺
+                    naMouthPath.moveTo(naCenterX - 25f, centerY + 30f)
+                    naMouthPath.quadraticTo(naCenterX, centerY + 10f, naCenterX + 25f, centerY + 30f)
+                }
+                drawPath(naMouthPath, Color.Black, style = Stroke(5f))
+
+
+                // --- 2. CHLOR (Cl) STRICHMÄNNCHEN ---
+                // Strichmännchen Beine Cl
+                drawLine(Color.White, start = Offset(clCenterX - 25f, centerY + clRadius), end = Offset(clCenterX - 50f, centerY + clRadius + 60f), strokeWidth = 5f)
+                drawLine(Color.White, start = Offset(clCenterX + 25f, centerY + clRadius), end = Offset(clCenterX + 50f, centerY + clRadius + 60f), strokeWidth = 5f)
+
+                // Strichmännchen Arme Cl
+                if (isHappy) {
+                    // Arme jubelnd nach oben!
+                    drawLine(Color.White, start = Offset(clCenterX - clRadius, centerY), end = Offset(clCenterX - clRadius - 35f, centerY - 45f), strokeWidth = 5f)
+                    drawLine(Color.White, start = Offset(clCenterX + clRadius, centerY), end = Offset(clCenterX + clRadius + 35f, centerY - 45f), strokeWidth = 5f)
+                } else {
+                    // Arme traurig nach unten
+                    drawLine(Color.White, start = Offset(clCenterX - clRadius, centerY), end = Offset(clCenterX - clRadius - 30f, centerY + 30f), strokeWidth = 5f)
+                    drawLine(Color.White, start = Offset(clCenterX + clRadius, centerY), end = Offset(clCenterX + clRadius + 30f, centerY + 30f), strokeWidth = 5f)
+                }
+
+                // Chlor Körper/Kopf
                 drawCircle(color = Color(0xFF81C784), radius = clRadius, center = Offset(clCenterX, centerY))
-                drawCircle(color = Color(0xFF4CAF50), radius = clRadius + 18f, center = Offset(clCenterX, centerY), style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
+                drawCircle(color = Color(0xFF4CAF50), radius = clRadius + 22f, center = Offset(clCenterX, centerY), style = Stroke(4f))
 
-                // --- 6 Paarelektronen bei Chlor (3 Paare: oben, unten, rechts) ---
-                val r = clRadius + 18f
-                val eRadius = 10f
+                // Chlor Gesicht (Augen & Mund)
+                drawCircle(Color.Black, radius = 8f, center = Offset(clCenterX - 30f, centerY - 25f))
+                drawCircle(Color.Black, radius = 8f, center = Offset(clCenterX + 30f, centerY - 25f))
+
+                val clMouthPath = Path()
+                if (isHappy) {
+                    // Lachender Mund 😄
+                    clMouthPath.moveTo(clCenterX - 30f, centerY + 20f)
+                    clMouthPath.quadraticTo(clCenterX, centerY + 55f, clCenterX + 30f, centerY + 20f)
+                } else {
+                    // Trauriger Mund 🥺
+                    clMouthPath.moveTo(clCenterX - 30f, centerY + 35f)
+                    clMouthPath.quadraticTo(clCenterX, centerY + 12f, clCenterX + 30f, centerY + 35f)
+                }
+                drawPath(clMouthPath, Color.Black, style = Stroke(5f))
+
+
+                // --- ELEKTRONENPAARE BEI CHLOR ---
+                val r = clRadius + 22f
+                val eRadius = 12f
                 val pairColor = Color(0xFF00E5FF)
 
                 // Paar 1: Oben
-                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 12f, centerY - r))
-                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 12f, centerY - r))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 18f, centerY - r))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 18f, centerY - r))
 
                 // Paar 2: Unten
-                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 12f, centerY + r))
-                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 12f, centerY + r))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 18f, centerY + r))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 18f, centerY + r))
 
                 // Paar 3: Rechts
-                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY - 12f))
-                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY + 12f))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY - 18f))
+                drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY + 18f))
 
                 // Einzelnes 7. Elektron bei Chlor (Links, wartet auf Partner)
                 if (electronProgress < 0.9f) {
-                    drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY + 15f))
+                    drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY + 18f))
                 } else {
                     // Sobald da, bilden sie ein volles Paar links!
-                    drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY - 10f))
-                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset(clCenterX - r, centerY + 10f))
+                    drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY - 15f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius + 2f, center = Offset(clCenterX - r, centerY + 15f))
                 }
 
-                // --- Wandernes Außenelektron von Natrium ---
-                val startX = naCenterX + naRadius + 18f
+                // --- WANDERNDES AUSSENELEKTRON VON NATRIUM ---
+                val startX = naCenterX + naRadius + 22f
                 val targetX = clCenterX - r
                 val currentX = startX + (targetX - startX) * electronProgress
-                val currentY = centerY - (kotlin.math.sin(electronProgress * 3.14159f) * 35f)
+                val currentY = centerY - (kotlin.math.sin(electronProgress * 3.14159f) * 45f)
 
                 if (electronProgress < 0.9f) {
-                    drawCircle(color = Color(0xFFFFD700), radius = eRadius + 2f, center = Offset(currentX, currentY))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius + 3f, center = Offset(currentX, currentY))
                 }
             }
 
@@ -213,13 +283,13 @@ private fun IonicBondGameCanvas(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
-                    text = if (isDone) "Na⁺ (Glücklich 😄)" else "Na (Einsam 🥺 - 1 Elektron zu viel)",
+                    text = if (isDone) "Na⁺ (Überglücklich! 😄)" else "Na (Traurig 🥺 - 1 Elektron zu viel)",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (isDone) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = if (isDone) "Cl⁻ (Glücklich 😄)" else "Cl (Traurig 🥺 - sucht 1 Elektron)",
+                    text = if (isDone) "Cl⁻ (Überglücklich! 😄)" else "Cl (Traurig 🥺 - sucht 1 Elektron)",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (isDone) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.onSurfaceVariant
@@ -232,7 +302,7 @@ private fun IonicBondGameCanvas(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("⚡ Einzel-Elektron übertragen & Atome glücklich machen!", fontWeight = FontWeight.Bold)
+                    Text("⚡ Elektron übertragen & Strichmännchen glücklich machen!", fontWeight = FontWeight.Bold)
                 }
             } else {
                 Card(
@@ -242,7 +312,7 @@ private fun IonicBondGameCanvas(
                 ) {
                     Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text("💡 Chlor hat jetzt 4 volle Elektronenpaare (Edelgaszustand)! 🎉", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        Text("Chlor besaß 3 Paare (6 Elektronen) + 1 einzelnes Elektron. Durch die Übertragung von Natrium hat Chlor nun 8 Außenelektronen (Edelgaskonfiguration)!", style = MaterialTheme.typography.bodySmall)
+                        Text("Sowohl Na⁺ als auch Cl⁻ sind jetzt voll besetzt und strahlend glücklich!", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
@@ -279,7 +349,7 @@ private fun CovalentBondGameCanvas(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isDone) "🎉 Wasser-Molekül (H₂O) ist glücklich!" else "2. Atombindung: H-Atome teilen Elektronen mit O",
+                text = if (isDone) "🎉 Wasser-Molekül (H₂O) jubelt!" else "2. Atombindung: Gemeinsame Elektronenpaare",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -287,48 +357,109 @@ private fun CovalentBondGameCanvas(
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(210.dp)
+                    .height(240.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFF1B2631))
             ) {
                 val width = size.width
                 val height = size.height
                 val oCenterX = width * 0.5f
-                val oCenterY = height * 0.5f
+                val oCenterY = height * 0.45f
 
-                val h1TargetX = oCenterX - 65f
-                val h2TargetX = oCenterX + 65f
+                val isHappy = covalentProgress > 0.8f
 
-                val h1StartX = width * 0.18f
-                val h2StartX = width * 0.82f
+                val h1TargetX = oCenterX - 80f
+                val h2TargetX = oCenterX + 80f
+
+                val h1StartX = width * 0.16f
+                val h2StartX = width * 0.84f
 
                 val h1CurrentX = h1StartX + (h1TargetX - h1StartX) * covalentProgress
                 val h2CurrentX = h2StartX + (h2TargetX - h2StartX) * covalentProgress
 
-                val eRadius = 10f
+                val eRadius = 12f
+                val oRadius = 85f
+                val hRadius = 55f
 
-                // Sauerstoff Atom O
-                drawCircle(color = Color(0xFFE57373), radius = 65f, center = Offset(oCenterX, oCenterY))
-                drawCircle(color = Color(0xFFEF5350), radius = 83f, center = Offset(oCenterX, oCenterY), style = androidx.compose.ui.graphics.drawscope.Stroke(3f))
+                // --- SAUERSTOFF (O) STRICHMÄNNCHEN ---
+                drawLine(Color.White, start = Offset(oCenterX - 25f, oCenterY + oRadius), end = Offset(oCenterX - 50f, oCenterY + oRadius + 50f), strokeWidth = 5f)
+                drawLine(Color.White, start = Offset(oCenterX + 25f, oCenterY + oRadius), end = Offset(oCenterX + 50f, oCenterY + oRadius + 50f), strokeWidth = 5f)
+
+                drawCircle(color = Color(0xFFE57373), radius = oRadius, center = Offset(oCenterX, oCenterY))
+                drawCircle(color = Color(0xFFEF5350), radius = oRadius + 22f, center = Offset(oCenterX, oCenterY), style = Stroke(4f))
+
+                // O Augen & Mund
+                drawCircle(Color.Black, radius = 8f, center = Offset(oCenterX - 30f, oCenterY - 25f))
+                drawCircle(Color.Black, radius = 8f, center = Offset(oCenterX + 30f, oCenterY - 25f))
+
+                val oMouthPath = Path()
+                if (isHappy) {
+                    oMouthPath.moveTo(oCenterX - 30f, oCenterY + 20f)
+                    oMouthPath.quadraticTo(oCenterX, oCenterY + 55f, oCenterX + 30f, oCenterY + 20f)
+                } else {
+                    oMouthPath.moveTo(oCenterX - 30f, oCenterY + 35f)
+                    oMouthPath.quadraticTo(oCenterX, oCenterY + 12f, oCenterX + 30f, oCenterY + 35f)
+                }
+                drawPath(oMouthPath, Color.Black, style = Stroke(5f))
+
 
                 // Sauerstoff 2 freie Elektronenpaare (oben und unten)
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 12f, oCenterY - 83f))
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 12f, oCenterY - 83f))
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 18f, oCenterY - (oRadius + 22f)))
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 18f, oCenterY - (oRadius + 22f)))
 
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 12f, oCenterY + 83f))
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 12f, oCenterY + 83f))
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 18f, oCenterY + (oRadius + 22f)))
+                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 18f, oCenterY + (oRadius + 22f)))
 
-                // Wasserstoff Atome H1 und H2
-                drawCircle(color = Color(0xFF64B5F6), radius = 45f, center = Offset(h1CurrentX, oCenterY))
-                drawCircle(color = Color(0xFF64B5F6), radius = 45f, center = Offset(h2CurrentX, oCenterY))
+
+                // --- WASSERSTOFF (H1) STRICHMÄNNCHEN ---
+                drawLine(Color.White, start = Offset(h1CurrentX - 15f, oCenterY + hRadius), end = Offset(h1CurrentX - 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
+                drawLine(Color.White, start = Offset(h1CurrentX + 15f, oCenterY + hRadius), end = Offset(h1CurrentX + 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
+
+                drawCircle(color = Color(0xFF64B5F6), radius = hRadius, center = Offset(h1CurrentX, oCenterY))
+
+                // H1 Gesicht
+                drawCircle(Color.Black, radius = 6f, center = Offset(h1CurrentX - 18f, oCenterY - 15f))
+                drawCircle(Color.Black, radius = 6f, center = Offset(h1CurrentX + 18f, oCenterY - 15f))
+
+                val h1MouthPath = Path()
+                if (isHappy) {
+                    h1MouthPath.moveTo(h1CurrentX - 18f, oCenterY + 12f)
+                    h1MouthPath.quadraticTo(h1CurrentX, oCenterY + 32f, h1CurrentX + 18f, oCenterY + 12f)
+                } else {
+                    h1MouthPath.moveTo(h1CurrentX - 18f, oCenterY + 22f)
+                    h1MouthPath.quadraticTo(h1CurrentX, oCenterY + 8f, h1CurrentX + 18f, oCenterY + 22f)
+                }
+                drawPath(h1MouthPath, Color.Black, style = Stroke(4f))
+
+
+                // --- WASSERSTOFF (H2) STRICHMÄNNCHEN ---
+                drawLine(Color.White, start = Offset(h2CurrentX - 15f, oCenterY + hRadius), end = Offset(h2CurrentX - 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
+                drawLine(Color.White, start = Offset(h2CurrentX + 15f, oCenterY + hRadius), end = Offset(h2CurrentX + 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
+
+                drawCircle(color = Color(0xFF64B5F6), radius = hRadius, center = Offset(h2CurrentX, oCenterY))
+
+                // H2 Gesicht
+                drawCircle(Color.Black, radius = 6f, center = Offset(h2CurrentX - 18f, oCenterY - 15f))
+                drawCircle(Color.Black, radius = 6f, center = Offset(h2CurrentX + 18f, oCenterY - 15f))
+
+                val h2MouthPath = Path()
+                if (isHappy) {
+                    h2MouthPath.moveTo(h2CurrentX - 18f, oCenterY + 12f)
+                    h2MouthPath.quadraticTo(h2CurrentX, oCenterY + 32f, h2CurrentX + 18f, oCenterY + 12f)
+                } else {
+                    h2MouthPath.moveTo(h2CurrentX - 18f, oCenterY + 22f)
+                    h2MouthPath.quadraticTo(h2CurrentX, oCenterY + 8f, h2CurrentX + 18f, oCenterY + 22f)
+                }
+                drawPath(h2MouthPath, Color.Black, style = Stroke(4f))
+
 
                 // Gemeinsame Elektronenpaare im Überlappungsbereich
                 if (covalentProgress > 0.5f) {
-                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY - 12f))
-                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY + 12f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY - 15f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h1CurrentX + oCenterX) / 2f, oCenterY + 15f))
 
-                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY - 12f))
-                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY + 12f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY - 15f))
+                    drawCircle(color = Color(0xFFFFD700), radius = eRadius, center = Offset((h2CurrentX + oCenterX) / 2f, oCenterY + 15f))
                 }
             }
 
@@ -348,7 +479,7 @@ private fun CovalentBondGameCanvas(
                 ) {
                     Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         Text("💡 Erklärung Atombindung (H₂O):", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        Text("Sauerstoff hatte 2 freie Elektronenpaare und 2 einzelne Elektronen. Durch das Teilen mit den zwei H-Atomen entstehen 2 gemeinsame Elektronenpaare!", style = MaterialTheme.typography.bodySmall)
+                        Text("Alle 3 Atom-Strichmännchen sind nun glücklich und haben ihre volle Elektronen-Aussenschale erreicht!", style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }

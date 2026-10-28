@@ -50,6 +50,18 @@ fun LabHubScreen(
             onXpEarned = onXpEarned,
             onBackToHub = { activeExperimentId = null }
         )
+        activeExperimentId == "chemical_bond" -> ChemicalBondGameScreen(
+            onXpEarned = onXpEarned,
+            onBackToHub = { activeExperimentId = null }
+        )
+        activeExperimentId == "sulfuric_acid" -> SulfuricAcidLabScreen(
+            onXpEarned = onXpEarned,
+            onBackToHub = { activeExperimentId = null }
+        )
+        activeExperimentId == "marble_acid" -> MarbleAcidScreen(
+            onXpEarned = onXpEarned,
+            onBackToHub = { activeExperimentId = null }
+        )
         activeExperimentId == "acid_metal" -> LabScreen(
             onXpEarned = onXpEarned,
             onBackToHub = { activeExperimentId = null }

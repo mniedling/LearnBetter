@@ -22,9 +22,36 @@ object LabExperimentsData {
             isAvailable = true
         ),
         LabExperiment(
+            id = "chemical_bond",
+            title = "Atombinder - Das Bindungsspiel",
+            icon = "⚛️",
+            subtitle = "Ionen- & Elektronenpaarbindung",
+            description = "Lustige Atome leihen sich Elektronen aus oder nutzen sie gemeinsam (Kochsalz NaCl & Wasser H₂O).",
+            xpReward = 15,
+            isAvailable = true
+        ),
+        LabExperiment(
+            id = "sulfuric_acid",
+            title = "Schwefelsäure & Kontaktverfahren",
+            icon = "🧪",
+            subtitle = "Herstellung & Zucker-Verkohlung",
+            description = "Erforsche das Kontaktverfahren zur Herstellung und den extremen Wasserentzug aus Puderzucker.",
+            xpReward = 20,
+            isAvailable = true
+        ),
+        LabExperiment(
+            id = "marble_acid",
+            title = "Säure vs. Marmorfliesen",
+            icon = "🏛️",
+            subtitle = "Zersetzung von Calciumcarbonat (CaCO₃)",
+            description = "Testet Zitronensäure, Essig & Salzsäure auf Marmorfliesen und beobachtet das heftige Schäumen von CO₂-Gas.",
+            xpReward = 20,
+            isAvailable = true
+        ),
+        LabExperiment(
             id = "acid_metal",
             title = "Säure & Metall-Reaktionen",
-            icon = "🧪",
+            icon = "💥",
             subtitle = "Reagenzglas & Knallgasprobe",
             description = "Untersuche wie Salzsäure, Schwefelsäure und Essigsäure mit Magnesium, Zink oder Kupfer reagieren.",
             xpReward = 15,
@@ -34,8 +61,8 @@ object LabExperimentsData {
             id = "ph_indicator",
             title = "pH-Wert & Indikator-Test",
             icon = "🎨",
-            subtitle = "Universalindikator & Becherglas",
-            description = "Tauche den Teststreifen in Alltagsflüssigkeiten und messe den pH-Wert von 0 bis 14.",
+            subtitle = "Universalindikator & 15 Lösungen",
+            description = "Tauche den Teststreifen in 15 Alltagsflüssigkeiten und messe den pH-Wert von 0 bis 14.",
             xpReward = 10,
             isAvailable = true
         ),

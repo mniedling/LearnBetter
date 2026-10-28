@@ -13,12 +13,21 @@ data class LabExperiment(
 object LabExperimentsData {
     val experiments = listOf(
         LabExperiment(
+            id = "acid_ions",
+            title = "Säuren & Säurerest-Ionen Trainer",
+            icon = "⚡",
+            subtitle = "Formeln & Säurerest-Namen lernen",
+            description = "Lerne die Formeln und Namen aller 7 Säuren und ihrer Säurerest-Ionen (Chlorid, Sulfat, Phosphat, Nitrat, Carbonat, Sulfit, Nitrit).",
+            xpReward = 20,
+            isAvailable = true
+        ),
+        LabExperiment(
             id = "acid_metal",
             title = "Säure & Metall-Reaktionen",
             icon = "🧪",
             subtitle = "Reagenzglas & Knallgasprobe",
             description = "Untersuche wie Salzsäure, Schwefelsäure und Essigsäure mit Magnesium, Zink oder Kupfer reagieren.",
-            xpReward = 50,
+            xpReward = 15,
             isAvailable = true
         ),
         LabExperiment(
@@ -27,7 +36,7 @@ object LabExperimentsData {
             icon = "🎨",
             subtitle = "Universalindikator & Becherglas",
             description = "Tauche den Teststreifen in Alltagsflüssigkeiten und messe den pH-Wert von 0 bis 14.",
-            xpReward = 25,
+            xpReward = 10,
             isAvailable = true
         ),
         LabExperiment(
@@ -36,17 +45,8 @@ object LabExperimentsData {
             icon = "🔥",
             subtitle = "Gleißende Verbrennung & Redox",
             description = "Entzünde Magnesium über der Bunsenbrennerflamme und beobachte die Bildung von weißem Magnesiumoxid (MgO).",
-            xpReward = 40,
+            xpReward = 15,
             isAvailable = true
-        ),
-        LabExperiment(
-            id = "titration",
-            title = "Neutralisation & Titration",
-            icon = "💧",
-            subtitle = "Bürette & Phenolphthalein",
-            description = "Neutralisiere Salzsäure mit Natronlauge Tropfen für Tropfen bis zum Farbumschlag.",
-            xpReward = 60,
-            isAvailable = false
         )
     )
 }

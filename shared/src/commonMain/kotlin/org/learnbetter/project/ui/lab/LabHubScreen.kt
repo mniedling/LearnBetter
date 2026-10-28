@@ -46,6 +46,10 @@ fun LabHubScreen(
         currentSubject == Subject.GERMAN -> GermanRhetoricScreen(
             onXpEarned = onXpEarned
         )
+        activeExperimentId == "acid_ions" -> AcidIonsTrainerScreen(
+            onXpEarned = onXpEarned,
+            onBackToHub = { activeExperimentId = null }
+        )
         activeExperimentId == "acid_metal" -> LabScreen(
             onXpEarned = onXpEarned,
             onBackToHub = { activeExperimentId = null }

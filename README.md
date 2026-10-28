@@ -9,12 +9,12 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 ## 📚 Fächerübersicht & Werkstätten
 
 ### 🧪 1. Chemie
-- **Säuren & Säurerest-Ionen Trainer:**
-  - Die 7 geforderten Säuren: Salzsäure ($HCl$), Schwefelsäure ($H_2SO_4$), Phosphorsäure ($H_3PO_4$), Salpetersäure ($HNO_3$), Kohlensäure ($H_2CO_3$), Schweflige Säure ($H_2SO_3$) und Salpetrige Säure ($HNO_2$).
-  - Säurerest-Ionen: Chlorid ($Cl^-$), Sulfat ($SO_4^{2-}$), Phosphat ($PO_4^{3-}$), Nitrat ($NO_3^-$), Carbonat ($CO_3^{2-}$), Sulfit ($SO_3^{2-}$), Nitrit ($NO_2^-$).
-- **Atombinder - Das Bindungs-Spiel (⚛️):**
-  - **Ionenbindung:** Natrium ($Na$) gibt Elektron an Chlor ($Cl$) ab $\rightarrow Kochsalz (NaCl)$.
-  - **Atombindung / Elektronenpaarbindung:** Wasserstoff ($H$) teilt Elektronenpaare mit Sauerstoff ($O$) $\rightarrow Wasser (H_2O)$.
+- **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**
+  - **Erlenmeyerkolben-Werkstatt:** Interaktives Zuordnen von Säureformeln ($HCl, H_2SO_4, H_3PO_4, HNO_3, H_2CO_3, H_2SO_3, HNO_2$).
+  - **Wasser-Dissoziation:** Wasser dazugießen ($H_2O$), Reaktionen beobachten und Säurerest-Ionen ($Cl^-, SO_4^{2-}, PO_4^{3-}, NO_3^-, CO_3^{2-}, SO_3^{2-}, NO_2^-$) sowie deren Namen (*Chlorid, Sulfat, Phosphat, Nitrat, Carbonat, Sulfit, Nitrit*) zuordnen.
+- **Atombinder - Das Bindungs-Spiel mit Elektronen-Animation (⚛️):**
+  - **Ionenbindung:** Ein gelbes Außenelektron wandert in einer flüssigen Animation von Natrium ($Na$) rüber zu Chlor ($Cl$) $\rightarrow Kochsalz (NaCl)$.
+  - **Atombindung / Elektronenpaarbindung:** Wasserstoff-Atome ($H$) nähern sich Sauerstoff ($O$) und bilden sichtbare gemeinsame Elektronenpaare $\rightarrow Wasser (H_2O)$.
 - **Schwefelsäure ($H_2SO_4$) & Kontaktverfahren:**
   - Erläuterung der 3 Stufen ($S \rightarrow SO_2 \rightarrow SO_3 \rightarrow H_2SO_4$).
   - Verkohlungseffekt auf Puderzucker (starker Wasserentzug $\rightarrow$ Kohlenstoff-Säule $C$).

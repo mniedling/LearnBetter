@@ -17,8 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
-import org.learnbetter.project.ui.lab.LabScreen
-import org.learnbetter.project.ui.phtest.PhTestScreen
+import org.learnbetter.project.ui.lab.LabHubScreen
 import org.learnbetter.project.ui.quiz.QuizScreen
 import org.learnbetter.project.ui.theme.ChemistryColors
 import org.learnbetter.project.ui.theme.LearnBetterTheme
@@ -27,8 +26,7 @@ import org.learnbetter.project.ui.theme.getPhLabel
 
 enum class NavigationTab(val label: String, val icon: String) {
     DASHBOARD("Übersicht", "🏠"),
-    LAB("Säure-Labor", "🧪"),
-    PHTEST("pH-Test", "🎨"),
+    LAB("Virtuelles Labor", "🧪"),
     QUIZ("Quiz", "📝")
 }
 
@@ -66,13 +64,9 @@ fun App() {
                         totalXp = totalXp,
                         streakDays = streakDays,
                         onNavigateToLab = { selectedTab = NavigationTab.LAB },
-                        onNavigateToPhTest = { selectedTab = NavigationTab.PHTEST },
                         onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ }
                     )
-                    NavigationTab.LAB -> LabScreen(
-                        onXpEarned = { earned -> totalXp += earned }
-                    )
-                    NavigationTab.PHTEST -> PhTestScreen(
+                    NavigationTab.LAB -> LabHubScreen(
                         onXpEarned = { earned -> totalXp += earned }
                     )
                     NavigationTab.QUIZ -> QuizScreen(
@@ -89,7 +83,6 @@ private fun DashboardContent(
     totalXp: Int,
     streakDays: Int,
     onNavigateToLab: () -> Unit,
-    onNavigateToPhTest: () -> Unit,
     onNavigateToQuiz: () -> Unit
 ) {
     Column(
@@ -103,7 +96,7 @@ private fun DashboardContent(
 
         WelcomeCard()
 
-        QuickLabCard(onNavigateToLab = onNavigateToLab, onNavigateToPhTest = onNavigateToPhTest)
+        QuickLabCard(onNavigateToLab = onNavigateToLab)
 
         PhScalePreviewCard()
 
@@ -191,13 +184,13 @@ private fun WelcomeCard() {
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "🧪 Säuren, Laugen & pH-Werte",
+                text = "🧪 Säuren, Laugen & Oxidation",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Text(
-                text = "Erforsche Salzsäure, Schwefelsäure, Essigsäure & Co. und teste den pH-Wert verschiedener Lösungen mit dem Universalindikator!",
+                text = "Erforsche Säure-Metallreaktionen, entzünde Magnesiumbänder und messe den pH-Wert im virtuellen Labor!",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.85f)
             )
@@ -206,51 +199,38 @@ private fun WelcomeCard() {
 }
 
 @Composable
-private fun QuickLabCard(
-    onNavigateToLab: () -> Unit,
-    onNavigateToPhTest: () -> Unit
-) {
-    Row(
+private fun QuickLabCard(onNavigateToLab: () -> Unit) {
+    Card(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        )
     ) {
-        Card(
-            modifier = Modifier
-                .weight(1f)
-                .height(110.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("🥼 Säure-Labor", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Button(onClick = onNavigateToLab, shape = RoundedCornerShape(10.dp), modifier = Modifier.fillMaxWidth()) {
-                    Text("Labor", fontSize = 12.sp)
-                }
+            Text("🥼", fontSize = 36.sp)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Virtuelles Chemie-Labor",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+                Text(
+                    text = "Wähle aus verschiedenen Experimenten (Säuren, pH-Test, Magnesium brennen)!",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
+                )
             }
-        }
-
-        Card(
-            modifier = Modifier
-                .weight(1f)
-                .height(110.dp),
-            shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(12.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+            Button(
+                onClick = onNavigateToLab,
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Text("🎨 pH-Test", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                Button(onClick = onNavigateToPhTest, shape = RoundedCornerShape(10.dp), modifier = Modifier.fillMaxWidth()) {
-                    Text("Testen", fontSize = 12.sp)
-                }
+                Text("Starten", fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -365,11 +345,11 @@ private fun ModulesSection(onNavigateToQuiz: () -> Unit) {
         )
 
         ModuleItem(
-            icon = "🎨",
-            title = "3. pH-Wert & Universalindikator",
-            subtitle = "Messung von Alltagsflüssigkeiten",
-            progress = 0.3f,
-            accentColor = ChemistryColors.BaseViolet
+            icon = "🔥",
+            title = "3. Verbrennung & Oxidation",
+            subtitle = "Magnesiumband & Magnesiumoxid (MgO)",
+            progress = 0.25f,
+            accentColor = ChemistryColors.ReactionHeat
         )
     }
 }

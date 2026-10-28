@@ -28,7 +28,8 @@ import org.learnbetter.project.ui.theme.ChemistryColors
 
 @Composable
 fun LabScreen(
-    onXpEarned: (Int) -> Unit = {}
+    onXpEarned: (Int) -> Unit = {},
+    onBackToHub: (() -> Unit)? = null
 ) {
     var state by remember { mutableStateOf(ExperimentState()) }
 
@@ -61,6 +62,16 @@ fun LabScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        if (onBackToHub != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(onClick = onBackToHub) {
+                    Text("◀️ Zurück zum Labor-Zentrum")
+                }
+            }
+        }
         // Titel
         Text(
             text = "🧪 Säure & Metall-Labor",

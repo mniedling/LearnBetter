@@ -28,7 +28,8 @@ import org.learnbetter.project.ui.theme.getPhLabel
 
 @Composable
 fun PhTestScreen(
-    onXpEarned: (Int) -> Unit = {}
+    onXpEarned: (Int) -> Unit = {},
+    onBackToHub: (() -> Unit)? = null
 ) {
     val solutions = TestSolutionsData.sampleSolutions
     var selectedSolution by remember { mutableStateOf(solutions.first()) }
@@ -55,6 +56,16 @@ fun PhTestScreen(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        if (onBackToHub != null) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                TextButton(onClick = onBackToHub) {
+                    Text("◀️ Zurück zum Labor-Zentrum")
+                }
+            }
+        }
         Text(
             text = "🎨 Interaktiver pH-Test",
             style = MaterialTheme.typography.headlineSmall,

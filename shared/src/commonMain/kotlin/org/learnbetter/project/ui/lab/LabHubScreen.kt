@@ -17,8 +17,11 @@ import org.learnbetter.project.model.LabExperiment
 import org.learnbetter.project.model.LabExperimentsData
 import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.biology.BiologyMicroscopeScreen
+import org.learnbetter.project.ui.german.GermanRhetoricScreen
 import org.learnbetter.project.ui.math.MathParabolaScreen
+import org.learnbetter.project.ui.music.MusicPianoScreen
 import org.learnbetter.project.ui.phtest.PhTestScreen
+import org.learnbetter.project.ui.socialstudies.SocialStudiesTimelineScreen
 
 @Composable
 fun LabHubScreen(
@@ -32,6 +35,15 @@ fun LabHubScreen(
             onXpEarned = onXpEarned
         )
         currentSubject == Subject.MATH -> MathParabolaScreen(
+            onXpEarned = onXpEarned
+        )
+        currentSubject == Subject.SOCIAL_STUDIES -> SocialStudiesTimelineScreen(
+            onXpEarned = onXpEarned
+        )
+        currentSubject == Subject.MUSIC -> MusicPianoScreen(
+            onXpEarned = onXpEarned
+        )
+        currentSubject == Subject.GERMAN -> GermanRhetoricScreen(
             onXpEarned = onXpEarned
         )
         activeExperimentId == "acid_metal" -> LabScreen(

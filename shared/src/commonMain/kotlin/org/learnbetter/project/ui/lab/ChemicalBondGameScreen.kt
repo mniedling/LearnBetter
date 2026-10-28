@@ -3,6 +3,8 @@ package org.learnbetter.project.ui.lab
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,14 +25,38 @@ import androidx.compose.ui.unit.sp
 import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.theme.ChemistryColors
 
+data class BondExample(
+    val id: String,
+    val title: String,
+    val formula: String,
+    val type: String, // "ion" or "covalent"
+    val description: String
+)
+
 @Composable
 fun ChemicalBondGameScreen(
     onXpEarned: (Int) -> Unit = {},
     onBackToHub: (() -> Unit)? = null
 ) {
-    var bondMode by remember { mutableIntStateOf(1) } // 1 = Ionenbindung, 2 = Elektronenpaarbindung
-    var ionBondDone by remember { mutableStateOf(false) }
-    var covalentBondDone by remember { mutableStateOf(false) }
+    var bondTypeMode by remember { mutableIntStateOf(1) } // 1 = Ionenbindung, 2 = Atombindung
+    var selectedExampleId by remember(bondTypeMode) {
+        mutableStateOf(if (bondTypeMode == 1) "nacl" else "h2o")
+    }
+
+    val ionicExamples = listOf(
+        BondExample("nacl", "Kochsalz", "NaCl", "ion", "Natrium gibt 1 Elektron an Chlor ab."),
+        BondExample("mgo", "Magnesiumoxid", "MgO", "ion", "Magnesium gibt 2 Elektronen an Sauerstoff ab!"),
+        BondExample("lif", "Lithiumfluorid", "LiF", "ion", "Lithium gibt 1 Elektron an Fluor ab.")
+    )
+
+    val covalentExamples = listOf(
+        BondExample("h2o", "Wasser", "H₂O", "covalent", "Sauerstoff teilt Elektronenpaare mit 2x H."),
+        BondExample("ch4", "Methan", "CH₄", "covalent", "Kohlenstoff teilt Elektronenpaare mit 4x H!"),
+        BondExample("o2", "Sauerstoff", "O₂", "covalent", "Zwei O-Atome bilden eine Doppelbindung!")
+    )
+
+    val currentExamples = if (bondTypeMode == 1) ionicExamples else covalentExamples
+    val activeExample = currentExamples.firstOrNull { it.id == selectedExampleId } ?: currentExamples.first()
 
     Column(
         modifier = Modifier
@@ -57,7 +83,7 @@ fun ChemicalBondGameScreen(
         )
 
         Text(
-            text = "Schau, wie die traurigen Atom-Strichmännchen glücklich werden und jubeln!",
+            text = "Wähle Bindungsart und Molekül aus, um die Atom-Strichmännchen jubeln zu lassen!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -69,45 +95,61 @@ fun ChemicalBondGameScreen(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { bondMode = 1 },
+                onClick = { bondTypeMode = 1; selectedExampleId = "nacl" },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (bondMode == 1) Subject.CHEMISTRY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    containerColor = if (bondTypeMode == 1) Subject.CHEMISTRY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                 )
             ) {
-                Text("1. Ionenbindung (NaCl)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bondMode == 1) Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("1. Ionenbindungen (Salze)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bondTypeMode == 1) Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
             Button(
-                onClick = { bondMode = 2 },
+                onClick = { bondTypeMode = 2; selectedExampleId = "h2o" },
                 modifier = Modifier.weight(1f),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = if (bondMode == 2) Subject.CHEMISTRY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    containerColor = if (bondTypeMode == 2) Subject.CHEMISTRY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                 )
             ) {
-                Text("2. Atombindung (H₂O)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bondMode == 2) Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("2. Atombindungen (Moleküle)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bondTypeMode == 2) Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
             }
         }
 
-        if (bondMode == 1) {
-            IonicBondGameCanvas(
-                isDone = ionBondDone,
-                onComplete = {
-                    if (!ionBondDone) {
-                        ionBondDone = true
-                        onXpEarned(15)
-                    }
+        // Beispiel Auswahl Carousel
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState()),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            currentExamples.forEach { ex ->
+                val isSelected = ex.id == activeExample.id
+                Surface(
+                    modifier = Modifier.clickable { selectedExampleId = ex.id },
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isSelected) Subject.CHEMISTRY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = "${ex.title} (${ex.formula})",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
+                    )
                 }
+            }
+        }
+
+        // Active Interactive Canvas
+        if (bondTypeMode == 1) {
+            IonicBondGameCanvas(
+                example = activeExample,
+                onXpEarned = onXpEarned
             )
         } else {
             CovalentBondGameCanvas(
-                isDone = covalentBondDone,
-                onComplete = {
-                    if (!covalentBondDone) {
-                        covalentBondDone = true
-                        onXpEarned(15)
-                    }
-                }
+                example = activeExample,
+                onXpEarned = onXpEarned
             )
         }
     }
@@ -115,10 +157,11 @@ fun ChemicalBondGameScreen(
 
 @Composable
 private fun IonicBondGameCanvas(
-    isDone: Boolean,
-    onComplete: () -> Unit
+    example: BondExample,
+    onXpEarned: (Int) -> Unit
 ) {
-    var animateElectron by remember { mutableStateOf(false) }
+    var isDone by remember(example.id) { mutableStateOf(false) }
+    var animateElectron by remember(example.id) { mutableStateOf(false) }
 
     val electronProgress by animateFloatAsState(
         targetValue = if (animateElectron || isDone) 1.0f else 0.0f,
@@ -126,9 +169,46 @@ private fun IonicBondGameCanvas(
     )
 
     LaunchedEffect(electronProgress) {
-        if (electronProgress == 1.0f && animateElectron) {
-            onComplete()
+        if (electronProgress == 1.0f && animateElectron && !isDone) {
+            isDone = true
+            onXpEarned(15)
         }
+    }
+
+    val atom1Name = when (example.id) {
+        "mgo" -> "Mg (Magnesium)"
+        "lif" -> "Li (Lithium)"
+        else -> "Na (Natrium)"
+    }
+
+    val atom2Name = when (example.id) {
+        "mgo" -> "O (Sauerstoff)"
+        "lif" -> "F (Fluor)"
+        else -> "Cl (Chlor)"
+    }
+
+    val atom1Symbol = when (example.id) {
+        "mgo" -> "Mg"
+        "lif" -> "Li"
+        else -> "Na"
+    }
+
+    val atom2Symbol = when (example.id) {
+        "mgo" -> "O"
+        "lif" -> "F"
+        else -> "Cl"
+    }
+
+    val atom1Color = when (example.id) {
+        "mgo" -> Color(0xFFAB47BC)
+        "lif" -> Color(0xFFFF7043)
+        else -> Color(0xFFFFB74D)
+    }
+
+    val atom2Color = when (example.id) {
+        "mgo" -> Color(0xFFEF5350)
+        "lif" -> Color(0xFF26A69A)
+        else -> Color(0xFF81C784)
     }
 
     Card(
@@ -142,16 +222,15 @@ private fun IonicBondGameCanvas(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isDone) "🎉 Beide Atom-Männchen jubeln!" else "1. Ionenbindung: Elektron von Na ➔ Cl",
+                text = if (isDone) "🎉 ${example.title} (${example.formula}) ist entstanden!" else "Ionenbindung: $atom1Symbol ➔ $atom2Symbol",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
 
-            // Canvas mit doppelt so großen Atom-Strichmännchen & Gesichtern
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(260.dp)
+                    .height(240.dp)
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFF1B2631))
             ) {
@@ -163,111 +242,95 @@ private fun IonicBondGameCanvas(
 
                 val isHappy = electronProgress > 0.8f
 
-                // Doppelt so große Radien
                 val naRadius = 85f
                 val clRadius = 100f
 
-                // --- 1. NATRIUM (Na) STRICHMÄNNCHEN ---
-                // Strichmännchen Beine Na
+                // Strichmännchen Beine Atom 1
                 drawLine(Color.White, start = Offset(naCenterX - 20f, centerY + naRadius), end = Offset(naCenterX - 45f, centerY + naRadius + 60f), strokeWidth = 5f)
                 drawLine(Color.White, start = Offset(naCenterX + 20f, centerY + naRadius), end = Offset(naCenterX + 45f, centerY + naRadius + 60f), strokeWidth = 5f)
 
-                // Strichmännchen Arme Na
+                // Strichmännchen Arme Atom 1
                 if (isHappy) {
-                    // Arme jubelnd nach oben!
                     drawLine(Color.White, start = Offset(naCenterX - naRadius, centerY), end = Offset(naCenterX - naRadius - 35f, centerY - 45f), strokeWidth = 5f)
                     drawLine(Color.White, start = Offset(naCenterX + naRadius, centerY), end = Offset(naCenterX + naRadius + 35f, centerY - 45f), strokeWidth = 5f)
                 } else {
-                    // Arme traurig nach unten
                     drawLine(Color.White, start = Offset(naCenterX - naRadius, centerY), end = Offset(naCenterX - naRadius - 30f, centerY + 30f), strokeWidth = 5f)
                     drawLine(Color.White, start = Offset(naCenterX + naRadius, centerY), end = Offset(naCenterX + naRadius + 30f, centerY + 30f), strokeWidth = 5f)
                 }
 
-                // Natrium Körper/Kopf
-                drawCircle(color = Color(0xFFFFB74D), radius = naRadius, center = Offset(naCenterX, centerY))
-                drawCircle(color = Color(0xFFFF9800), radius = naRadius + 22f, center = Offset(naCenterX, centerY), style = Stroke(4f))
+                // Atom 1 Körper
+                drawCircle(color = atom1Color, radius = naRadius, center = Offset(naCenterX, centerY))
+                drawCircle(color = Color.White.copy(alpha = 0.5f), radius = naRadius + 22f, center = Offset(naCenterX, centerY), style = Stroke(3f))
 
-                // Natrium Gesicht (Augen & Mund)
+                // Atom 1 Gesicht
                 drawCircle(Color.Black, radius = 7f, center = Offset(naCenterX - 25f, centerY - 20f))
                 drawCircle(Color.Black, radius = 7f, center = Offset(naCenterX + 25f, centerY - 20f))
 
                 val naMouthPath = Path()
                 if (isHappy) {
-                    // Lachelnder Mund 😄
                     naMouthPath.moveTo(naCenterX - 25f, centerY + 15f)
                     naMouthPath.quadraticTo(naCenterX, centerY + 45f, naCenterX + 25f, centerY + 15f)
                 } else {
-                    // Trauriger Mund 🥺
                     naMouthPath.moveTo(naCenterX - 25f, centerY + 30f)
                     naMouthPath.quadraticTo(naCenterX, centerY + 10f, naCenterX + 25f, centerY + 30f)
                 }
                 drawPath(naMouthPath, Color.Black, style = Stroke(5f))
 
 
-                // --- 2. CHLOR (Cl) STRICHMÄNNCHEN ---
-                // Strichmännchen Beine Cl
+                // Strichmännchen Beine Atom 2
                 drawLine(Color.White, start = Offset(clCenterX - 25f, centerY + clRadius), end = Offset(clCenterX - 50f, centerY + clRadius + 60f), strokeWidth = 5f)
                 drawLine(Color.White, start = Offset(clCenterX + 25f, centerY + clRadius), end = Offset(clCenterX + 50f, centerY + clRadius + 60f), strokeWidth = 5f)
 
-                // Strichmännchen Arme Cl
+                // Strichmännchen Arme Atom 2
                 if (isHappy) {
-                    // Arme jubelnd nach oben!
                     drawLine(Color.White, start = Offset(clCenterX - clRadius, centerY), end = Offset(clCenterX - clRadius - 35f, centerY - 45f), strokeWidth = 5f)
                     drawLine(Color.White, start = Offset(clCenterX + clRadius, centerY), end = Offset(clCenterX + clRadius + 35f, centerY - 45f), strokeWidth = 5f)
                 } else {
-                    // Arme traurig nach unten
                     drawLine(Color.White, start = Offset(clCenterX - clRadius, centerY), end = Offset(clCenterX - clRadius - 30f, centerY + 30f), strokeWidth = 5f)
                     drawLine(Color.White, start = Offset(clCenterX + clRadius, centerY), end = Offset(clCenterX + clRadius + 30f, centerY + 30f), strokeWidth = 5f)
                 }
 
-                // Chlor Körper/Kopf
-                drawCircle(color = Color(0xFF81C784), radius = clRadius, center = Offset(clCenterX, centerY))
-                drawCircle(color = Color(0xFF4CAF50), radius = clRadius + 22f, center = Offset(clCenterX, centerY), style = Stroke(4f))
+                // Atom 2 Körper
+                drawCircle(color = atom2Color, radius = clRadius, center = Offset(clCenterX, centerY))
+                drawCircle(color = Color.White.copy(alpha = 0.5f), radius = clRadius + 22f, center = Offset(clCenterX, centerY), style = Stroke(3f))
 
-                // Chlor Gesicht (Augen & Mund)
+                // Atom 2 Gesicht
                 drawCircle(Color.Black, radius = 8f, center = Offset(clCenterX - 30f, centerY - 25f))
                 drawCircle(Color.Black, radius = 8f, center = Offset(clCenterX + 30f, centerY - 25f))
 
                 val clMouthPath = Path()
                 if (isHappy) {
-                    // Lachender Mund 😄
                     clMouthPath.moveTo(clCenterX - 30f, centerY + 20f)
                     clMouthPath.quadraticTo(clCenterX, centerY + 55f, clCenterX + 30f, centerY + 20f)
                 } else {
-                    // Trauriger Mund 🥺
                     clMouthPath.moveTo(clCenterX - 30f, centerY + 35f)
                     clMouthPath.quadraticTo(clCenterX, centerY + 12f, clCenterX + 30f, centerY + 35f)
                 }
                 drawPath(clMouthPath, Color.Black, style = Stroke(5f))
 
 
-                // --- ELEKTRONENPAARE BEI CHLOR ---
+                // Elektronenpaare bei Atom 2
                 val r = clRadius + 22f
                 val eRadius = 12f
                 val pairColor = Color(0xFF00E5FF)
 
-                // Paar 1: Oben
                 drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 18f, centerY - r))
                 drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 18f, centerY - r))
 
-                // Paar 2: Unten
                 drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - 18f, centerY + r))
                 drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + 18f, centerY + r))
 
-                // Paar 3: Rechts
                 drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY - 18f))
                 drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX + r, centerY + 18f))
 
-                // Einzelnes 7. Elektron bei Chlor (Links, wartet auf Partner)
                 if (electronProgress < 0.9f) {
                     drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY + 18f))
                 } else {
-                    // Sobald da, bilden sie ein volles Paar links!
                     drawCircle(color = pairColor, radius = eRadius, center = Offset(clCenterX - r, centerY - 15f))
                     drawCircle(color = Color(0xFFFFD700), radius = eRadius + 2f, center = Offset(clCenterX - r, centerY + 15f))
                 }
 
-                // --- WANDERNDES AUSSENELEKTRON VON NATRIUM ---
+                // Wanderndes Außenelektron
                 val startX = naCenterX + naRadius + 22f
                 val targetX = clCenterX - r
                 val currentX = startX + (targetX - startX) * electronProgress
@@ -283,13 +346,13 @@ private fun IonicBondGameCanvas(
                 horizontalArrangement = Arrangement.SpaceAround
             ) {
                 Text(
-                    text = if (isDone) "Na⁺ (Überglücklich! 😄)" else "Na (Traurig 🥺 - 1 Elektron zu viel)",
+                    text = if (isDone) "$atom1Symbol (Glücklich 😄)" else "$atom1Name (Traurig 🥺)",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (isDone) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = if (isDone) "Cl⁻ (Überglücklich! 😄)" else "Cl (Traurig 🥺 - sucht 1 Elektron)",
+                    text = if (isDone) "$atom2Symbol (Glücklich 😄)" else "$atom2Name (Traurig 🥺)",
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = if (isDone) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.onSurfaceVariant
@@ -302,7 +365,7 @@ private fun IonicBondGameCanvas(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("⚡ Elektron übertragen & Strichmännchen glücklich machen!", fontWeight = FontWeight.Bold)
+                    Text("⚡ Elektron übertragen & Atome glücklich machen!", fontWeight = FontWeight.Bold)
                 }
             } else {
                 Card(
@@ -311,8 +374,8 @@ private fun IonicBondGameCanvas(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("💡 Chlor hat jetzt 4 volle Elektronenpaare (Edelgaszustand)! 🎉", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        Text("Sowohl Na⁺ als auch Cl⁻ sind jetzt voll besetzt und strahlend glücklich!", style = MaterialTheme.typography.bodySmall)
+                        Text("💡 ${example.title} (${example.formula}):", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                        Text(example.description, style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }
@@ -322,10 +385,11 @@ private fun IonicBondGameCanvas(
 
 @Composable
 private fun CovalentBondGameCanvas(
-    isDone: Boolean,
-    onComplete: () -> Unit
+    example: BondExample,
+    onXpEarned: (Int) -> Unit
 ) {
-    var animateCovalent by remember { mutableStateOf(false) }
+    var isDone by remember(example.id) { mutableStateOf(false) }
+    var animateCovalent by remember(example.id) { mutableStateOf(false) }
 
     val covalentProgress by animateFloatAsState(
         targetValue = if (animateCovalent || isDone) 1.0f else 0.0f,
@@ -333,8 +397,9 @@ private fun CovalentBondGameCanvas(
     )
 
     LaunchedEffect(covalentProgress) {
-        if (covalentProgress == 1.0f && animateCovalent) {
-            onComplete()
+        if (covalentProgress == 1.0f && animateCovalent && !isDone) {
+            isDone = true
+            onXpEarned(15)
         }
     }
 
@@ -349,7 +414,7 @@ private fun CovalentBondGameCanvas(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text(
-                text = if (isDone) "🎉 Wasser-Molekül (H₂O) jubelt!" else "2. Atombindung: Gemeinsame Elektronenpaare",
+                text = if (isDone) "🎉 ${example.title} (${example.formula}) ist entstanden!" else "Atombindung: ${example.title} (${example.formula})",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
@@ -381,14 +446,14 @@ private fun CovalentBondGameCanvas(
                 val oRadius = 85f
                 val hRadius = 55f
 
-                // --- SAUERSTOFF (O) STRICHMÄNNCHEN ---
+                // --- HAUPT ATOM STRICHMÄNNCHEN ---
                 drawLine(Color.White, start = Offset(oCenterX - 25f, oCenterY + oRadius), end = Offset(oCenterX - 50f, oCenterY + oRadius + 50f), strokeWidth = 5f)
                 drawLine(Color.White, start = Offset(oCenterX + 25f, oCenterY + oRadius), end = Offset(oCenterX + 50f, oCenterY + oRadius + 50f), strokeWidth = 5f)
 
-                drawCircle(color = Color(0xFFE57373), radius = oRadius, center = Offset(oCenterX, oCenterY))
-                drawCircle(color = Color(0xFFEF5350), radius = oRadius + 22f, center = Offset(oCenterX, oCenterY), style = Stroke(4f))
+                val mainColor = if (example.id == "ch4") Color(0xFF8D6E63) else Color(0xFFE57373)
+                drawCircle(color = mainColor, radius = oRadius, center = Offset(oCenterX, oCenterY))
+                drawCircle(color = Color.White.copy(alpha = 0.5f), radius = oRadius + 22f, center = Offset(oCenterX, oCenterY), style = Stroke(4f))
 
-                // O Augen & Mund
                 drawCircle(Color.Black, radius = 8f, center = Offset(oCenterX - 30f, oCenterY - 25f))
                 drawCircle(Color.Black, radius = 8f, center = Offset(oCenterX + 30f, oCenterY - 25f))
 
@@ -403,21 +468,13 @@ private fun CovalentBondGameCanvas(
                 drawPath(oMouthPath, Color.Black, style = Stroke(5f))
 
 
-                // Sauerstoff 2 freie Elektronenpaare (oben und unten)
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 18f, oCenterY - (oRadius + 22f)))
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 18f, oCenterY - (oRadius + 22f)))
-
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX - 18f, oCenterY + (oRadius + 22f)))
-                drawCircle(color = Color(0xFF00E5FF), radius = eRadius, center = Offset(oCenterX + 18f, oCenterY + (oRadius + 22f)))
-
-
-                // --- WASSERSTOFF (H1) STRICHMÄNNCHEN ---
+                // --- BINDUNGS PARTNER H1 und H2 ---
                 drawLine(Color.White, start = Offset(h1CurrentX - 15f, oCenterY + hRadius), end = Offset(h1CurrentX - 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
                 drawLine(Color.White, start = Offset(h1CurrentX + 15f, oCenterY + hRadius), end = Offset(h1CurrentX + 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
 
-                drawCircle(color = Color(0xFF64B5F6), radius = hRadius, center = Offset(h1CurrentX, oCenterY))
+                val partnerColor = if (example.id == "o2") Color(0xFFEF5350) else Color(0xFF64B5F6)
+                drawCircle(color = partnerColor, radius = hRadius, center = Offset(h1CurrentX, oCenterY))
 
-                // H1 Gesicht
                 drawCircle(Color.Black, radius = 6f, center = Offset(h1CurrentX - 18f, oCenterY - 15f))
                 drawCircle(Color.Black, radius = 6f, center = Offset(h1CurrentX + 18f, oCenterY - 15f))
 
@@ -432,13 +489,11 @@ private fun CovalentBondGameCanvas(
                 drawPath(h1MouthPath, Color.Black, style = Stroke(4f))
 
 
-                // --- WASSERSTOFF (H2) STRICHMÄNNCHEN ---
                 drawLine(Color.White, start = Offset(h2CurrentX - 15f, oCenterY + hRadius), end = Offset(h2CurrentX - 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
                 drawLine(Color.White, start = Offset(h2CurrentX + 15f, oCenterY + hRadius), end = Offset(h2CurrentX + 30f, oCenterY + hRadius + 45f), strokeWidth = 4f)
 
-                drawCircle(color = Color(0xFF64B5F6), radius = hRadius, center = Offset(h2CurrentX, oCenterY))
+                drawCircle(color = partnerColor, radius = hRadius, center = Offset(h2CurrentX, oCenterY))
 
-                // H2 Gesicht
                 drawCircle(Color.Black, radius = 6f, center = Offset(h2CurrentX - 18f, oCenterY - 15f))
                 drawCircle(Color.Black, radius = 6f, center = Offset(h2CurrentX + 18f, oCenterY - 15f))
 
@@ -469,7 +524,7 @@ private fun CovalentBondGameCanvas(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Text("🤝 H-Atome teilen Elektronenpaare mit O!", fontWeight = FontWeight.Bold)
+                    Text("🤝 Atome zusammenführen & Elektronenpaare teilen!", fontWeight = FontWeight.Bold)
                 }
             } else {
                 Card(
@@ -478,8 +533,8 @@ private fun CovalentBondGameCanvas(
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column(modifier = Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("💡 Erklärung Atombindung (H₂O):", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
-                        Text("Alle 3 Atom-Strichmännchen sind nun glücklich und haben ihre volle Elektronen-Aussenschale erreicht!", style = MaterialTheme.typography.bodySmall)
+                        Text("💡 ${example.title} (${example.formula}):", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                        Text(example.description, style = MaterialTheme.typography.bodySmall)
                     }
                 }
             }

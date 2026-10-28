@@ -107,7 +107,7 @@ fun MathGeometryScreen(
         }
 
         if (selectedShapeMode == 1) {
-            // Zylinder Mode
+            // Zylinder Mode (Großes 280dp Canvas)
             CylinderVisualizerCanvas(radius = radius, height = heightCylinder)
 
             Card(
@@ -167,7 +167,7 @@ fun MathGeometryScreen(
                 }
             }
         } else {
-            // Pyramide Mode
+            // Pyramide Mode (Großes 280dp Canvas)
             PyramidVisualizerCanvas(baseA = baseA, height = heightPyramid)
 
             Card(
@@ -236,7 +236,7 @@ private fun CylinderVisualizerCanvas(radius: Float, height: Float) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
+            .height(280.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B2E))
     ) {
@@ -246,18 +246,21 @@ private fun CylinderVisualizerCanvas(radius: Float, height: Float) {
             val centerX = width / 2f
             val centerY = canvasHeight / 2f
 
-            val rPx = radius * 12f
-            val hPx = height * 10f
+            // Skaliert für größeres Canvas
+            val rPx = (radius * 18f).coerceAtMost(width * 0.42f)
+            val hPx = (height * 14f).coerceAtMost(canvasHeight * 0.7f)
+
+            val ellipseH = (rPx * 0.4f).coerceIn(15f, 40f)
 
             // Zylinder Körper
-            drawOval(Color(0xFFAB47BC), topLeft = Offset(centerX - rPx, centerY - (hPx / 2f) - 15f), size = Size(rPx * 2, 30f))
+            drawOval(Color(0xFFAB47BC), topLeft = Offset(centerX - rPx, centerY - (hPx / 2f) - (ellipseH / 2f)), size = Size(rPx * 2, ellipseH))
             drawRect(Color(0xFFAB47BC).copy(alpha = 0.5f), topLeft = Offset(centerX - rPx, centerY - (hPx / 2f)), size = Size(rPx * 2, hPx))
-            drawOval(Color(0xFFAB47BC), topLeft = Offset(centerX - rPx, centerY + (hPx / 2f) - 15f), size = Size(rPx * 2, 30f))
+            drawOval(Color(0xFFAB47BC), topLeft = Offset(centerX - rPx, centerY + (hPx / 2f) - (ellipseH / 2f)), size = Size(rPx * 2, ellipseH))
 
-            drawOval(Color.White, topLeft = Offset(centerX - rPx, centerY - (hPx / 2f) - 15f), size = Size(rPx * 2, 30f), style = Stroke(2f))
-            drawOval(Color.White, topLeft = Offset(centerX - rPx, centerY + (hPx / 2f) - 15f), size = Size(rPx * 2, 30f), style = Stroke(2f))
-            drawLine(Color.White, start = Offset(centerX - rPx, centerY - (hPx / 2f)), end = Offset(centerX - rPx, centerY + (hPx / 2f)), strokeWidth = 2f)
-            drawLine(Color.White, start = Offset(centerX + rPx, centerY - (hPx / 2f)), end = Offset(centerX + rPx, centerY + (hPx / 2f)), strokeWidth = 2f)
+            drawOval(Color.White, topLeft = Offset(centerX - rPx, centerY - (hPx / 2f) - (ellipseH / 2f)), size = Size(rPx * 2, ellipseH), style = Stroke(3f))
+            drawOval(Color.White, topLeft = Offset(centerX - rPx, centerY + (hPx / 2f) - (ellipseH / 2f)), size = Size(rPx * 2, ellipseH), style = Stroke(3f))
+            drawLine(Color.White, start = Offset(centerX - rPx, centerY - (hPx / 2f)), end = Offset(centerX - rPx, centerY + (hPx / 2f)), strokeWidth = 3f)
+            drawLine(Color.White, start = Offset(centerX + rPx, centerY - (hPx / 2f)), end = Offset(centerX + rPx, centerY + (hPx / 2f)), strokeWidth = 3f)
         }
     }
 }
@@ -267,7 +270,7 @@ private fun PyramidVisualizerCanvas(baseA: Float, height: Float) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
+            .height(280.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1B2E))
     ) {
@@ -277,30 +280,31 @@ private fun PyramidVisualizerCanvas(baseA: Float, height: Float) {
             val centerX = width / 2f
             val centerY = canvasHeight / 2f
 
-            val aPx = baseA * 15f
-            val hPx = height * 10f
+            // Skaliert für größeres Canvas
+            val aPx = (baseA * 20f).coerceAtMost(width * 0.42f)
+            val hPx = (height * 14f).coerceAtMost(canvasHeight * 0.7f)
 
             val apexY = centerY - (hPx / 2f)
             val baseY = centerY + (hPx / 2f)
 
             // Grundfläche Raute (3D Perspektive)
             val p1 = Offset(centerX - aPx, baseY)
-            val p2 = Offset(centerX, baseY + 20f)
+            val p2 = Offset(centerX, baseY + 30f)
             val p3 = Offset(centerX + aPx, baseY)
-            val p4 = Offset(centerX, baseY - 20f)
+            val p4 = Offset(centerX, baseY - 30f)
 
             val apex = Offset(centerX, apexY)
 
             // Pyramiden Kanten
-            drawLine(Color.White, p1, p2, strokeWidth = 2f)
-            drawLine(Color.White, p2, p3, strokeWidth = 2f)
-            drawLine(Color.White, p3, p4, strokeWidth = 2f)
-            drawLine(Color.White, p4, p1, strokeWidth = 2f)
+            drawLine(Color.White, p1, p2, strokeWidth = 3f)
+            drawLine(Color.White, p2, p3, strokeWidth = 3f)
+            drawLine(Color.White, p3, p4, strokeWidth = 3f)
+            drawLine(Color.White, p4, p1, strokeWidth = 3f)
 
-            drawLine(Color(0xFFFFD700), p1, apex, strokeWidth = 3f)
-            drawLine(Color(0xFFFFD700), p2, apex, strokeWidth = 3f)
-            drawLine(Color(0xFFFFD700), p3, apex, strokeWidth = 3f)
-            drawLine(Color(0xFFFFD700), p4, apex, strokeWidth = 3f)
+            drawLine(Color(0xFFFFD700), p1, apex, strokeWidth = 4f)
+            drawLine(Color(0xFFFFD700), p2, apex, strokeWidth = 4f)
+            drawLine(Color(0xFFFFD700), p3, apex, strokeWidth = 4f)
+            drawLine(Color(0xFFFFD700), p4, apex, strokeWidth = 4f)
         }
     }
 }

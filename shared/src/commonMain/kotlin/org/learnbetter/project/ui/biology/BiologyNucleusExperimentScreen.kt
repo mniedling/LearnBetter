@@ -3,6 +3,7 @@ package org.learnbetter.project.ui.biology
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -32,7 +34,7 @@ fun BiologyNucleusExperimentScreen(
     onXpEarned: (Int) -> Unit = {},
     onBackToHub: (() -> Unit)? = null
 ) {
-    var selectedTool by remember { mutableStateOf(LabTool.NONE) }
+    var selectedTool by remember { mutableStateOf(LabTool.SCALPEL) }
 
     // Interaktions-Zustände
     var kernelsExtracted by remember { mutableStateOf(false) } // Step 1: Kerne auf dem Tisch
@@ -77,7 +79,7 @@ fun BiologyNucleusExperimentScreen(
         )
 
         Text(
-            text = if (showExplorerOnly) "Erforsche Kernporen, Chromatin (DNA) und Nucleolus im Zellkern!" else "Führe das Experiment durch! Teste auch, welcher Hut nachwächst, wenn du Kern A wiedereinsetzt!",
+            text = if (showExplorerOnly) "Erforsche Kernporen, Chromatin (DNA) und Nucleolus im Zellkern!" else "Tippe auf das Skalpell ✂️ oder die Pinzette 🤏 oder nutze die Aktionsbuttons unten!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -107,19 +109,15 @@ fun BiologyNucleusExperimentScreen(
                             heldKernel = heldKernel,
                             insertedKernel = insertedKernel,
                             capGrownType = capGrownType,
-                            onCanvasClicked = { clickPart ->
-                                if (selectedTool == LabTool.SCALPEL) {
-                                    if (!kernelsExtracted && clickPart == "foot") kernelsExtracted = true
-                                    else if (kernelsExtracted && !capCutOff && clickPart == "capA") capCutOff = true
-                                } else if (selectedTool == LabTool.TWEEZER) {
-                                    if (capCutOff && insertedKernel == null) {
-                                        if (heldKernel == null) {
-                                            if (clickPart == "kernelA") heldKernel = "A"
-                                            else if (clickPart == "kernelB") heldKernel = "B"
-                                        } else if (clickPart == "footA" || clickPart == "foot") {
-                                            insertedKernel = heldKernel
-                                            heldKernel = null
-                                        }
+                            onTargetTapped = { target ->
+                                when (target) {
+                                    "foot" -> if (selectedTool == LabTool.SCALPEL && !kernelsExtracted) kernelsExtracted = true
+                                    "capA" -> if (selectedTool == LabTool.SCALPEL && kernelsExtracted && !capCutOff) capCutOff = true
+                                    "kernelA" -> if (selectedTool == LabTool.TWEEZER && capCutOff && insertedKernel == null) heldKernel = "A"
+                                    "kernelB" -> if (selectedTool == LabTool.TWEEZER && capCutOff && insertedKernel == null) heldKernel = "B"
+                                    "footA" -> if (selectedTool == LabTool.TWEEZER && heldKernel != null) {
+                                        insertedKernel = heldKernel
+                                        heldKernel = null
                                     }
                                 }
                             }
@@ -165,7 +163,66 @@ fun BiologyNucleusExperimentScreen(
                 }
             }
 
-            // Anleitung & Status
+            // Komfort-Aktionsbuttons
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                if (!kernelsExtracted) {
+                    Button(
+                        onClick = {
+                            selectedTool = LabTool.SCALPEL
+                            kernelsExtracted = true
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("✂️ 1. Skalpell: Beide Zellkerne entnehmen", fontWeight = FontWeight.Bold)
+                    }
+                } else if (!capCutOff) {
+                    Button(
+                        onClick = {
+                            selectedTool = LabTool.SCALPEL
+                            capCutOff = true
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("✂️ 2. Skalpell: Schirmhut A abtrennen", fontWeight = FontWeight.Bold)
+                    }
+                } else if (insertedKernel == null) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                selectedTool = LabTool.TWEEZER
+                                heldKernel = "A"
+                                insertedKernel = "A"
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8B5CF6))
+                        ) {
+                            Text("🤏 Kern A einsetzen", fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                        }
+
+                        Button(
+                            onClick = {
+                                selectedTool = LabTool.TWEEZER
+                                heldKernel = "B"
+                                insertedKernel = "B"
+                            },
+                            modifier = Modifier.weight(1f),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF59E0B))
+                        ) {
+                            Text("🤏 Kern B verpflanzen", fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                        }
+                    }
+                }
+            }
+
+            // Anleitung / Status Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -174,10 +231,10 @@ fun BiologyNucleusExperimentScreen(
                 Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         text = when {
-                            !kernelsExtracted -> "1️⃣ Wähle das Skalpell ✂️ und klicke auf die Füße, um die Zellkerne zu entnehmen!"
-                            !capCutOff -> "2️⃣ Klicke mit dem Skalpell ✂️ oben auf Hut A, um ihn abzutrennen!"
-                            heldKernel != null -> "🤏 Kern $heldKernel in der Pinzette! Klicke jetzt auf den Fuß von Alge A, um ihn einzusetzen!"
-                            insertedKernel == null -> "3️⃣ Wähle die Pinzette 🤏 und klicke auf Kern A (Lila) oder Kern B (Gelb) auf dem Tisch!"
+                            !kernelsExtracted -> "1️⃣ Wähle das Skalpell ✂️ und klicke auf die Füße oder den Button oben!"
+                            !capCutOff -> "2️⃣ Klicke oben auf Hut A oder nutze den Button, um ihn abzutrennen!"
+                            heldKernel != null -> "🤏 Kern $heldKernel in der Pinzette! Klicke jetzt auf den Fuß von Alge A!"
+                            insertedKernel == null -> "3️⃣ Wähle Kern A (Lila) oder Kern B (Gelb) zum Einsetzen!"
                             capGrownType == null -> "🌱 Zellkern $insertedKernel arbeitet im Fuß... Neuer Hut wächst heran..."
                             capGrownType == "B" -> "🎉 ERFOLG! Mit Kern B ist ein neuer Strahlenhut B nachgewachsen! (+25 XP)"
                             else -> "🎉 KONTROLL-EXPERIMENT: Mit dem eigenen Kern A wächst wieder der alte Schirmhut A nach! (+25 XP)"
@@ -190,7 +247,7 @@ fun BiologyNucleusExperimentScreen(
                     if (capGrownType != null) {
                         Button(
                             onClick = {
-                                selectedTool = LabTool.NONE
+                                selectedTool = LabTool.SCALPEL
                                 kernelsExtracted = false
                                 capCutOff = false
                                 heldKernel = null
@@ -276,14 +333,39 @@ private fun InteractiveHutalgenCanvas(
     heldKernel: String?,
     insertedKernel: String?,
     capGrownType: String?,
-    onCanvasClicked: (String) -> Unit
+    onTargetTapped: (String) -> Unit
 ) {
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .clickable {
-                // Generische Klick-Auswertung
-                onCanvasClicked("foot")
+            .pointerInput(Unit) {
+                detectTapGestures { offset ->
+                    val x = offset.x
+                    val y = offset.y
+                    val w = size.width.toFloat()
+                    val h = size.height.toFloat()
+
+                    val algeAX = w * 0.32f
+                    val algeBX = w * 0.68f
+                    val footY = h * 0.72f
+                    val capY = h * 0.22f
+                    val tableY = h * 0.88f
+
+                    when {
+                        // Klick auf Hut A (oben)
+                        y < capY + 40f && kotlin.math.abs(x - algeAX) < 60f -> onTargetTapped("capA")
+                        // Klick auf Fuesse (unten)
+                        y in (footY - 40f)..(footY + 40f) -> {
+                            if (kotlin.math.abs(x - algeAX) < 50f) onTargetTapped("footA")
+                            else onTargetTapped("foot")
+                        }
+                        // Klick auf Kern A auf dem Tisch
+                        y > tableY - 40f && kotlin.math.abs(x - (algeAX - 45f)) < 40f -> onTargetTapped("kernelA")
+                        // Klick auf Kern B auf dem Tisch
+                        y > tableY - 40f && kotlin.math.abs(x - (algeBX + 45f)) < 40f -> onTargetTapped("kernelB")
+                        else -> onTargetTapped("foot")
+                    }
+                }
             }
             .padding(12.dp)
     ) {
@@ -298,22 +380,19 @@ private fun InteractiveHutalgenCanvas(
 
         drawLine(Color.Gray.copy(alpha = 0.5f), start = Offset(10f, tableY), end = Offset(width - 10f, tableY), strokeWidth = 4f)
 
-        // --- HUTALGE A ---
+        // Hutalge A
         drawCircle(Color(0xFF22C55E), radius = 24f, center = Offset(algeAX, footY))
         drawLine(Color(0xFF4ADE80), start = Offset(algeAX, footY - 18f), end = Offset(algeAX, capY), strokeWidth = 7f)
 
-        // Kern im Fuß A (Anfang)
         if (!kernelsExtracted) {
             drawCircle(Color(0xFF8B5CF6), radius = 11f, center = Offset(algeAX, footY))
         }
 
-        // Kern in Fuß A eingesetzt
         if (insertedKernel != null) {
             val color = if (insertedKernel == "B") Color(0xFFF59E0B) else Color(0xFF8B5CF6)
             drawCircle(color, radius = 13f, center = Offset(algeAX, footY))
         }
 
-        // Hut A (Schirm)
         if (!capCutOff) {
             drawArc(
                 color = Color(0xFF10B981),
@@ -325,7 +404,6 @@ private fun InteractiveHutalgenCanvas(
             )
         }
 
-        // Nachgewachsener Hut A oder B
         if (capGrownType == "B") {
             drawStarCap(algeAX, capY)
         } else if (capGrownType == "A") {
@@ -339,7 +417,7 @@ private fun InteractiveHutalgenCanvas(
             )
         }
 
-        // --- HUTALGE B ---
+        // Hutalge B
         drawCircle(Color(0xFF22C55E), radius = 24f, center = Offset(algeBX, footY))
         drawLine(Color(0xFF4ADE80), start = Offset(algeBX, footY - 18f), end = Offset(algeBX, capY), strokeWidth = 7f)
 
@@ -349,23 +427,21 @@ private fun InteractiveHutalgenCanvas(
 
         drawStarCap(algeBX, capY)
 
-        // --- KERNE AUF DEM TISCH ---
+        // Kerne auf dem Tisch
         val kernAX = algeAX - 45f
         val kernBX = algeBX + 45f
 
         if (kernelsExtracted) {
-            // Kern A (Lila) auf dem Tisch, falls nicht gehalten oder eingesetzt
             if (heldKernel != "A" && insertedKernel != "A") {
                 drawCircle(Color(0xFF8B5CF6), radius = 13f, center = Offset(kernAX, tableY - 14f))
             }
 
-            // Kern B (Gelb) auf dem Tisch, falls nicht gehalten oder eingesetzt
             if (heldKernel != "B" && insertedKernel != "B") {
                 drawCircle(Color(0xFFF59E0B), radius = 14f, center = Offset(kernBX, tableY - 14f))
             }
         }
 
-        // --- GEHALTENER KERN IN DER PINZETTE ---
+        // Gehaltener Kern
         if (heldKernel != null) {
             val heldColor = if (heldKernel == "B") Color(0xFFF59E0B) else Color(0xFF8B5CF6)
             val tweezerX = width * 0.5f

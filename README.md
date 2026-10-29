@@ -8,15 +8,19 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 
 ## 📚 Fächerübersicht & Werkstätten
 
-### 🧬 1. Biologie (Erweitert!)
+### 🧬 1. Biologie
 - **🔬 Virtuelles Mikroskop:**
   - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
   - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
-- **🧩 Zell-Puzzle & Turgor-Experiment (NEU!):**
+- **🧩 Zell-Puzzle & Turgor-Experiment:**
   - **Pflanzenzelle vs. Tierzelle:** Baue die Zelle zusammen! Verdeutlicht, dass Tierzellen keine Zellwand und keine Chloroplasten haben.
   - **Turgor-Experiment (Luftballon im Holzrahmen):** Wasser in die Vakuole pumpen 🎈. Zeigt, wie der Innendruck (Turgor) gegen die starre Zellwand (Holzrahmen 🪵) drückt und die Pflanze stramm aufrecht hält!
-- **🧪 Hutalgen-Transplantation & 3D-Zellkern Explorer (NEU!):**
-  - **Hämmerling-Experiment:** Kappe den Hut von Hutalge A und verpflanze den Zellkern von Hutalge B in den Fuß $\rightarrow$ Der nachwachsende Hut bekommt die Form von Hutalge B!
+- **✂️ Interaktives Hutalgen-Labor (Hämmerling-Experiment) mit Werkzeugleiste:**
+  - **Rechte Werkzeugleiste:** Wähle Skalpell ✂️ und Pinzette 🤏 per Touch aus!
+  - **Schritt 1:** Mit dem Skalpell ✂️ die Zellkerne im Fuß kappen $\rightarrow$ Die Kerne liegen sichtbar auf dem Labortisch!
+  - **Schritt 2:** Mit dem Skalpell ✂️ den Schirmhut A abtrennen.
+  - **Schritt 3:** Mit der Pinzette 🤏 den gelben Kern B vom Tisch aufnehmen und in Fuß A verpflanzen!
+  - **Schritt 4:** Der neue Strahlenhut B wächst schrittweise nach (**+25 XP**)!
   - **3D-Zellkern Explorer:** Interaktive Erforschung von Kernporen (mRNA-Transport), Chromatin (DNA-Stränge) und Nucleolus (Kernkörperchen).
 
 ### 🧪 2. Chemie

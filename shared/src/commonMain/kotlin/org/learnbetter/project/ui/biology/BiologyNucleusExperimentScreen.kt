@@ -16,8 +16,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -305,6 +303,7 @@ private fun InteractiveHutalgenCanvas(
             drawCircle(Color(0xFFF59E0B), radius = 13f, center = Offset(algeAX, footY))
         }
 
+        // Hut A (Schirmhut) - falls noch nicht abgeschnitten
         if (!capCutOff) {
             drawArc(
                 color = Color(0xFF10B981),
@@ -316,9 +315,11 @@ private fun InteractiveHutalgenCanvas(
             )
         }
 
+        // Neuer nachgewachsener Strahlenhut B bei Step 4!
         if (capGrown) {
-            drawStarCap(algeAX, capY - 10f)
+            drawStarCap(algeAX, capY)
         }
+
 
         // Hutalge B
         drawCircle(Color(0xFF22C55E), radius = 24f, center = Offset(algeBX, footY))
@@ -328,7 +329,8 @@ private fun InteractiveHutalgenCanvas(
             drawCircle(Color(0xFFF59E0B), radius = 11f, center = Offset(algeBX, footY))
         }
 
-        drawStarCap(algeBX, capY - 10f)
+        // Hut B (Strahlenhut - identisch groß wie Hut A!)
+        drawStarCap(algeBX, capY)
 
         if (kernelsExtracted && !kernelTransplanted) {
             drawCircle(Color(0xFF8B5CF6), radius = 12f, center = Offset(algeAX - 40f, tableY - 12f))
@@ -337,19 +339,30 @@ private fun InteractiveHutalgenCanvas(
     }
 }
 
+// Zeichnet den charakteristischen gelben Strahlenhut B in der vollen Kuppel- & Strahlenform
 private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawStarCap(centerX: Float, centerY: Float) {
     val rayColor = Color(0xFFF59E0B)
-    drawCircle(rayColor, radius = 16f, center = Offset(centerX, centerY))
 
-    val rays = 8
-    val rInner = 16f
-    val rOuter = 32f
-    for (i in 0 until rays) {
-        val angle = (i * 360f / rays) * (3.14159f / 180f)
+    // Halbkugel-Kuppel
+    drawArc(
+        color = rayColor,
+        startAngle = 180f,
+        sweepAngle = 180f,
+        useCenter = true,
+        topLeft = Offset(centerX - 36f, centerY - 28f),
+        size = Size(72f, 36f)
+    )
+
+    // Strahlenkranz nach oben/außen
+    val rays = 10
+    val rInner = 32f
+    val rOuter = 46f
+    for (i in 0..rays) {
+        val angle = (180f + (i * 180f / rays)) * (3.14159f / 180f)
         val x1 = centerX + rInner * kotlin.math.cos(angle)
-        val y1 = centerY + rInner * kotlin.math.sin(angle)
+        val y1 = centerY - 10f + rInner * kotlin.math.sin(angle)
         val x2 = centerX + rOuter * kotlin.math.cos(angle)
-        val y2 = centerY + rOuter * kotlin.math.sin(angle)
+        val y2 = centerY - 10f + rOuter * kotlin.math.sin(angle)
         drawLine(rayColor, start = Offset(x1, y1), end = Offset(x2, y2), strokeWidth = 5f)
     }
 }

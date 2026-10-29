@@ -8,11 +8,16 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 
 ## 📚 Fächerübersicht & Werkstätten
 
-### ⚙️ 1. Physik (NEU!)
-- **Hookesches Gesetz & Federdehnungs-Werkstatt ($F = D \cdot \Delta s$):**
-  - **Spiralfeder-Simulator:** Hänge Gewichte ($0\,\text{N}$ bis $10\,\text{N}$) an die Feder und stelle die Federkonstante $D$ ein.
-  - **Elastische Dehnung:** Visualisiert die proportionale Verlängerung $\Delta s$ in cm.
-  - **Physik-Quiz:** Fragen zur Federkraft $F$, Federhärte $D$ und Hookeschem Gesetz.
+### 🧬 1. Biologie (Erweitert!)
+- **🔬 Virtuelles Mikroskop:**
+  - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
+  - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
+- **🧩 Zell-Puzzle & Turgor-Experiment (NEU!):**
+  - **Pflanzenzelle vs. Tierzelle:** Baue die Zelle zusammen! Verdeutlicht, dass Tierzellen keine Zellwand und keine Chloroplasten haben.
+  - **Turgor-Experiment (Luftballon im Holzrahmen):** Wasser in die Vakuole pumpen 🎈. Zeigt, wie der Innendruck (Turgor) gegen die starre Zellwand (Holzrahmen 🪵) drückt und die Pflanze stramm aufrecht hält!
+- **🧪 Hutalgen-Transplantation & 3D-Zellkern Explorer (NEU!):**
+  - **Hämmerling-Experiment:** Kappe den Hut von Hutalge A und verpflanze den Zellkern von Hutalge B in den Fuß $\rightarrow$ Der nachwachsende Hut bekommt die Form von Hutalge B!
+  - **3D-Zellkern Explorer:** Interaktive Erforschung von Kernporen (mRNA-Transport), Chromatin (DNA-Stränge) und Nucleolus (Kernkörperchen).
 
 ### 🧪 2. Chemie
 - **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**
@@ -35,17 +40,17 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 - **Magnesiumband entzünden:**
   - Verbrennung über der Bunsenbrennerflamme unter gleißendem Licht zu Magnesiumoxid ($2\,Mg + O_2 \rightarrow 2\,MgO$).
 
-### 📐 3. Mathematik (Erweitert!)
+### ⚙️ 3. Physik
+- **Hookesches Gesetz & Federdehnungs-Werkstatt ($F = D \cdot \Delta s$):**
+  - **Spiralfeder-Simulator:** Hänge Gewichte ($0\,\text{N}$ bis $10\,\text{N}$) an die Feder und stelle die Federkonstante $D$ ein.
+  - **Elastische Dehnung:** Visualisiert die proportionale Verlängerung $\Delta s$ in cm.
+
+### 📐 4. Mathematik
 - **Interaktiver Parabel-Plotter:**
   - Untersuchung quadratischer Funktionen $f(x) = a \cdot x^2 + c$.
-- **3D-Geometrie & Oberflächenrechner (NEU!):**
+- **3D-Geometrie & Oberflächenrechner:**
   - **Zylinder Oberflächenberechnung:** Grundfläche $G = \pi r^2$, Mantelfläche $M = 2\pi r h$, Oberfläche $O = 2G + M$, Volumen $V$.
   - **Quadratische Pyramide Oberflächenberechnung:** Grundfläche $G = a^2$, Seitenhöhe $h_s = \sqrt{h^2 + (a/2)^2}$, Mantelfläche $M = 2 a h_s$, Oberfläche $O = G + M$, Volumen $V = \frac{1}{3} a^2 h$.
-
-### 🧬 4. Biologie
-- **Virtuelles Mikroskop:**
-  - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
-  - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
 
 ### 🌍 5. Gesellschaftslehre (GL)
 - **Historische Zeitleiste & Grundgesetz-Explorer:**

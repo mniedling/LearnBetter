@@ -4,9 +4,9 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -80,7 +80,7 @@ fun AcidIonsTrainerScreen(
                 )
             ) {
                 Text(
-                    text = "📖 Übersichtstabelle",
+                    text = "📊 Interaktive Tabelle",
                     color = if (!isTrainerMode) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Bold
                 )
@@ -90,8 +90,227 @@ fun AcidIonsTrainerScreen(
         if (isTrainerMode) {
             LabFlaskDissoziationGame(onXpEarned = onXpEarned)
         } else {
-            AcidIonsReferenceTable()
+            InteractiveAcidTableGame(onXpEarned = onXpEarned)
         }
+    }
+}
+
+@Composable
+private fun InteractiveAcidTableGame(onXpEarned: (Int) -> Unit) {
+    val acids = Acid.entries
+
+    // Zuordnungs-Zustände pro Säure (id -> gewählte Werte)
+    var selectedFormulas by remember { mutableStateOf(acids.associate { it.name to it.formula }) }
+    var selectedIonFormulas by remember { mutableStateOf(acids.associate { it.name to it.ionFormula }) }
+    var selectedIonNames by remember { mutableStateOf(acids.associate { it.name to it.ionName }) }
+
+    var activeDialogTarget by remember { mutableStateOf<Pair<Acid, String>?>(null) } // Pair(Acid, "formula" | "ionFormula" | "ionName")
+    var isShuffleMode by remember { mutableStateOf(false) }
+
+    val allFormulasCorrect = acids.all { selectedFormulas[it.name] == it.formula }
+    val allIonFormulasCorrect = acids.all { selectedIonFormulas[it.name] == it.ionFormula }
+    val allIonNamesCorrect = acids.all { selectedIonNames[it.name] == it.ionName }
+    val isTableComplete = allFormulasCorrect && allIonFormulasCorrect && allIonNamesCorrect
+
+    LaunchedEffect(isTableComplete) {
+        if (isTableComplete && isShuffleMode) {
+            onXpEarned(30)
+        }
+    }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Interaktive Säuren-Tabelle:",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            Button(
+                onClick = {
+                    isShuffleMode = true
+                    val shuffledFormulas = acids.map { it.formula }.shuffled()
+                    val shuffledIonFormulas = acids.map { it.ionFormula }.shuffled()
+                    val shuffledIonNames = acids.map { it.ionName }.shuffled()
+
+                    selectedFormulas = acids.indices.associate { acids[it].name to shuffledFormulas[it] }
+                    selectedIonFormulas = acids.indices.associate { acids[it].name to shuffledIonFormulas[it] }
+                    selectedIonNames = acids.indices.associate { acids[it].name to shuffledIonNames[it] }
+                },
+                shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+            ) {
+                Text("🔀 Tabelle mischen & üben!", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onTertiaryContainer, fontSize = 11.sp)
+            }
+        }
+
+        Text(
+            text = "Grüne Schrift = Richtig zugeordnet! Rote Schrift = Falsch (tippe auf das rote Feld zum Ändern).",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        // Tabelle mit 7 Zeilen
+        acids.forEach { acid ->
+            val currentFormula = selectedFormulas[acid.name] ?: ""
+            val currentIonFormula = selectedIonFormulas[acid.name] ?: ""
+            val currentIonName = selectedIonNames[acid.name] ?: ""
+
+            val isFormulaOk = currentFormula == acid.formula
+            val isIonFormulaOk = currentIonFormula == acid.ionFormula
+            val isIonNameOk = currentIonName == acid.ionName
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = acid.displayName,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = Subject.CHEMISTRY.primaryColor
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        // Feld 1: Säureformel
+                        Surface(
+                            modifier = Modifier
+                                .border(
+                                    width = 1.5.dp,
+                                    color = if (isFormulaOk) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.error,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .clickable { activeDialogTarget = Pair(acid, "formula") },
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (isFormulaOk) ChemistryColors.NeutralGreen.copy(alpha = 0.12f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+                        ) {
+                            Text(
+                                text = if (isFormulaOk) "Formel: $currentFormula ✓" else "Formel: $currentFormula ✗",
+                                fontWeight = FontWeight.Bold,
+                                color = if (isFormulaOk) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                                fontSize = 11.sp
+                            )
+                        }
+
+                        // Feld 2: Ion Formel
+                        Surface(
+                            modifier = Modifier
+                                .border(
+                                    width = 1.5.dp,
+                                    color = if (isIonFormulaOk) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.error,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .clickable { activeDialogTarget = Pair(acid, "ionFormula") },
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (isIonFormulaOk) ChemistryColors.NeutralGreen.copy(alpha = 0.12f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+                        ) {
+                            Text(
+                                text = if (isIonFormulaOk) "Ion: $currentIonFormula ✓" else "Ion: $currentIonFormula ✗",
+                                fontWeight = FontWeight.Bold,
+                                color = if (isIonFormulaOk) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                                fontSize = 11.sp
+                            )
+                        }
+
+                        // Feld 3: Ion Name
+                        Surface(
+                            modifier = Modifier
+                                .border(
+                                    width = 1.5.dp,
+                                    color = if (isIonNameOk) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.error,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
+                                .clickable { activeDialogTarget = Pair(acid, "ionName") },
+                            shape = RoundedCornerShape(8.dp),
+                            color = if (isIonNameOk) ChemistryColors.NeutralGreen.copy(alpha = 0.12f) else MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
+                        ) {
+                            Text(
+                                text = if (isIonNameOk) "Name: $currentIonName ✓" else "Name: $currentIonName ✗",
+                                fontWeight = FontWeight.Bold,
+                                color = if (isIonNameOk) ChemistryColors.NeutralGreen else MaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
+                                fontSize = 11.sp
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        if (isTableComplete && isShuffleMode) {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+            ) {
+                Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("🎉 PERFEKT! Alle 7 Säuren & Ionen leuchten grün! (+30 XP)", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer, textAlign = TextAlign.Center)
+                }
+            }
+        }
+    }
+
+    // Dialog zur Auswahl des Bausteins beim Tippen auf ein rotes Feld
+    if (activeDialogTarget != null) {
+        val (targetAcid, fieldType) = activeDialogTarget!!
+        val optionsList = when (fieldType) {
+            "formula" -> acids.map { it.formula }
+            "ionFormula" -> acids.map { it.ionFormula }
+            else -> acids.map { it.ionName }
+        }
+
+        AlertDialog(
+            onDismissRequest = { activeDialogTarget = null },
+            title = {
+                Text("Baustein für ${targetAcid.displayName} wählen:", fontWeight = FontWeight.Bold)
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    optionsList.forEach { option ->
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    when (fieldType) {
+                                        "formula" -> selectedFormulas = selectedFormulas + (targetAcid.name to option)
+                                        "ionFormula" -> selectedIonFormulas = selectedIonFormulas + (targetAcid.name to option)
+                                        else -> selectedIonNames = selectedIonNames + (targetAcid.name to option)
+                                    }
+                                    activeDialogTarget = null
+                                },
+                            shape = RoundedCornerShape(10.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant
+                        ) {
+                            Text(option, fontWeight = FontWeight.Bold, modifier = Modifier.padding(12.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { activeDialogTarget = null }) {
+                    Text("Abbrechen")
+                }
+            }
+        )
     }
 }
 
@@ -132,7 +351,6 @@ private fun LabFlaskDissoziationGame(onXpEarned: (Int) -> Unit) {
                 fontWeight = FontWeight.Bold
             )
 
-            // Erlenmeyerkolben Visualizer
             FlaskVisualizer(
                 acid = currentAcid,
                 hasFormula = isFormulaCorrect,
@@ -140,7 +358,6 @@ private fun LabFlaskDissoziationGame(onXpEarned: (Int) -> Unit) {
                 hasIon = isIonCorrect
             )
 
-            // Phase 1: Säureformel zuordnen
             if (!isFormulaCorrect) {
                 Text("1. Wähle die richtige Formel für ${currentAcid.displayName}:", style = MaterialTheme.typography.bodyMedium)
                 Row(
@@ -166,7 +383,6 @@ private fun LabFlaskDissoziationGame(onXpEarned: (Int) -> Unit) {
                     }
                 }
             } else if (!waterAdded) {
-                // Phase 2: Wasser dazugießen
                 Text("2. Gieße Wasser (H₂O) in den Kolben zur Dissoziation!", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                 Button(
                     onClick = { waterAdded = true },
@@ -176,7 +392,6 @@ private fun LabFlaskDissoziationGame(onXpEarned: (Int) -> Unit) {
                     Text("💧 Wasser dazugießen (Dissoziieren)", fontWeight = FontWeight.Bold, color = Color.Black)
                 }
             } else if (!isIonCorrect) {
-                // Phase 3: Säurerest-Ion zuordnen
                 Text("3. Welches Säurerest-Ion (${currentAcid.ionFormula}) ist im Wasser entstanden?", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.Bold)
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     ionOptions.forEach { ionName ->
@@ -202,7 +417,6 @@ private fun LabFlaskDissoziationGame(onXpEarned: (Int) -> Unit) {
                     }
                 }
             } else {
-                // Phase 4: Erfolg
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
@@ -258,7 +472,6 @@ private fun FlaskVisualizer(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            // Kolben Kontur
             Box(
                 modifier = Modifier
                     .width(100.dp)
@@ -272,93 +485,6 @@ private fun FlaskVisualizer(
                     if (hasFormula) Text(acid.formula, fontWeight = FontWeight.Bold, color = Color.White, fontSize = 18.sp)
                     if (hasWater) Text("+ H₂O 💧", fontSize = 12.sp, color = Color.LightGray)
                     if (hasIon) Text("${acid.ionFormula}\n(${acid.ionName})", fontWeight = FontWeight.Bold, color = Color.Yellow, fontSize = 12.sp, textAlign = TextAlign.Center)
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun AcidIonsReferenceTable() {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        Text(
-            text = "Die 7 wichtigsten Säuren & Säurerest-Ionen:",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Acid.entries.forEach { acid ->
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = acid.displayName,
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = Subject.CHEMISTRY.primaryColor
-                        )
-
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.primaryContainer
-                        ) {
-                            Text(
-                                text = "Formel: ${acid.formula}",
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                            )
-                        }
-                    }
-
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Column {
-                            Text(
-                                text = "Säurerest-Ion Name:",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                            Text(
-                                text = acid.ionName,
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-
-                        Surface(
-                            shape = RoundedCornerShape(8.dp),
-                            color = MaterialTheme.colorScheme.tertiaryContainer
-                        ) {
-                            Text(
-                                text = "Ion: ${acid.ionFormula}",
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onTertiaryContainer,
-                                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
-                            )
-                        }
-                    }
                 }
             }
         }

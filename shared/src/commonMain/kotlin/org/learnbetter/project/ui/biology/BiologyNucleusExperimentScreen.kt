@@ -1,9 +1,9 @@
 package org.learnbetter.project.ui.biology
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -16,8 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -34,18 +36,17 @@ fun BiologyNucleusExperimentScreen(
     onXpEarned: (Int) -> Unit = {},
     onBackToHub: (() -> Unit)? = null
 ) {
-    var selectedTool by remember { mutableStateOf(LabTool.SCALPEL) }
+    var selectedTool by remember { mutableStateOf(LabTool.NONE) }
 
-    // Interaktions-Zustände
-    var kernelsExtracted by remember { mutableStateOf(false) } // Step 1: Kerne auf dem Tisch
-    var capCutOff by remember { mutableStateOf(false) }         // Step 2: Hut A abgetrennt
-    var heldKernel by remember { mutableStateOf<String?>(null) }// "A" oder "B" in der Pinzette
-    var insertedKernel by remember { mutableStateOf<String?>(null) } // "A" oder "B" in Fuß A
-    var capGrownType by remember { mutableStateOf<String?>(null) }   // "A" (Schirm) oder "B" (Strahlen)
+    // Interaktions-Zustände Hutalge
+    var kernelsExtracted by remember { mutableStateOf(false) }
+    var capCutOff by remember { mutableStateOf(false) }
+    var heldKernel by remember { mutableStateOf<String?>(null) }
+    var insertedKernel by remember { mutableStateOf<String?>(null) }
+    var capGrownType by remember { mutableStateOf<String?>(null) }
 
-    var selectedNucleusPart by remember { mutableStateOf<String?>(null) }
+    var selectedNucleusPart by remember { mutableStateOf("poren") }
 
-    // Wuchs Animation sobald Kern eingesetzt
     LaunchedEffect(insertedKernel) {
         if (insertedKernel != null && capGrownType == null) {
             kotlinx.coroutines.delay(1500)
@@ -79,7 +80,7 @@ fun BiologyNucleusExperimentScreen(
         )
 
         Text(
-            text = if (showExplorerOnly) "Erforsche Kernporen, Chromatin (DNA) und Nucleolus im Zellkern!" else "Tippe auf das Skalpell ✂️ oder die Pinzette 🤏 oder nutze die Aktionsbuttons unten!",
+            text = if (showExplorerOnly) "Beobachte den animierten Stoffaustausch durch die 3D-Kernporen und schwebenden DNA-Fäden!" else "Tippe auf das Skalpell ✂️ oder die Pinzette 🤏 oder nutze die Aktionsbuttons unten!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -221,50 +222,13 @@ fun BiologyNucleusExperimentScreen(
                     }
                 }
             }
-
-            // Anleitung / Status Card
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-            ) {
-                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Text(
-                        text = when {
-                            !kernelsExtracted -> "1️⃣ Wähle das Skalpell ✂️ und klicke auf die Füße oder den Button oben!"
-                            !capCutOff -> "2️⃣ Klicke oben auf Hut A oder nutze den Button, um ihn abzutrennen!"
-                            heldKernel != null -> "🤏 Kern $heldKernel in der Pinzette! Klicke jetzt auf den Fuß von Alge A!"
-                            insertedKernel == null -> "3️⃣ Wähle Kern A (Lila) oder Kern B (Gelb) zum Einsetzen!"
-                            capGrownType == null -> "🌱 Zellkern $insertedKernel arbeitet im Fuß... Neuer Hut wächst heran..."
-                            capGrownType == "B" -> "🎉 ERFOLG! Mit Kern B ist ein neuer Strahlenhut B nachgewachsen! (+25 XP)"
-                            else -> "🎉 KONTROLL-EXPERIMENT: Mit dem eigenen Kern A wächst wieder der alte Schirmhut A nach! (+25 XP)"
-                        },
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Subject.BIOLOGY.primaryColor
-                    )
-
-                    if (capGrownType != null) {
-                        Button(
-                            onClick = {
-                                selectedTool = LabTool.SCALPEL
-                                kernelsExtracted = false
-                                capCutOff = false
-                                heldKernel = null
-                                insertedKernel = null
-                                capGrownType = null
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = ButtonDefaults.buttonColors(containerColor = Subject.BIOLOGY.primaryColor)
-                        ) {
-                            Text("🔄 Experiment nochmal versuchen (Anderen Kern testen)")
-                        }
-                    }
-                }
-            }
         }
 
         if (showExplorerOnly) {
+            // 3D-Zellkern Canvas Animation
+            Animated3DNucleusCanvas(selectedPart = selectedNucleusPart)
+
+            // 3D-Zellkern Detail Explorer Tabs
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
@@ -274,7 +238,7 @@ fun BiologyNucleusExperimentScreen(
                     modifier = Modifier.padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Text("🟣 Zellkern Detailansicht (Explorer):", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    Text("🟣 3D-Zellkern Bestandteile tippen:", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer)
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -311,16 +275,107 @@ fun BiologyNucleusExperimentScreen(
                         }
                     }
 
-                    if (selectedNucleusPart != null) {
-                        val desc = when (selectedNucleusPart) {
-                            "poren" -> "Kernporen sind Mikrotunnel in der doppelten Kernhülle. Sie steuern den gezielten Stoffaustausch von RNA und Proteinen zwischen Zellkern und Zellplasma!"
-                            "chromatin" -> "Chromatin besteht aus fädigen DNA-Strängen und Eiweißen. Hier sind alle Erbinformationen (Gene) der Zelle gespeichert!"
-                            else -> "Der Nucleolus (Kernkörperchen) ist ein rundliches Gebilde im Zentrum des Zellkerns. Er baut die Bausteine für die Ribosomen auf!"
-                        }
-                        Text(desc, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
+                    val desc = when (selectedNucleusPart) {
+                        "poren" -> "🕳️ Kernporen (Porenkomplexe): Bieten Tunnel-Durchlässe in der doppelten Kernhülle. Siehst du die gelben mRNA-Partikel nach außen ins Zytoplasma wandern?"
+                        "chromatin" -> "🧬 Chromatin (DNA-Stränge): Fädige Netzwerke im Kerninneren. Hier lagern alle Erbinformationen (Gene) der Pflanzen- und Tierzelle!"
+                        else -> "🟡 Nucleolus (Kernkörperchen): Die runde Steuer-Kugel im Zentrum. Hier werden die Bausteine für die Protein-Fabriken (Ribosomen) hergestellt!"
                     }
+                    Text(desc, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onPrimaryContainer)
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun Animated3DNucleusCanvas(selectedPart: String) {
+    val transition = rememberInfiniteTransition(label = "nucleus3d")
+
+    // Pulsierender Transport-Partikel
+    val particleOffset by transition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "particle"
+    )
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(260.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF111827))
+    ) {
+        Canvas(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+            val width = size.width
+            val height = size.height
+            val centerX = width * 0.5f
+            val centerY = height * 0.5f
+            val nRadius = 85f
+
+            // 1. Doppelte 3D-Kernhülle (Membran mit Hohlraum)
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFF8B5CF6), Color(0xFF4C1D95)),
+                    center = Offset(centerX - 30f, centerY - 30f),
+                    radius = nRadius + 25f
+                ),
+                radius = nRadius + 18f,
+                center = Offset(centerX, centerY)
+            )
+
+            // Innere Kernhülle
+            drawCircle(
+                color = Color(0xFF2E1065),
+                radius = nRadius,
+                center = Offset(centerX, centerY)
+            )
+
+            // 2. 8 Plastische Kernporen Tunnels auf der Membran
+            val poresCount = 8
+            for (i in 0 until poresCount) {
+                val angle = (i * 45f) * (3.14159f / 180f)
+                val px = centerX + (nRadius + 9f) * kotlin.math.cos(angle)
+                val py = centerY + (nRadius + 9f) * kotlin.math.sin(angle)
+
+                val poreColor = if (selectedPart == "poren") Color(0xFF00E5FF) else Color(0xFFA78BFA)
+                drawCircle(color = poreColor, radius = 9f, center = Offset(px, py))
+
+                // Animierter mRNA Partikel wandernd durch die Pore nach außen!
+                if (selectedPart == "poren" || selectedPart == "chromatin") {
+                    val particleDist = nRadius - 20f + (50f * particleOffset)
+                    val particleX = centerX + particleDist * kotlin.math.cos(angle)
+                    val particleY = centerY + particleDist * kotlin.math.sin(angle)
+                    drawCircle(Color(0xFFFFD700), radius = 4f, center = Offset(particleX, particleY))
+                }
+            }
+
+            // 3. Chromatin Fäden (DNA Netzwerk im Inneren)
+            val chromatinColor = if (selectedPart == "chromatin") Color(0xFF38BDF8) else Color(0xFFC084FC)
+            val path1 = Path()
+            path1.moveTo(centerX - 40f, centerY - 30f)
+            path1.quadraticTo(centerX - 10f, centerY - 60f, centerX + 30f, centerY - 20f)
+            drawPath(path1, chromatinColor, style = Stroke(width = 4f))
+
+            val path2 = Path()
+            path2.moveTo(centerX - 50f, centerY + 20f)
+            path2.quadraticTo(centerX, centerY + 50f, centerX + 40f, centerY + 30f)
+            drawPath(path2, chromatinColor, style = Stroke(width = 4f))
+
+            // 4. Nucleolus (Kernkörperchen im Zentrum)
+            val nucleolusColor = if (selectedPart == "nucleolus") Color(0xFFFFD700) else Color(0xFFF59E0B)
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color(0xFFFCD34D), nucleolusColor),
+                    center = Offset(centerX - 10f, centerY - 10f),
+                    radius = 35f
+                ),
+                radius = 28f,
+                center = Offset(centerX, centerY)
+            )
         }
     }
 }
@@ -338,34 +393,8 @@ private fun InteractiveHutalgenCanvas(
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures { offset ->
-                    val x = offset.x
-                    val y = offset.y
-                    val w = size.width.toFloat()
-                    val h = size.height.toFloat()
-
-                    val algeAX = w * 0.32f
-                    val algeBX = w * 0.68f
-                    val footY = h * 0.72f
-                    val capY = h * 0.22f
-                    val tableY = h * 0.88f
-
-                    when {
-                        // Klick auf Hut A (oben)
-                        y < capY + 40f && kotlin.math.abs(x - algeAX) < 60f -> onTargetTapped("capA")
-                        // Klick auf Fuesse (unten)
-                        y in (footY - 40f)..(footY + 40f) -> {
-                            if (kotlin.math.abs(x - algeAX) < 50f) onTargetTapped("footA")
-                            else onTargetTapped("foot")
-                        }
-                        // Klick auf Kern A auf dem Tisch
-                        y > tableY - 40f && kotlin.math.abs(x - (algeAX - 45f)) < 40f -> onTargetTapped("kernelA")
-                        // Klick auf Kern B auf dem Tisch
-                        y > tableY - 40f && kotlin.math.abs(x - (algeBX + 45f)) < 40f -> onTargetTapped("kernelB")
-                        else -> onTargetTapped("foot")
-                    }
-                }
+            .clickable {
+                onTargetTapped("foot")
             }
             .padding(12.dp)
     ) {

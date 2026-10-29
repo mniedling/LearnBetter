@@ -3,6 +3,7 @@ package org.learnbetter.project.ui.biology
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -23,29 +24,33 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.delay
 import org.learnbetter.project.model.Subject
+
+enum class LabTool {
+    NONE, SCALPEL, TWEEZER
+}
 
 @Composable
 fun BiologyNucleusExperimentScreen(
     onXpEarned: (Int) -> Unit = {},
     onBackToHub: (() -> Unit)? = null
 ) {
-    var animStep by remember { mutableIntStateOf(0) } // 0 = Start, 1 = Kappen, 2 = Transplantieren, 3 = Wuchs
-    var isAnimating by remember { mutableStateOf(false) }
+    var selectedTool by remember { mutableStateOf(LabTool.NONE) }
+
+    // Interaktions-Zustände
+    var kernelsExtracted by remember { mutableStateOf(false) } // Step 1: Kerne auf dem Tisch
+    var capCutOff by remember { mutableStateOf(false) }         // Step 2: Hut A abgetrennt
+    var kernelTransplanted by remember { mutableStateOf(false) }// Step 3: Kern B eingesetzt
+    var capGrown by remember { mutableStateOf(false) }         // Step 4: Neuer Hut gewachsen
+
     var selectedNucleusPart by remember { mutableStateOf<String?>(null) }
 
-    // Sequential animation coroutine
-    LaunchedEffect(isAnimating) {
-        if (isAnimating) {
-            animStep = 1 // Skalpell schneidet Hut A
-            delay(1500)
-            animStep = 2 // Pinzette verpflanzt Kern B
-            delay(2000)
-            animStep = 3 // Neuer Hut wächst nach
-            delay(2000)
-            isAnimating = false
-            onXpEarned(20)
+    // Wuchs Animation sobald Kern verpflanzt
+    LaunchedEffect(kernelTransplanted) {
+        if (kernelTransplanted && !capGrown) {
+            kotlinx.coroutines.delay(1500)
+            capGrown = true
+            onXpEarned(25)
         }
     }
 
@@ -66,7 +71,7 @@ fun BiologyNucleusExperimentScreen(
         }
 
         Text(
-            text = "🔬 Hutalgen-Experiment & Zellkern",
+            text = "🔬 Interaktives Hutalgen-Labor",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = Subject.BIOLOGY.primaryColor,
@@ -74,42 +79,90 @@ fun BiologyNucleusExperimentScreen(
         )
 
         Text(
-            text = "Beobachte live die Skalpell- und Pinzetten-Transplantation im Hämmerling-Experiment!",
+            text = "Wähle Skalpell ✂️ und Pinzette 🤏 rechts aus der Leiste und führe das Hämmerling-Experiment selbst durch!",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
 
-        // 1. Animiertes Hutalgen Canvas Experiment
-        HutalgenAnimationCanvas(animStep = animStep)
-
-        // Steuerung Button
-        Button(
-            onClick = {
-                if (animStep == 3) {
-                    animStep = 0
-                } else {
-                    isAnimating = true
-                }
-            },
-            enabled = !isAnimating,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Subject.BIOLOGY.primaryColor)
+        // Experiment Canvas mit rechter Werkzeugleiste
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = when {
-                    isAnimating -> "✂️ Skalpell & Pinzette arbeiten..."
-                    animStep == 3 -> "🔄 Experiment erneut starten"
-                    else -> "✂️ 1. Skalpell & Pinzetten-Transplantation starten!"
-                },
-                fontWeight = FontWeight.Bold
-            )
+            // Main Interactive Canvas
+            Card(
+                modifier = Modifier
+                    .weight(1f)
+                    .height(260.dp),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+            ) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    InteractiveHutalgenCanvas(
+                        selectedTool = selectedTool,
+                        kernelsExtracted = kernelsExtracted,
+                        capCutOff = capCutOff,
+                        kernelTransplanted = kernelTransplanted,
+                        capGrown = capGrown,
+                        onExtractKernels = {
+                            if (selectedTool == LabTool.SCALPEL) kernelsExtracted = true
+                        },
+                        onCutCap = {
+                            if (selectedTool == LabTool.SCALPEL && kernelsExtracted) capCutOff = true
+                        },
+                        onTransplantKernel = {
+                            if (selectedTool == LabTool.TWEEZER && capCutOff) kernelTransplanted = true
+                        }
+                    )
+                }
+            }
+
+            // Rechte Werkzeugleiste (Skalpell & Pinzette)
+            Card(
+                modifier = Modifier.width(60.dp).height(260.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(vertical = 12.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.SpaceAround
+                ) {
+                    // Skalpell Tool
+                    Surface(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clickable { selectedTool = LabTool.SCALPEL },
+                        shape = CircleShape,
+                        color = if (selectedTool == LabTool.SCALPEL) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surface
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text("✂️", fontSize = 22.sp)
+                        }
+                    }
+
+                    // Pinzette Tool
+                    Surface(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clickable { selectedTool = LabTool.TWEEZER },
+                        shape = CircleShape,
+                        color = if (selectedTool == LabTool.TWEEZER) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surface
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Text("🤏", fontSize = 22.sp)
+                        }
+                    }
+                }
+            }
         }
 
-        // Experiment Phasen Beschreibung
+        // Anleitung / Status
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
@@ -117,24 +170,37 @@ fun BiologyNucleusExperimentScreen(
         ) {
             Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 Text(
-                    text = when (animStep) {
-                        1 -> "✂️ Skalpell kappt den Schirmhut von Hutalge A!"
-                        2 -> "🤏 Pinzette entnimmt Kern B (Strahlenhut) und verpflanzt ihn in Fuß A!"
-                        3 -> "🎉 Der neue Hut wächst nach! Es ist die Strahlenform von Alge B!"
-                        else -> "Ausgangslage: Hutalge A (Schirmhut) und Hutalge B (Strahlenhut)."
+                    text = when {
+                        !kernelsExtracted -> "1️⃣ Wähle das Skalpell ✂️ und klicke auf die Füße, um die Zellkerne zu entnehmen!"
+                        !capCutOff -> "2️⃣ Klicke mit dem Skalpell ✂️ oben auf Hut A, um ihn abzutrennen!"
+                        !kernelTransplanted -> "3️⃣ Wähle die Pinzette 🤏 und setze den gelben Kern B in den Fuß von Alge A ein!"
+                        !capGrown -> "🌱 Der Zellkern B arbeitet... Der neue Hut wächst..."
+                        else -> "🎉 WUNDERSCHÖN! Ein neuer Strahlenhut B ist an Alge A gewachsen! (+25 XP)"
                     },
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
                     color = Subject.BIOLOGY.primaryColor
                 )
-                Text(
-                    text = "Beweis: Der Zellkern enthält die genetische Bauanleitung für die Form der Hutalge (Acetabularia).",
-                    style = MaterialTheme.typography.bodySmall
-                )
+
+                if (capGrown) {
+                    Button(
+                        onClick = {
+                            selectedTool = LabTool.NONE
+                            kernelsExtracted = false
+                            capCutOff = false
+                            kernelTransplanted = false
+                            capGrown = false
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Subject.BIOLOGY.primaryColor)
+                    ) {
+                        Text("🔄 Experiment zurücksetzen & nochmal versuchen")
+                    }
+                }
             }
         }
 
-        // 2. Zellkern Detail Explorer (Kernporen, Chromatin, Nucleolus)
+        // 2. Zellkern Detail Explorer
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
@@ -195,94 +261,96 @@ fun BiologyNucleusExperimentScreen(
 }
 
 @Composable
-private fun HutalgenAnimationCanvas(animStep: Int) {
-    val stepProgress by animateFloatAsState(
-        targetValue = animStep.toFloat(),
-        animationSpec = tween(durationMillis = 1200)
-    )
-
-    Card(
+private fun InteractiveHutalgenCanvas(
+    selectedTool: LabTool,
+    kernelsExtracted: Boolean,
+    capCutOff: Boolean,
+    kernelTransplanted: Boolean,
+    capGrown: Boolean,
+    onExtractKernels: () -> Unit,
+    onCutCap: () -> Unit,
+    onTransplantKernel: () -> Unit
+) {
+    Canvas(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(250.dp),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
-    ) {
-        Canvas(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            val width = size.width
-            val height = size.height
-
-            val algeAX = width * 0.3f
-            val algeBX = width * 0.7f
-            val footY = height * 0.85f
-            val capY = height * 0.25f
-
-            // --- 1. HUTALGE A (Schirmhut) ---
-            // Rhizoid / Wurzelfuss A
-            drawCircle(Color(0xFF22C55E), radius = 25f, center = Offset(algeAX, footY))
-
-            // Zellkern A (wird in Step 2 entfernt)
-            if (animStep < 2) {
-                drawCircle(Color(0xFF8B5CF6), radius = 12f, center = Offset(algeAX, footY))
-            } else {
-                // Transplantierter Kern B!
-                drawCircle(Color(0xFFF59E0B), radius = 14f, center = Offset(algeAX, footY))
-            }
-
-            // Stiel A
-            drawLine(Color(0xFF4ADE80), start = Offset(algeAX, footY - 20f), end = Offset(algeAX, capY), strokeWidth = 8f)
-
-            // Hut A (Schirmform) - wird ab Step 1 abgeschnitten!
-            if (animStep == 0) {
-                drawArc(
-                    color = Color(0xFF10B981),
-                    startAngle = 180f,
-                    sweepAngle = 180f,
-                    useCenter = true,
-                    topLeft = Offset(algeAX - 40f, capY - 30f),
-                    size = Size(80f, 40f)
-                )
-            } else if (animStep == 3) {
-                // Neuer nachgewachsener Strahlenhut B!
-                val starPath = Path()
-                val rays = 8
-                for (i in 0 until rays) {
-                    val angle = (i * 360f / rays) * (3.14159f / 180f)
-                    val rx = algeAX + kotlin.math.cos(angle) * 35f
-                    val ry = capY - 10f + kotlin.math.sin(angle) * 20f
-                    if (i == 0) starPath.moveTo(rx, ry) else starPath.lineTo(rx, ry)
+            .fillMaxSize()
+            .clickable {
+                if (selectedTool == LabTool.SCALPEL) {
+                    if (!kernelsExtracted) onExtractKernels() else if (!capCutOff) onCutCap()
+                } else if (selectedTool == LabTool.TWEEZER) {
+                    if (capCutOff && !kernelTransplanted) onTransplantKernel()
                 }
-                drawPath(starPath, Color(0xFFF59E0B), style = Stroke(4f))
-                drawCircle(Color(0xFFF59E0B), radius = 15f, center = Offset(algeAX, capY - 10f))
             }
+            .padding(12.dp)
+    ) {
+        val width = size.width
+        val height = size.height
+
+        val algeAX = width * 0.32f
+        val algeBX = width * 0.68f
+        val footY = height * 0.72f
+        val capY = height * 0.22f
+        val tableY = height * 0.88f
+
+        // Labortisch Untergrund
+        drawLine(Color.Gray.copy(alpha = 0.5f), start = Offset(10f, tableY), end = Offset(width - 10f, tableY), strokeWidth = 4f)
+
+        // --- 1. HUTALGE A ---
+        drawCircle(Color(0xFF22C55E), radius = 24f, center = Offset(algeAX, footY))
+
+        // Stiel A
+        drawLine(Color(0xFF4ADE80), start = Offset(algeAX, footY - 18f), end = Offset(algeAX, capY), strokeWidth = 7f)
+
+        // Kern im Fuß A (falls noch nicht entnommen)
+        if (!kernelsExtracted) {
+            drawCircle(Color(0xFF8B5CF6), radius = 11f, center = Offset(algeAX, footY))
+        }
+
+        // Kern in Fuß A eingesetzt (Transplantation)
+        if (kernelTransplanted) {
+            drawCircle(Color(0xFFF59E0B), radius = 13f, center = Offset(algeAX, footY))
+        }
+
+        // Hut A (Schirmhut) - falls noch nicht abgeschnitten
+        if (!capCutOff) {
+            drawArc(
+                color = Color(0xFF10B981),
+                startAngle = 180f,
+                sweepAngle = 180f,
+                useCenter = true,
+                topLeft = Offset(algeAX - 36f, capY - 28f),
+                size = Size(72f, 36f)
+            )
+        }
+
+        // Neuer nachgewachsener Strahlenhut B bei Step 4!
+        if (capGrown) {
+            drawCircle(Color(0xFFF59E0B), radius = 18f, center = Offset(algeAX, capY - 10f))
+        }
 
 
-            // --- 2. HUTALGE B (Strahlenhut) ---
-            drawCircle(Color(0xFF22C55E), radius = 25f, center = Offset(algeBX, footY))
+        // --- 2. HUTALGE B ---
+        drawCircle(Color(0xFF22C55E), radius = 24f, center = Offset(algeBX, footY))
 
-            // Zellkern B (Gelb)
-            if (animStep < 2) {
-                drawCircle(Color(0xFFF59E0B), radius = 12f, center = Offset(algeBX, footY))
-            }
+        // Stiel B
+        drawLine(Color(0xFF4ADE80), start = Offset(algeBX, footY - 18f), end = Offset(algeBX, capY), strokeWidth = 7f)
 
-            // Stiel B
-            drawLine(Color(0xFF4ADE80), start = Offset(algeBX, footY - 20f), end = Offset(algeBX, capY), strokeWidth = 8f)
+        // Kern im Fuß B (falls noch nicht entnommen)
+        if (!kernelsExtracted) {
+            drawCircle(Color(0xFFF59E0B), radius = 11f, center = Offset(algeBX, footY))
+        }
 
-            // Hut B (Strahlenform)
-            drawCircle(Color(0xFFF59E0B), radius = 20f, center = Offset(algeBX, capY - 10f))
+        // Hut B (Strahlenhut)
+        drawCircle(Color(0xFFF59E0B), radius = 18f, center = Offset(algeBX, capY - 10f))
 
 
-            // --- 3. ANIMIERTES SKALPELL ✂️ & PINZETTE 🤏 ---
-            if (animStep == 1) {
-                // Skalpell schneidet Hut A ab
-                drawLine(Color.Red, start = Offset(algeAX - 50f, capY), end = Offset(algeAX + 50f, capY), strokeWidth = 4f)
-            } else if (animStep == 2) {
-                // Pinzette bringt Kern B zu Fuß A
-                val curveX = algeBX - (algeBX - algeAX) * (stepProgress - 1f)
-                val curveY = footY - (kotlin.math.sin((stepProgress - 1f) * 3.14159f) * 60f)
+        // --- 3. DIE KERNE AUF DEM LABORTISCH ---
+        if (kernelsExtracted && !kernelTransplanted) {
+            // Kern A liegt links auf dem Tisch
+            drawCircle(Color(0xFF8B5CF6), radius = 12f, center = Offset(algeAX - 40f, tableY - 12f))
 
-                drawCircle(Color(0xFFFFD700), radius = 14f, center = Offset(curveX, curveY))
-            }
+            // Kern B liegt rechts auf dem Tisch (zum Transplantieren!)
+            drawCircle(Color(0xFFF59E0B), radius = 14f, center = Offset(algeBX + 40f, tableY - 12f))
         }
     }
 }

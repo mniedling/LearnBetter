@@ -1,6 +1,7 @@
 package org.learnbetter.project.ui.lab
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,40 +43,39 @@ fun LabHubScreen(
             onXpEarned = onXpEarned
         )
         currentSubject == Subject.BIOLOGY -> Column(modifier = Modifier.fillMaxSize()) {
+            // Scrollbare Button-Leiste für Biologie
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
                     .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Button(
                     onClick = { bioToolMode = 1 },
-                    modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (bioToolMode == 1) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    Text("🔬 Mikroskop", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = if (bioToolMode == 1) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("🔬 Mikroskop (10x, 100x, 1000x)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 1) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
 
                 Button(
                     onClick = { bioToolMode = 2 },
-                    modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (bioToolMode == 2) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    Text("🧩 Puzzle & Turgor", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = if (bioToolMode == 2) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("🧩 Zell-Puzzle & Turgor-Ballon", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 2) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
 
                 Button(
                     onClick = { bioToolMode = 3 },
-                    modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (bioToolMode == 3) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    Text("🧪 Hutalgen & Kern", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = if (bioToolMode == 3) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("✂️ Hutalgen-Transplantation & 3D-Zellkern", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 3) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
 

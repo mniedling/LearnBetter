@@ -1,9 +1,7 @@
 package org.learnbetter.project.ui.biology
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -325,7 +323,7 @@ private fun InteractiveHutalgenCanvas(
 
         // Neuer nachgewachsener Strahlenhut B bei Step 4!
         if (capGrown) {
-            drawCircle(Color(0xFFF59E0B), radius = 18f, center = Offset(algeAX, capY - 10f))
+            drawStarCap(algeAX, capY - 10f)
         }
 
 
@@ -340,8 +338,8 @@ private fun InteractiveHutalgenCanvas(
             drawCircle(Color(0xFFF59E0B), radius = 11f, center = Offset(algeBX, footY))
         }
 
-        // Hut B (Strahlenhut)
-        drawCircle(Color(0xFFF59E0B), radius = 18f, center = Offset(algeBX, capY - 10f))
+        // Hut B (Strahlenhut behält sie von Anfang bis Ende!)
+        drawStarCap(algeBX, capY - 10f)
 
 
         // --- 3. DIE KERNE AUF DEM LABORTISCH ---
@@ -352,5 +350,23 @@ private fun InteractiveHutalgenCanvas(
             // Kern B liegt rechts auf dem Tisch (zum Transplantieren!)
             drawCircle(Color(0xFFF59E0B), radius = 14f, center = Offset(algeBX + 40f, tableY - 12f))
         }
+    }
+}
+
+// Zeichnet den charakteristischen gelben Strahlenhut B
+private fun androidx.compose.ui.graphics.drawscope.DrawScope.drawStarCap(centerX: Float, centerY: Float) {
+    val rayColor = Color(0xFFF59E0B)
+    drawCircle(rayColor, radius = 16f, center = Offset(centerX, centerY))
+
+    val rays = 8
+    val rInner = 16f
+    val rOuter = 32f
+    for (i in 0 until rays) {
+        val angle = (i * 360f / rays) * (3.14159f / 180f)
+        val x1 = centerX + rInner * kotlin.math.cos(angle)
+        val y1 = centerY + rInner * kotlin.math.sin(angle)
+        val x2 = centerX + rOuter * kotlin.math.cos(angle)
+        val y2 = centerY + rOuter * kotlin.math.sin(angle)
+        drawLine(rayColor, start = Offset(x1, y1), end = Offset(x2, y2), strokeWidth = 5f)
     }
 }

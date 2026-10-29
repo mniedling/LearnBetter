@@ -34,16 +34,15 @@ fun LabHubScreen(
     onXpEarned: (Int) -> Unit = {}
 ) {
     var activeExperimentId by remember(currentSubject) { mutableStateOf<String?>(null) }
-    var bioToolMode by remember { mutableIntStateOf(1) } // 1 = Mikroskop, 2 = Zell-Puzzle, 3 = Hutalgen
-
-    var mathToolMode by remember { mutableIntStateOf(1) }
+    var bioToolMode by remember { mutableIntStateOf(1) } // 1..5
+    var mathToolMode by remember { mutableIntStateOf(1) } // 1..3
 
     when {
         currentSubject == Subject.PHYSICS -> PhysicsHookeScreen(
             onXpEarned = onXpEarned
         )
         currentSubject == Subject.BIOLOGY -> Column(modifier = Modifier.fillMaxSize()) {
-            // Scrollbare Button-Leiste für Biologie
+            // Scrollbare Button-Leiste für Biologie mit Einzelbuttons!
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -57,7 +56,7 @@ fun LabHubScreen(
                         containerColor = if (bioToolMode == 1) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    Text("🔬 Mikroskop (10x, 100x, 1000x)", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 1) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("🔬 Mikroskop", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 1) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
 
                 Button(
@@ -66,7 +65,7 @@ fun LabHubScreen(
                         containerColor = if (bioToolMode == 2) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    Text("🧩 Zell-Puzzle & Turgor-Ballon", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 2) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("🧩 Zell-Puzzle", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 2) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
 
                 Button(
@@ -75,14 +74,34 @@ fun LabHubScreen(
                         containerColor = if (bioToolMode == 3) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
                     )
                 ) {
-                    Text("✂️ Hutalgen-Transplantation & 3D-Zellkern", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 3) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text("🎈 Turgor-Ballon", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 3) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { bioToolMode = 4 },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (bioToolMode == 4) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("✂️ Hutalgen-Labor", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 4) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { bioToolMode = 5 },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (bioToolMode == 5) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🟣 3D-Zellkern", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (bioToolMode == 5) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
             }
 
             when (bioToolMode) {
                 1 -> BiologyMicroscopeScreen(onXpEarned = onXpEarned)
-                2 -> BiologyCellPuzzleScreen(onXpEarned = onXpEarned)
-                else -> BiologyNucleusExperimentScreen(onXpEarned = onXpEarned)
+                2 -> BiologyCellPuzzleScreen(showTurgorOnly = false, onXpEarned = onXpEarned)
+                3 -> BiologyCellPuzzleScreen(showTurgorOnly = true, onXpEarned = onXpEarned)
+                4 -> BiologyNucleusExperimentScreen(showExplorerOnly = false, onXpEarned = onXpEarned)
+                else -> BiologyNucleusExperimentScreen(showExplorerOnly = true, onXpEarned = onXpEarned)
             }
         }
         currentSubject == Subject.MATH -> Column(modifier = Modifier.fillMaxSize()) {

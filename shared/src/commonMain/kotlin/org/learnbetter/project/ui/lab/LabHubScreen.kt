@@ -16,7 +16,9 @@ import androidx.compose.ui.unit.sp
 import org.learnbetter.project.model.LabExperiment
 import org.learnbetter.project.model.LabExperimentsData
 import org.learnbetter.project.model.Subject
+import org.learnbetter.project.ui.biology.BiologyCellPuzzleScreen
 import org.learnbetter.project.ui.biology.BiologyMicroscopeScreen
+import org.learnbetter.project.ui.biology.BiologyNucleusExperimentScreen
 import org.learnbetter.project.ui.german.GermanRhetoricScreen
 import org.learnbetter.project.ui.math.MathGeometryScreen
 import org.learnbetter.project.ui.math.MathParabolaScreen
@@ -31,15 +33,58 @@ fun LabHubScreen(
     onXpEarned: (Int) -> Unit = {}
 ) {
     var activeExperimentId by remember(currentSubject) { mutableStateOf<String?>(null) }
-    var mathToolMode by remember { mutableIntStateOf(1) } // 1 = Parabeln, 2 = Geometrie Zylinder/Pyramide
+    var bioToolMode by remember { mutableIntStateOf(1) } // 1 = Mikroskop, 2 = Zell-Puzzle, 3 = Hutalgen
+
+    var mathToolMode by remember { mutableIntStateOf(1) }
 
     when {
         currentSubject == Subject.PHYSICS -> PhysicsHookeScreen(
             onXpEarned = onXpEarned
         )
-        currentSubject == Subject.BIOLOGY -> BiologyMicroscopeScreen(
-            onXpEarned = onXpEarned
-        )
+        currentSubject == Subject.BIOLOGY -> Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Button(
+                    onClick = { bioToolMode = 1 },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (bioToolMode == 1) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🔬 Mikroskop", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = if (bioToolMode == 1) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { bioToolMode = 2 },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (bioToolMode == 2) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🧩 Puzzle & Turgor", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = if (bioToolMode == 2) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { bioToolMode = 3 },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (bioToolMode == 3) Subject.BIOLOGY.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🧪 Hutalgen & Kern", fontWeight = FontWeight.Bold, fontSize = 11.sp, color = if (bioToolMode == 3) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+
+            when (bioToolMode) {
+                1 -> BiologyMicroscopeScreen(onXpEarned = onXpEarned)
+                2 -> BiologyCellPuzzleScreen(onXpEarned = onXpEarned)
+                else -> BiologyNucleusExperimentScreen(onXpEarned = onXpEarned)
+            }
+        }
         currentSubject == Subject.MATH -> Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier

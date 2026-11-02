@@ -2,25 +2,22 @@
 
 Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Fahrschule (Klasse AM), Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
 
-Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
+Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen mit Grafiken**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
 
 ---
 
 ## 📚 Fächerübersicht & Werkstätten
 
-### 🛵 1. Fahrschule (Klasse AM / Moped - NEU!)
-- **Amtlicher Testbogen Nr. 1 (Klasse AM):**
-  - Amtliche Testfragen für Moped/Roller bis 45 km/h mit Checkboxes ($\square$) für Mehrfachauswahl.
-  - Offizielle Fehlerpunkte-Badge (`Wertigkeit: 2-5 Fehlerpunkte`).
-  - StVO-Erklärungskasten nach jeder beantworteten Frage.
-  - **Prüfungsauswertung:** Berechnet die Summe aller Fehlerpunkte. Bestanden bei **≤ 10 Fehlerpunkten** (+50 XP Belohnung!).
+### 🛵 1. Fahrschule (Klasse AM / Moped - ERWEITERT!)
+- **Bogen-Auswahl & Reihenfolge-Schalter:**
+  - **Bogen-Filter:** Wähle gezielt `Testbogen 1`, `Testbogen 2`, `Testbogen 3` oder `🎲 Alle Bögen (Gesamtpool)`.
+  - **Reihenfolge-Schalter:** Wechsle stufenlos zwischen `🔢 Der Reihe nach` und `🔀 Zufällig`.
+- **Grafische Schilder & Kreuzungssituationen:**
+  - Direkt auf der Leinwand gerenderte **Verkehrszeichen & Kreuzungen** (z. B. Stoppschild 🛑, Vorfahrt gewähren 🔻, Vorfahrtsstraße 🟡, Verbot der Einfahrt ⛔, Höchstgeschwindigkeit 45 km/h und Vorfahrts-Kreuzungssituationen).
+- **Amtliche Prüfungsfragen & Auswertung:**
+  - Multi-Select Checkboxes ($\square$), offizielle Fehlerpunkte-Badges (`2 bis 5 FP`), StVO-Erklärungen und Prüfungsauswertung (**Bestanden bei ≤ 10 Fehlerpunkten** +50 XP).
 - **Anhalteweg & Bremsweg Rechner (Werkstatt):**
-  - Schieberegler für Tempo $v$ (10 bis 100 km/h).
-  - Berechnet live die Fahrschul-Faustformeln:
-    - **Reaktionsweg**: $(v \div 10) \times 3$
-    - **Bremsweg**: $(v \div 10) \times (v \div 10)$
-    - **Anhalteweg**: Reaktionsweg + Bremsweg
-    - **Gefahrenbremsung**: Bremsweg $\div 2$
+  - Schieberegler für Tempo $v$ (10 bis 100 km/h) mit Live-Berechnung von Reaktionsweg, Bremsweg, Anhalteweg und Gefahrenbremsung.
 
 ### 🧪 2. Chemie
 - **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**

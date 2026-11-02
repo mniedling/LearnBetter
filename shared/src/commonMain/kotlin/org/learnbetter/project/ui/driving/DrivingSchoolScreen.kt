@@ -1,13 +1,11 @@
 package org.learnbetter.project.ui.driving
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
@@ -20,9 +18,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import org.learnbetter.project.model.DrivingImageType
 import org.learnbetter.project.model.DrivingQuestion
 import org.learnbetter.project.model.DrivingSchoolData
@@ -33,8 +33,8 @@ import org.learnbetter.project.ui.theme.ChemistryColors
 fun DrivingSchoolScreen(
     onXpEarned: (Int) -> Unit = {}
 ) {
-    var selectedBogenNumber by remember { mutableIntStateOf(1) } // 1, 2, 3 oder 0 = Alle
-    var isRandomOrder by remember { mutableStateOf(false) }       // false = Der Reihe nach, true = Zufall
+    var selectedBogenNumber by remember { mutableIntStateOf(1) }
+    var isRandomOrder by remember { mutableStateOf(false) }
 
     val questions = remember(selectedBogenNumber, isRandomOrder) {
         DrivingSchoolData.getQuestionsForBogen(selectedBogenNumber, isRandomOrder)
@@ -161,8 +161,26 @@ fun DrivingSchoolScreen(
                 color = Subject.DRIVING_SCHOOL.primaryColor
             )
 
-            // Amtliche Schilder- & Kreuzungsgrafik (HD StVO Vector Graphic)
-            if (currentQuestion.imageType != DrivingImageType.NONE) {
+            // Falls eine BILD-URL vorhanden ist, lade das ORIGINALBILD über Coil!
+            if (!currentQuestion.imageUrl.isNullOrEmpty()) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A))
+                ) {
+                    AsyncImage(
+                        model = currentQuestion.imageUrl,
+                        contentDescription = "Amtliches Fahrschul-Originalbild",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(20.dp)),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            } else if (currentQuestion.imageType != DrivingImageType.NONE) {
+                // Fallback StVO Vector-Grafik
                 TrafficImageCanvas(imageType = currentQuestion.imageType)
             }
 
@@ -337,7 +355,6 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
 
                 when (imageType) {
                     DrivingImageType.STOP_SIGN -> {
-                        // Amtliches Stoppschild Zeichen 206
                         val octPath = Path()
                         val r = 68f
                         for (i in 0 until 8) {
@@ -350,7 +367,6 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
                         drawPath(octPath, Color(0xFFDC2626))
                         drawPath(octPath, Color.White, style = Stroke(6f))
 
-                        // Innere weiße Linie
                         val innerOct = Path()
                         val rInner = 60f
                         for (i in 0 until 8) {
@@ -363,7 +379,6 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
                         drawPath(innerOct, Color.White, style = Stroke(2f))
                     }
                     DrivingImageType.YIELD_SIGN -> {
-                        // Amtliches Vorfahrt gewähren Zeichen 205
                         val triPath = Path()
                         triPath.moveTo(centerX - 70f, centerY - 55f)
                         triPath.lineTo(centerX + 70f, centerY - 55f)
@@ -373,7 +388,6 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
                         drawPath(triPath, Color(0xFFDC2626), style = Stroke(14f))
                     }
                     DrivingImageType.PRIORITY_ROAD -> {
-                        // Amtliche Vorfahrtsstraße Zeichen 306
                         val diamondPath = Path()
                         diamondPath.moveTo(centerX, centerY - 65f)
                         diamondPath.lineTo(centerX + 65f, centerY)
@@ -393,27 +407,21 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
                         drawPath(innerPath, Color(0xFFFFD700))
                     }
                     DrivingImageType.RIGHT_OF_WAY_CROSSING -> {
-                        // Amtliche Kreuzungssituation (Rechts vor Links)
                         drawRect(Color(0xFF475569), topLeft = Offset(centerX - 45f, 0f), size = Size(90f, height))
                         drawRect(Color(0xFF475569), topLeft = Offset(0f, centerY - 45f), size = Size(width, 90f))
 
-                        // Weiße Fahrbahnmarkierungen
                         drawLine(Color.White, start = Offset(centerX, 0f), end = Offset(centerX, centerY - 45f), strokeWidth = 3f)
                         drawLine(Color.White, start = Offset(centerX, centerY + 45f), end = Offset(centerX, height), strokeWidth = 3f)
 
-                        // Rotes Auto A (von Rechts)
                         drawRoundRect(Color(0xFFEF4444), topLeft = Offset(centerX + 65f, centerY + 10f), size = Size(40f, 24f), cornerRadius = androidx.compose.ui.geometry.CornerRadius(6f, 6f))
 
-                        // Blaues Moped B (von unten)
                         drawCircle(Color(0xFF3B82F6), radius = 16f, center = Offset(centerX - 20f, centerY + 75f))
                     }
                     DrivingImageType.NO_ENTRY -> {
-                        // Amtliches Verbot der Einfahrt Zeichen 267
                         drawCircle(Color(0xFFDC2626), radius = 65f, center = Offset(centerX, centerY))
                         drawRect(Color.White, topLeft = Offset(centerX - 48f, centerY - 12f), size = Size(96f, 24f))
                     }
                     DrivingImageType.SPEED_45 -> {
-                        // Amtliches Tempo 45 Schild
                         drawCircle(Color.White, radius = 65f, center = Offset(centerX, centerY))
                         drawCircle(Color(0xFFDC2626), radius = 65f, center = Offset(centerX, centerY), style = Stroke(12f))
                     }

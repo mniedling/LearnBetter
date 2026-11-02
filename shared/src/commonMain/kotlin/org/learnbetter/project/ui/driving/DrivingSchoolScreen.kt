@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.learnbetter.project.model.DrivingImageType
+import learnbetter.shared.generated.resources.*
 import org.learnbetter.project.model.DrivingQuestion
 import org.learnbetter.project.model.DrivingSchoolData
 import org.learnbetter.project.model.Subject
@@ -184,16 +185,16 @@ fun DrivingSchoolScreen(
                         // Lade lokales Bild mit dem Helfer aus Compose Resources
                         // Da Resource-Ids dynamisch sein muessen, verwenden wir ein Mapping
                         val imgRes = when (currentQuestion.imageUrl) {
-                            "frage_1.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_1
-                            "frage_2.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_2
-                            "frage_3.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_3
-                            "frage_4.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_4
-                            "frage_5.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_5
-                            "frage_6.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_6
-                            "frage_7.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_7
-                            "frage_8.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_8
-                            "frage_9.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_9
-                            "frage_10.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_10
+                            "frage_1.png" -> Res.drawable.frage_1
+                            "frage_2.png" -> Res.drawable.frage_2
+                            "frage_3.png" -> Res.drawable.frage_3
+                            "frage_4.png" -> Res.drawable.frage_4
+                            "frage_5.png" -> Res.drawable.frage_5
+                            "frage_6.png" -> Res.drawable.frage_6
+                            "frage_7.png" -> Res.drawable.frage_7
+                            "frage_8.png" -> Res.drawable.frage_8
+                            "frage_9.png" -> Res.drawable.frage_9
+                            "frage_10.png" -> Res.drawable.frage_10
                             else -> null
                         }
                         if (imgRes != null) {

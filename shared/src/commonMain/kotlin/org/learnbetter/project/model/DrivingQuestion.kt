@@ -14,6 +14,7 @@ data class DrivingQuestion(
     val id: Int,
     val testbogenNumber: Int,           // Bogen 1, Bogen 2, Bogen 3
     val questionText: String,
+    val introduction: String? = null,
     val options: List<String>,
     val correctOptionIndices: Set<Int>, // Indizes aller richtigen Antworten (0, 1, 2)
     val errorPoints: Int,               // Offizielle Fehlerpunkte (2 bis 5)

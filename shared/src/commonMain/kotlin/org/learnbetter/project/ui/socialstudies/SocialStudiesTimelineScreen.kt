@@ -94,7 +94,7 @@ fun SocialStudiesTimelineScreen(
                             selectedEvent = event
                             if (!exploredEvents.contains(event.year)) {
                                 exploredEvents = exploredEvents + event.year
-                                onXpEarned(5)
+                                onXpEarned(2)
                             }
                         },
                     shape = RoundedCornerShape(16.dp),

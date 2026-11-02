@@ -114,7 +114,7 @@ private fun InteractiveAcidTableGame(onXpEarned: (Int) -> Unit) {
 
     LaunchedEffect(isTableComplete) {
         if (isTableComplete && isShuffleMode) {
-            onXpEarned(30)
+            onXpEarned(10)
         }
     }
 
@@ -401,7 +401,7 @@ private fun LabFlaskDissoziationGame(onXpEarned: (Int) -> Unit) {
                                 .clickable {
                                     selectedIonName = ionName
                                     if (ionName == currentAcid.ionName) {
-                                        onXpEarned(10)
+                                        onXpEarned(3)
                                     }
                                 },
                             shape = RoundedCornerShape(12.dp),

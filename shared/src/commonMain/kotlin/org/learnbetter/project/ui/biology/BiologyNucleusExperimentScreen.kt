@@ -51,7 +51,7 @@ fun BiologyNucleusExperimentScreen(
         if (insertedKernel != null && capGrownType == null) {
             kotlinx.coroutines.delay(1500)
             capGrownType = insertedKernel
-            onXpEarned(25)
+            onXpEarned(8)
         }
     }
 

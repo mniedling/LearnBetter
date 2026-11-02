@@ -171,7 +171,7 @@ private fun IonicBondGameCanvas(
     LaunchedEffect(electronProgress) {
         if (electronProgress == 1.0f && animateElectron && !isDone) {
             isDone = true
-            onXpEarned(15)
+            onXpEarned(5)
         }
     }
 
@@ -399,7 +399,7 @@ private fun CovalentBondGameCanvas(
     LaunchedEffect(covalentProgress) {
         if (covalentProgress == 1.0f && animateCovalent && !isDone) {
             isDone = true
-            onXpEarned(15)
+            onXpEarned(5)
         }
     }
 

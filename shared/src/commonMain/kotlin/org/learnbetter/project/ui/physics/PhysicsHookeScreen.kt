@@ -43,7 +43,7 @@ fun PhysicsHookeScreen(
     LaunchedEffect(forceNewton) {
         if (!hasTested && forceNewton > 0f) {
             hasTested = true
-            onXpEarned(15)
+            onXpEarned(5)
         }
     }
 

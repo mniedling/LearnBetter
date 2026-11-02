@@ -102,7 +102,7 @@ fun PhTestScreen(
             onClick = {
                 isDipped = !isDipped
                 if (isDipped) {
-                    onXpEarned(5)
+                    onXpEarned(2)
                 }
             },
             modifier = Modifier

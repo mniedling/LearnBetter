@@ -42,7 +42,7 @@ fun DrivingFormulaCalculatorScreen(
     LaunchedEffect(speedKmH) {
         if (!hasTested && speedKmH != 50f) {
             hasTested = true
-            onXpEarned(15)
+            onXpEarned(5)
         }
     }
 

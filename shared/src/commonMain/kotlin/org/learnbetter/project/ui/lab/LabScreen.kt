@@ -102,7 +102,7 @@ fun LabScreen(
                         popTestDone = true,
                         popTestSuccess = true
                     )
-                    onXpEarned(50)
+                    onXpEarned(17)
                 }
             )
         }

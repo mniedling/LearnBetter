@@ -110,7 +110,7 @@ fun BiologyMicroscopeScreen(
                 selectedOrganelle = organelle
                 if (!exploredEvents.contains(organelle.name)) {
                     exploredEvents = exploredEvents + organelle.name
-                    onXpEarned(3)
+                    onXpEarned(1)
                 }
             }
         )

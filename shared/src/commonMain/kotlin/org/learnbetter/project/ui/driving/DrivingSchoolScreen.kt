@@ -62,7 +62,7 @@ fun DrivingSchoolScreen(
             },
             onAwardXp = {
                 if (totalErrorPointsIncurred <= 10) {
-                    onXpEarned(50)
+                    onXpEarned(17)
                 }
             }
         )

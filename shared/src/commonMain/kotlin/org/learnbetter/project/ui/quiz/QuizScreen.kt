@@ -55,7 +55,7 @@ fun QuizScreen(
                 quizFinished = false
             }
         ) {
-            onXpEarned(score * 20)
+            onXpEarned(score * 7)
         }
     } else {
         Column(

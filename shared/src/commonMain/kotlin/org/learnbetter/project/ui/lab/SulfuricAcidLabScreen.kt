@@ -33,7 +33,7 @@ fun SulfuricAcidLabScreen(
         if (isSugarExperimentActive && !isSugarCharred) {
             delay(2000)
             isSugarCharred = true
-            onXpEarned(20)
+            onXpEarned(7)
         }
     }
 

@@ -34,7 +34,7 @@ fun MarbleAcidScreen(
         if (isPoured) {
             kotlinx.coroutines.delay(2000)
             reactionDone = true
-            onXpEarned(20)
+            onXpEarned(7)
         }
     }
 

@@ -48,7 +48,7 @@ fun BiologyCellPuzzleScreen(
     LaunchedEffect(waterLevel) {
         if (!hasTestedTurgor && waterLevel < 0.3f) {
             hasTestedTurgor = true
-            onXpEarned(20)
+            onXpEarned(7)
         }
     }
 
@@ -185,7 +185,7 @@ fun BiologyCellPuzzleScreen(
                             .weight(1f)
                             .clickable {
                                 hasPlacedNucleus = true
-                                if (cellTypeMode == 2 && isAnimalPuzzleComplete) onXpEarned(15)
+                                if (cellTypeMode == 2 && isAnimalPuzzleComplete) onXpEarned(5)
                             },
                         shape = RoundedCornerShape(12.dp),
                         color = if (hasPlacedNucleus) Color(0xFF6A1B9A) else MaterialTheme.colorScheme.surfaceVariant
@@ -228,7 +228,7 @@ fun BiologyCellPuzzleScreen(
                                 .weight(1f)
                                 .clickable {
                                     hasPlacedChloroplast = true
-                                    if (isPlantPuzzleComplete) onXpEarned(20)
+                                    if (isPlantPuzzleComplete) onXpEarned(7)
                                 },
                             shape = RoundedCornerShape(12.dp),
                             color = if (hasPlacedChloroplast) Color(0xFF2E7D32) else MaterialTheme.colorScheme.surfaceVariant

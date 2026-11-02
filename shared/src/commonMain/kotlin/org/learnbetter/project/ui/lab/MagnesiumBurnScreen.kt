@@ -40,7 +40,7 @@ fun MagnesiumBurnScreen(
             delay(2000) // Gleißendes Licht brennt für 2 Sek
             isBurningGlow = false
             isBurnComplete = true
-            onXpEarned(40)
+            onXpEarned(13)
         }
     }
 

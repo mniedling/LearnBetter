@@ -132,7 +132,9 @@ private fun DashboardContent(
 
         QuickLabCard(subject = selectedSubject, onNavigateToLab = onNavigateToLab)
 
-        PhScalePreviewCard()
+        if (selectedSubject == Subject.CHEMISTRY) {
+            PhScalePreviewCard()
+        }
 
         ModulesSection(subject = selectedSubject, onNavigateToQuiz = onNavigateToQuiz)
     }

@@ -88,10 +88,10 @@ fun MusicPianoScreen(
                                     val chord = playedNotes.joinToString(" - ")
                                     if (chord == "C - E - G") {
                                         activeChord = "C-Dur Dreiklang (Große Terz + Kleine Terz) 🎉"
-                                        onXpEarned(10)
+                                        onXpEarned(3)
                                     } else if (chord == "A - C - E") {
                                         activeChord = "A-Moll Dreiklang (Kleine Terz + Große Terz) 🎉"
-                                        onXpEarned(10)
+                                        onXpEarned(3)
                                     } else {
                                         activeChord = "Akkord: $chord"
                                     }

@@ -125,7 +125,7 @@ fun GermanRhetoricScreen(
                         .clickable(enabled = !hasAnswered) {
                             selectedOptionIndex = index
                             if (index == currentTask.correctIndex) {
-                                onXpEarned(5)
+                                onXpEarned(2)
                             }
                         },
                     shape = RoundedCornerShape(16.dp),

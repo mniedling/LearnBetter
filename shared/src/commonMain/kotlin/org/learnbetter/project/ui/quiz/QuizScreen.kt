@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.learnbetter.project.model.QuizData
 import org.learnbetter.project.model.Subject
+import org.learnbetter.project.ui.driving.DrivingSchoolScreen
 import org.learnbetter.project.ui.theme.ChemistryColors
 
 @Composable
@@ -24,6 +25,13 @@ fun QuizScreen(
     currentSubject: Subject = Subject.CHEMISTRY,
     onXpEarned: (Int) -> Unit = {}
 ) {
+    if (currentSubject == Subject.DRIVING_SCHOOL) {
+        DrivingSchoolScreen(
+            onXpEarned = onXpEarned
+        )
+        return
+    }
+
     val questions = remember(currentSubject) {
         QuizData.getQuestionsForSubject(currentSubject.id)
     }

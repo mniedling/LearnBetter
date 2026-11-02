@@ -20,6 +20,7 @@ import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.biology.BiologyCellPuzzleScreen
 import org.learnbetter.project.ui.biology.BiologyMicroscopeScreen
 import org.learnbetter.project.ui.biology.BiologyNucleusExperimentScreen
+import org.learnbetter.project.ui.driving.DrivingFormulaCalculatorScreen
 import org.learnbetter.project.ui.german.GermanRhetoricScreen
 import org.learnbetter.project.ui.math.MathGeometryScreen
 import org.learnbetter.project.ui.math.MathParabolaScreen
@@ -38,11 +39,13 @@ fun LabHubScreen(
     var mathToolMode by remember { mutableIntStateOf(1) } // 1..3
 
     when {
+        currentSubject == Subject.DRIVING_SCHOOL -> DrivingFormulaCalculatorScreen(
+            onXpEarned = onXpEarned
+        )
         currentSubject == Subject.PHYSICS -> PhysicsHookeScreen(
             onXpEarned = onXpEarned
         )
         currentSubject == Subject.BIOLOGY -> Column(modifier = Modifier.fillMaxSize()) {
-            // Scrollbare Button-Leiste für Biologie mit Einzelbuttons!
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

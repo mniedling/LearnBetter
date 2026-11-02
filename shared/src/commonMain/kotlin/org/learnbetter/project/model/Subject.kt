@@ -16,6 +16,13 @@ enum class Subject(
         primaryColor = Color(0xFF006C4C),
         subtitle = "Salzsäure, Säuren & Reaktionen"
     ),
+    DRIVING_SCHOOL(
+        id = "driving",
+        displayName = "Fahrschule AM",
+        icon = "🛵",
+        primaryColor = Color(0xFFFBC02D),
+        subtitle = "Führerschein Klasse AM • Testbogen 1"
+    ),
     PHYSICS(
         id = "physics",
         displayName = "Physik",

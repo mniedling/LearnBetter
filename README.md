@@ -1,27 +1,26 @@
 # LearnBetter – Multi-Fach Lernapp (10. Klasse Gesamtschule)
 
-Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
+Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Fahrschule (Klasse AM), Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
 
-Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
+Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
 
 ---
 
 ## 📚 Fächerübersicht & Werkstätten
 
-### 🧬 1. Biologie
-- **🔬 Virtuelles Mikroskop:**
-  - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
-  - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
-- **🧩 Zell-Puzzle & Turgor-Experiment:**
-  - **Pflanzenzelle vs. Tierzelle:** Baue die Zelle zusammen! Verdeutlicht, dass Tierzellen keine Zellwand und keine Chloroplasten haben.
-  - **Turgor-Experiment (Luftballon im Holzrahmen):** Wasser in die Vakuole pumpen 🎈. Zeigt, wie der Innendruck (Turgor) gegen die starre Zellwand (Holzrahmen 🪵) drückt und die Pflanze stramm aufrecht hält!
-- **✂️ Interaktives Hutalgen-Labor (Hämmerling-Experiment) mit Werkzeugleiste:**
-  - **Rechte Werkzeugleiste:** Wähle Skalpell ✂️ und Pinzette 🤏 per Touch aus!
-  - **Schritt 1:** Mit dem Skalpell ✂️ die Zellkerne im Fuß kappen $\rightarrow$ Die Kerne liegen sichtbar auf dem Labortisch!
-  - **Schritt 2:** Mit dem Skalpell ✂️ den Schirmhut A abtrennen.
-  - **Schritt 3:** Mit der Pinzette 🤏 den gelben Kern B vom Tisch aufnehmen und in Fuß A verpflanzen!
-  - **Schritt 4:** Der neue Strahlenhut B wächst schrittweise nach (**+25 XP**)!
-  - **3D-Zellkern Explorer:** Interaktive Erforschung von Kernporen (mRNA-Transport), Chromatin (DNA-Stränge) und Nucleolus (Kernkörperchen).
+### 🛵 1. Fahrschule (Klasse AM / Moped - NEU!)
+- **Amtlicher Testbogen Nr. 1 (Klasse AM):**
+  - Amtliche Testfragen für Moped/Roller bis 45 km/h mit Checkboxes ($\square$) für Mehrfachauswahl.
+  - Offizielle Fehlerpunkte-Badge (`Wertigkeit: 2-5 Fehlerpunkte`).
+  - StVO-Erklärungskasten nach jeder beantworteten Frage.
+  - **Prüfungsauswertung:** Berechnet die Summe aller Fehlerpunkte. Bestanden bei **≤ 10 Fehlerpunkten** (+50 XP Belohnung!).
+- **Anhalteweg & Bremsweg Rechner (Werkstatt):**
+  - Schieberegler für Tempo $v$ (10 bis 100 km/h).
+  - Berechnet live die Fahrschul-Faustformeln:
+    - **Reaktionsweg**: $(v \div 10) \times 3$
+    - **Bremsweg**: $(v \div 10) \times (v \div 10)$
+    - **Anhalteweg**: Reaktionsweg + Bremsweg
+    - **Gefahrenbremsung**: Bremsweg $\div 2$
 
 ### 🧪 2. Chemie
 - **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**
@@ -44,29 +43,40 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 - **Magnesiumband entzünden:**
   - Verbrennung über der Bunsenbrennerflamme unter gleißendem Licht zu Magnesiumoxid ($2\,Mg + O_2 \rightarrow 2\,MgO$).
 
-### ⚙️ 3. Physik
+### 🧬 3. Biologie
+- **🔬 Virtuelles Mikroskop:**
+  - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
+  - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
+- **🧩 Zell-Puzzle & Turgor-Experiment:**
+  - **Pflanzenzelle vs. Tierzelle:** Baue die Zelle zusammen! Verdeutlicht, dass Tierzellen keine Zellwand und keine Chloroplasten haben.
+  - **Turgor-Experiment (Luftballon im Holzrahmen):** Wasser in die Vakuole pumpen 🎈. Zeigt, wie der Innendruck (Turgor) gegen die starre Zellwand (Holzrahmen 🪵) drückt und die Pflanze stramm aufrecht hält!
+- **✂️ Interaktives Hutalgen-Labor (Hämmerling-Experiment) mit Werkzeugleiste:**
+  - **Rechte Werkzeugleiste:** Wähle Skalpell ✂️ und Pinzette 🤏 per Touch aus!
+  - **3D-Zellkern Explorer:** Interaktive Erforschung von Kernporen (mRNA-Transport), Chromatin (DNA-Stränge) und Nucleolus (Kernkörperchen).
+
+### ⚙️ 4. Physik
 - **Hookesches Gesetz & Federdehnungs-Werkstatt ($F = D \cdot \Delta s$):**
   - **Spiralfeder-Simulator:** Hänge Gewichte ($0\,\text{N}$ bis $10\,\text{N}$) an die Feder und stelle die Federkonstante $D$ ein.
   - **Elastische Dehnung:** Visualisiert die proportionale Verlängerung $\Delta s$ in cm.
 
-### 📐 4. Mathematik
+### 📐 5. Mathematik
 - **Interaktiver Parabel-Plotter:**
   - Untersuchung quadratischer Funktionen $f(x) = a \cdot x^2 + c$.
 - **3D-Geometrie & Oberflächenrechner:**
   - **Zylinder Oberflächenberechnung:** Grundfläche $G = \pi r^2$, Mantelfläche $M = 2\pi r h$, Oberfläche $O = 2G + M$, Volumen $V$.
   - **Quadratische Pyramide Oberflächenberechnung:** Grundfläche $G = a^2$, Seitenhöhe $h_s = \sqrt{h^2 + (a/2)^2}$, Mantelfläche $M = 2 a h_s$, Oberfläche $O = G + M$, Volumen $V = \frac{1}{3} a^2 h$.
 
-### 🌍 5. Gesellschaftslehre (GL)
+### 🌍 6. Gesellschaftslehre (GL)
 - **Historische Zeitleiste & Grundgesetz-Explorer:**
   - Meilensteine von 1914 bis 1990 (Erster Weltkrieg, Weimarer Republik, NS-Diktatur, Grundgesetz 1949, Mauerfall 1989, Wiedervereinigung 1990).
   - Verankerung von Artikel 1 Abs. 1 GG (*"Die Würde des Menschen ist unantastbar"*).
 
-### 🎵 6. Musik
+### 🎵 7. Musik
 - **Virtuelles Piano & Dreiklang-Trainer:**
   - Interaktives Klaviatur-Tastenfeld ($C, D, E, F, G, A, H, C'$).
   - Gehör- und Bautrainer für $C$-Dur ($C-E-G$) und $A$-Moll ($A-C-E$).
 
-### 📖 7. Deutsch
+### 📖 8. Deutsch
 - **Stilmittel- & Rhetorik-Baukasten:**
   - Interaktives Zuordnen von Stilmitteln aus Gedichten und Texten (Alliteration, Metapher, Personifikation, Anapher) mit Erklärungsboxen.
 
@@ -74,7 +84,7 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 
 ## 🎮 Computerzeit-Belohnungssystem (Gamification)
 
-- **XP-Gutschrift:** Punkte gibt es für gelöste Quizfragen, erforschte Organellen und durchgeführte Experimente.
+- **XP-Gutschrift:** Punkte gibt es für gelöste Quizfragen, bestandene Fahrschul-Testbögen und durchgeführte Experimente.
 - **Wechselkurs:** Konfigurierbar über die **Eltern-Einstellung (⚙️)**:
   - *Leicht:* $25\text{ XP} = 5\text{ Min.}$
   - *Ausgewogen (Standard):* $50\text{ XP} = 5\text{ Min.}$
@@ -86,7 +96,7 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 ## 🏗️ Architektur & Tech-Stack
 
 - **Framework:** Kotlin Multiplatform (KMP) & Compose Multiplatform
-- **Design System:** Material 3 mit Fach-spezifischen Farbwelten (Säuregrün, Rot, Smaragdgrün, Violett, Amber, Karmesinrot, Königsblau)
+- **Design System:** Material 3 mit Fach-spezifischen Farbwelten (Säuregrün, Fahrschulgelb, Rot, Smaragdgrün, Violett, Amber, Karmesinrot, Königsblau)
 - **Repository:** Synchronisiert auf GitHub (`https://github.com/mniedling/LearnBetter.git`)
 
 ---

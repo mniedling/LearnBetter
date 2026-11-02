@@ -161,7 +161,8 @@ fun DrivingSchoolScreen(
                 color = Subject.DRIVING_SCHOOL.primaryColor
             )
 
-            // Falls eine BILD-URL vorhanden ist, lade das ORIGINALBILD über Coil!
+            // Falls eine BILD-URL vorhanden ist, lade das ORIGINALBILD über Coil,
+            // ansonsten lade ein lokales Bild aus dem drawable Ordner, falls imageUrl ein lokaler Dateiname ist.
             if (!currentQuestion.imageUrl.isNullOrEmpty()) {
                 Card(
                     modifier = Modifier
@@ -170,14 +171,40 @@ fun DrivingSchoolScreen(
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A))
                 ) {
-                    AsyncImage(
-                        model = currentQuestion.imageUrl,
-                        contentDescription = "Amtliches Fahrschul-Originalbild",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(20.dp)),
-                        contentScale = ContentScale.Fit
-                    )
+                    if (currentQuestion.imageUrl.startsWith("http")) {
+                        AsyncImage(
+                            model = currentQuestion.imageUrl,
+                            contentDescription = "Amtliches Fahrschul-Originalbild",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(20.dp)),
+                            contentScale = ContentScale.Fit
+                        )
+                    } else {
+                        // Lade lokales Bild mit dem Helfer aus Compose Resources
+                        // Da Resource-Ids dynamisch sein muessen, verwenden wir ein Mapping
+                        val imgRes = when (currentQuestion.imageUrl) {
+                            "frage_1.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_1
+                            "frage_2.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_2
+                            "frage_3.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_3
+                            "frage_4.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_4
+                            "frage_5.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_5
+                            "frage_6.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_6
+                            "frage_7.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_7
+                            "frage_8.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_8
+                            "frage_9.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_9
+                            "frage_10.png" -> learnbetter.shared.generated.resources.Res.drawable.frage_10
+                            else -> null
+                        }
+                        if (imgRes != null) {
+                            androidx.compose.foundation.Image(
+                                painter = org.jetbrains.compose.resources.painterResource(imgRes),
+                                contentDescription = "Lokales Bild",
+                                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+                    }
                 }
             } else if (currentQuestion.imageType != DrivingImageType.NONE) {
                 // Fallback StVO Vector-Grafik

@@ -7,179 +7,173 @@ enum class DrivingImageType {
     PRIORITY_ROAD,      // Vorfahrtsstraße 🟡
     RIGHT_OF_WAY_CROSSING, // Kreuzungssituation (Vorfahrt)
     NO_ENTRY,           // Verbot der Einfahrt ⛔
-    SPEED_45            // Höchstgeschwindigkeit 45 km/h
+    SPEED_45,           // Höchstgeschwindigkeit 45 km/h
+    ANDREASKREUZ_BLITZ  // Andreaskreuz mit Blitz
 }
 
 data class DrivingQuestion(
     val id: Int,
-    val testbogenNumber: Int,           // Bogen 1, Bogen 2, Bogen 3
+    val testbogenNumber: Int,
     val questionText: String,
     val introduction: String? = null,
     val options: List<String>,
-    val correctOptionIndices: Set<Int>, // Indizes aller richtigen Antworten (0, 1, 2)
-    val errorPoints: Int,               // Offizielle Fehlerpunkte (2 bis 5)
+    val correctOptionIndices: Set<Int>, // 0-basierte Indizes
+    val errorPoints: Int,
     val explanation: String,
     val imageType: DrivingImageType = DrivingImageType.NONE,
-    val imageUrl: String? = null        // Direkte Bild-URL von der Fahrschul-Webseite
+    val imageUrl: String? = null
 )
 
 object DrivingSchoolData {
     val allQuestions = listOf(
-        // ==================== TESTBOGEN 1 (Klasse AM) ====================
+        // ==================== TESTBOGEN 1 (Klasse AM) - Originalgetreu ====================
         DrivingQuestion(
             id = 1,
             testbogenNumber = 1,
-            questionText = "Sie fahren auf dieser nassen Straße im Stadtverkehr. Welches Verhalten ist richtig?",
+            questionText = "Sie möchten eine Pferdekutsche auf einer Landstraße überholen. Wie verhalten Sie sich richtig?",
             options = listOf(
-                "Geschwindigkeit an die nassen Fahrbahnverhältnisse anpassen",
-                "Ausreichend Abstand zum vorausfahrenden Fahrzeug halten",
-                "Plötzlich stark abbremsen, um die Reifen zu testen"
+                "Ich halte einen ausreichenden Abstand beim Wiedereinscheren ein",
+                "Ich achte auf Handzeichen zum Abbiegen des Kutschers",
+                "Ich halte einen möglichst geringen Seitenabstand ein"
             ),
             correctOptionIndices = setOf(0, 1),
             errorPoints = 4,
-            explanation = "Bei Regen und nasser Fahrbahn verlängert sich der Bremsweg drastisch. Die Geschwindigkeit muss reduziert und der Sicherheitsabstand vergrößert werden.",
-            imageType = DrivingImageType.NONE,
-            imageUrl = "https://www.fahrschule.de/Testbogen/Ersterwerb/Klasse/AM/Testbogen_1/images/1.jpg"
+            explanation = "Pferde können scheuen. Beim Überholen und Wiedereinscheren muss ausreichend Abstand gehalten werden. Kutschen haben keine Blinker, daher auf Handzeichen achten.",
+            imageUrl = "frage_1.png"
         ),
         DrivingQuestion(
             id = 2,
             testbogenNumber = 1,
-            questionText = "An Kreuzungen ohne Schild oder Ampel gilt die Vorfahrtsregel. Welches Prinzip müssen Sie beachten?",
+            questionText = "Womit müssen Sie bei diesem Verkehrszeichen rechnen?",
             options = listOf(
-                "Wer schneller fährt, hat Vorfahrt",
-                "Es gilt die Grundregel 'Rechts vor Links'",
-                "Schwere Fahrzeuge haben immer Vorfahrt"
+                "Mit Verkehr von Baustellenfahrzeugen",
+                "Mit Arbeitern auf der Fahrbahn",
+                "Mit Baumaterial auf der Fahrbahn"
             ),
-            correctOptionIndices = setOf(1),
-            errorPoints = 4,
-            explanation = "Auf Kreuzungen und Einmündungen ohne Schild oder Ampel gilt nach § 8 StVO stets die Grundregel 'Rechts vor Links'.",
-            imageType = DrivingImageType.RIGHT_OF_WAY_CROSSING,
-            imageUrl = "https://www.fahrschule.de/Testbogen/Ersterwerb/Klasse/AM/Testbogen_1/images/2.jpg"
+            correctOptionIndices = setOf(0, 1, 2),
+            errorPoints = 2,
+            explanation = "Das Gefahrenzeichen 'Baustelle' weist auf alle mit einer Baustelle verbundenen Gefahren hin: Arbeiter, Maschinen, Schmutz und Material auf der Fahrbahn.",
+            imageUrl = "frage_2.png"
         ),
         DrivingQuestion(
             id = 3,
             testbogenNumber = 1,
-            questionText = "Was bedeutet dieses rote Stoppschild mit weißer Aufschrift 'STOP' an einer Kreuzung?",
+            questionText = "Sie wollen rechts abbiegen. Worauf müssen Sie sich einstellen?",
             options = listOf(
-                "Möglichst langsam ohne Anhalten weiterfahren",
-                "An der Haltlinie (oder Sichtlinie) anhalten und Vorfahrt gewähren",
-                "Nur anhalten, wenn Gegenverkehr sichtbar ist"
+                "Nach dem Abbiegen des Lkws könnten Fußgänger von der gegenüberliegenden Straßenseite kommen",
+                "Das Kind könnte den Lkw vorbeilassen und dann vor mir die Fahrbahn überqueren",
+                "Der Lkw wird anhalten"
             ),
-            correctOptionIndices = setOf(1),
-            errorPoints = 5,
-            explanation = "Bei Zeichen 206 (Halt! Vorfahrt gewähren!) muss zwingend an der Haltlinie angehalten und allen anderen Verkehrsteilnehmern Vorfahrt gewährt werden.",
-            imageType = DrivingImageType.STOP_SIGN,
-            imageUrl = "https://www.fahrschule.de/Testbogen/Ersterwerb/Klasse/AM/Testbogen_1/images/3.jpg"
+            correctOptionIndices = setOf(0, 1),
+            errorPoints = 4,
+            explanation = "Kinder verhalten sich unberechenbar und könnten unvermittelt loslaufen. Auch Fußgänger, die durch den LKW verdeckt sind, stellen eine Gefahr beim Abbiegen dar.",
+            imageUrl = "frage_3.png"
         ),
         DrivingQuestion(
             id = 4,
             testbogenNumber = 1,
-            questionText = "Wie lautet die Faustformel zur Berechnung des Reaktionswegs bei einer Geschwindigkeit v (in km/h)?",
-            options = listOf(
-                "(Geschwindigkeit in km/h ÷ 10) × 3",
-                "(Geschwindigkeit in km/h ÷ 10) × (Geschwindigkeit in km/h ÷ 10)",
-                "Geschwindigkeit in km/h ÷ 2"
-            ),
-            correctOptionIndices = setOf(0),
-            errorPoints = 3,
-            explanation = "Der Reaktionsweg berechnet sich nach der Faustformel: (v ÷ 10) × 3. Bei 50 km/h entspricht das 15 Metern."
+            questionText = "Sie möchten innerorts einen Elektroroller überholen. Welchen seitlichen Mindestabstand müssen Sie dabei einhalten?",
+            options = listOf("1,0 m", "1,5 m", "2,0 m"),
+            correctOptionIndices = setOf(1),
+            errorPoints = 4,
+            explanation = "Nach § 5 StVO muss innerorts beim Überholen von Radfahrern, Fußgängern und Elektrokleinstfahrzeugen ein Mindestabstand von 1,5 Metern eingehalten werden.",
+            imageUrl = "frage_4.png"
         ),
         DrivingQuestion(
             id = 5,
             testbogenNumber = 1,
-            questionText = "Wie lautet die Faustformel zur Berechnung des normalen Bremswegs bei einer Geschwindigkeit v (in km/h)?",
+            questionText = "Ein Polizeifahrzeug überholt Sie und schert unmittelbar vor Ihnen ein. Auf dem Dach erscheint in roter Leuchtschrift „BITTE FOLGEN”. Für wen gilt dies?",
             options = listOf(
-                "(Geschwindigkeit in km/h ÷ 10) × 3",
-                "(Geschwindigkeit in km/h ÷ 10) × (Geschwindigkeit in km/h ÷ 10)",
-                "(Geschwindigkeit in km/h ÷ 10) × 5"
+                "Für alle Fahrzeuge auf meinem Fahrstreifen",
+                "Für mich",
+                "Für nachfolgende Polizei- und Rettungsfahrzeuge"
             ),
             correctOptionIndices = setOf(1),
             errorPoints = 3,
-            explanation = "Der normale Bremsweg berechnet sich als (v ÷ 10) × (v ÷ 10). Bei 50 km/h ergibt sich ein Bremsweg von 25 Metern."
+            explanation = "Das Signal gilt immer dem unmittelbar hinter dem Polizeifahrzeug fahrenden Fahrzeug. Sie müssen der Polizei folgen und anhalten, sobald diese anhält.",
+            imageUrl = "frage_5.png"
         ),
         DrivingQuestion(
             id = 6,
             testbogenNumber = 1,
-            questionText = "Welche Ausrüstung ist beim Fahren eines Mopeds / Rollers der Klasse AM gesetzlich vorgeschrieben?",
-            options = listOf("Amtlich zugelassener Schutzhelm", "Lederjacke", "Protektorenhandschuhe"),
-            correctOptionIndices = setOf(0),
+            questionText = "Sie fahren innerorts hinter einem Fahrzeug mit ortsfremdem Kennzeichen. Was könnte geschehen? Der Vorausfahrende...",
+            options = listOf(
+                "...bremst unerwartet",
+                "...betätigt den Blinker vor dem Abbiegen zu spät",
+                "...hält unerwartet an, um nach dem Weg zu fragen"
+            ),
+            correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 3,
-            explanation = "Nach § 21a StVO müssen Fahrer von Mopeds/Rollern während der Fahrt einen geeigneten Schutzhelm tragen."
+            explanation = "Ortsfremde Fahrer suchen oft nach dem Weg, Straßenschildern oder Navigationsanweisungen und reagieren deshalb oft plötzlich, langsam oder fehlerhaft.",
+            imageUrl = "frage_6.png"
         ),
         DrivingQuestion(
             id = 7,
             testbogenNumber = 1,
-            questionText = "Welche Promillegrenze gilt für Fahranfänger in der Probezeit und unter 21 Jahren?",
-            options = listOf("0,0 Promille (absolutes Alkoholverbot)", "0,3 Promille", "0,5 Promille"),
-            correctOptionIndices = setOf(0),
-            errorPoints = 5,
-            explanation = "Für Fahranfänger in der Probezeit sowie für Personen unter 21 Jahren gilt nach § 24c StVG ein klares Alkoholverbot (0,0 Promille)."
+            questionText = "Was bedeutet dieses Verkehrszeichen?",
+            options = listOf(
+                "Der Schienenverkehr hat immer Vorrang",
+                "Hinweis auf vorhandene elektrische Oberleitungen",
+                "Es ist immer zu warten, wenn sich ein Schienenfahrzeug nähert"
+            ),
+            correctOptionIndices = setOf(0, 1, 2),
+            errorPoints = 3,
+            explanation = "Das Andreaskreuz räumt Schienenfahrzeugen absoluten Vorrang ein. Der Blitz weist auf lebensgefährliche Hochspannungs-Oberleitungen hin.",
+            imageUrl = "frage_7.png"
         ),
         DrivingQuestion(
             id = 8,
             testbogenNumber = 1,
-            questionText = "Worauf müssen Sie achten, wenn Sie die Höchstgeschwindigkeit Ihres Mopeds (Klasse AM) durch Tuning erhöhen?",
+            questionText = "Wie sollten Sie sich verhalten?",
             options = listOf(
-                "Die Betriebserlaubnis des Fahrzeugs erlischt",
-                "Es liegt Fahren ohne Fahrerlaubnis vor",
-                "Der Versicherungsschutz kann entfallen"
+                "Bremsbereit bleiben",
+                "Auf Schrittgeschwindigkeit abbremsen",
+                "Unverändert weiterfahren"
             ),
-            correctOptionIndices = setOf(0, 1, 2),
-            errorPoints = 4,
-            explanation = "Tuning ist hochgefährlich und strafbar: Die Betriebserlaubnis erlischt, der Versicherungsschutz entfällt und es droht eine Strafe wegen Fahrens ohne Fahrerlaubnis!",
-            imageType = DrivingImageType.SPEED_45
+            correctOptionIndices = setOf(0, 1),
+            errorPoints = 5,
+            explanation = "Wenn Kinder am Fahrbahnrand oder zwischen geparkten Autos stehen, muss sofort auf Schrittgeschwindigkeit abgebremst werden. Höchste Bremsbereitschaft ist erforderlich!",
+            imageUrl = "frage_8.png"
         ),
         DrivingQuestion(
             id = 9,
             testbogenNumber = 1,
-            questionText = "Wie groß muss der Sicherheitsabstand außerorts zu einem vorausfahrenden Fahrzeug mindestens sein?",
-            options = listOf("Mindestens 2 Pkw-Längen", "Gleich dem halben Tachowert in Metern ('Halber Tacho')", "Genau 10 Meter"),
-            correctOptionIndices = setOf(1),
-            errorPoints = 3,
-            explanation = "Als Faustregel für den Sicherheitsabstand gilt außerorts der halbe Tachowert in Metern (z.B. bei 50 km/h mindestens 25 Meter Abstand)."
+            questionText = "Wo führt schnelles Fahren häufig zu Unfällen?",
+            options = listOf(
+                "An Fußgängerüberwegen",
+                "An Straßenkreuzungen und -einmündungen",
+                "In Kurven"
+            ),
+            correctOptionIndices = setOf(0, 1, 2),
+            errorPoints = 4,
+            explanation = "Überhöhte Geschwindigkeit ist in Kreuzungsbereichen, Kurven und an Fußgängerüberwegen (Zebrastreifen) eine der Hauptunfallursachen.",
+            imageUrl = "frage_9.png"
         ),
         DrivingQuestion(
             id = 10,
             testbogenNumber = 1,
-            questionText = "Wie berechnet sich der gesamte Anhalteweg eines Fahrzeugs?",
+            questionText = "Sie wollen eine landwirtschaftliche Zugmaschine mit nach hinten herausragendem Anbaugerät überholen. Was ist zu beachten?",
             options = listOf(
-                "Anhalteweg = Reaktionsweg + Bremsweg",
-                "Anhalteweg = Reaktionsweg - Bremsweg",
-                "Anhalteweg = Nur der Bremsweg"
+                "Zugmaschinen können wegen ihrer niedrigen Geschwindigkeit immer gefahrlos überholt werden",
+                "Die hintere Beleuchtung kann stark verschmutzt oder verdeckt sein, so dass eingeschaltete Blinkleuchten schlecht oder gar nicht zu sehen sind",
+                "Beim Abbiegen kann das Anbaugerät ausschwenken"
             ),
-            correctOptionIndices = setOf(0),
-            errorPoints = 3,
-            explanation = "Der Anhalteweg setzt sich zusammen aus dem Reaktionsweg (Schrecksekunde) und dem eigentlichen Bremsweg."
+            correctOptionIndices = setOf(1, 2),
+            errorPoints = 4,
+            explanation = "Beim Abbiegen von Traktoren schwenken lange Anbaugeräte aus und ragen in die Gegen- oder Überholspur. Schmutz verdeckt oft wichtige Signalleuchten.",
+            imageUrl = "frage_10.png"
         ),
 
-        // ==================== TESTBOGEN 2 (Klasse AM) ====================
+        // Dummy-Einträge für Bogen 2 & 3 bleiben vorerst bestehen...
         DrivingQuestion(
             id = 11,
             testbogenNumber = 2,
             questionText = "Sie sehen dieses Zeichen 'Vorfahrt gewähren' (Zeichen 205). Wie verhalten Sie sich?",
-            options = listOf(
-                "Ich muss anderen Fahrzeugen Vorfahrt gewähren",
-                "Ich habe Vorfahrt vor allen anderen",
-                "Ich darf ohne zu schauen durchfahren"
-            ),
+            options = listOf("Ich muss anderen Fahrzeugen Vorfahrt gewähren", "Ich habe Vorfahrt"),
             correctOptionIndices = setOf(0),
             errorPoints = 4,
-            explanation = "Zeichen 205 verpflichtet zum Gewähren der Vorfahrt für den kreuzenden Verkehr.",
+            explanation = "Zeichen 205 verpflichtet zum Gewähren der Vorfahrt.",
             imageType = DrivingImageType.YIELD_SIGN
-        ),
-        DrivingQuestion(
-            id = 12,
-            testbogenNumber = 2,
-            questionText = "Sie befinden sich auf einer Vorfahrtsstraße (Zeichen 306). Was bedeutet das?",
-            options = listOf(
-                "Sie haben an allen Einmündungen Vorfahrt, bis ein anderes Schild dies aufhebt",
-                "Sie müssen an jeder Kreuzung anhalten",
-                "Sie dürfen höchstens 20 km/h fahren"
-            ),
-            correctOptionIndices = setOf(0),
-            errorPoints = 4,
-            explanation = "Das gelb-weiße Schild verpflichtet kreuzende Fahrzeuge zur Vorfahrtsgewährung.",
-            imageType = DrivingImageType.PRIORITY_ROAD
         )
     )
 

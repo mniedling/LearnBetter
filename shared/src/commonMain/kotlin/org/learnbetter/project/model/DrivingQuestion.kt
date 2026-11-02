@@ -39,7 +39,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1),
             errorPoints = 4,
             explanation = "Pferde können scheuen. Beim Überholen und Wiedereinscheren muss ausreichend Abstand gehalten werden. Kutschen haben keine Blinker, daher auf Handzeichen achten.",
-            imageUrl = "frage_1.png"
+            imageUrl = null // Reine Textfrage, kein Bild anzeigen!
         ),
         DrivingQuestion(
             id = 2,
@@ -53,7 +53,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 2,
             explanation = "Das Gefahrenzeichen 'Baustelle' weist auf alle mit einer Baustelle verbundenen Gefahren hin: Arbeiter, Maschinen, Schmutz und Material auf der Fahrbahn.",
-            imageUrl = "frage_2.png"
+            imageUrl = "frage_2.png" // Hier wird das Baustellen-Schild benötigt
         ),
         DrivingQuestion(
             id = 3,
@@ -67,7 +67,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1),
             errorPoints = 4,
             explanation = "Kinder verhalten sich unberechenbar und könnten unvermittelt loslaufen. Auch Fußgänger, die durch den LKW verdeckt sind, stellen eine Gefahr beim Abbiegen dar.",
-            imageUrl = "frage_3.png"
+            imageUrl = "frage_3.png" // Hier wird die Cockpit-Ansicht benötigt
         ),
         DrivingQuestion(
             id = 4,
@@ -77,7 +77,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1),
             errorPoints = 4,
             explanation = "Nach § 5 StVO muss innerorts beim Überholen von Radfahrern, Fußgängern und Elektrokleinstfahrzeugen ein Mindestabstand von 1,5 Metern eingehalten werden.",
-            imageUrl = "frage_4.png"
+            imageUrl = null // Reine Textfrage
         ),
         DrivingQuestion(
             id = 5,
@@ -91,7 +91,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1),
             errorPoints = 3,
             explanation = "Das Signal gilt immer dem unmittelbar hinter dem Polizeifahrzeug fahrenden Fahrzeug. Sie müssen der Polizei folgen und anhalten, sobald diese anhält.",
-            imageUrl = "frage_5.png"
+            imageUrl = null // Reine Textfrage
         ),
         DrivingQuestion(
             id = 6,
@@ -105,7 +105,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 3,
             explanation = "Ortsfremde Fahrer suchen oft nach dem Weg, Straßenschildern oder Navigationsanweisungen und reagieren deshalb oft plötzlich, langsam oder fehlerhaft.",
-            imageUrl = "frage_6.png"
+            imageUrl = null // Reine Textfrage
         ),
         DrivingQuestion(
             id = 7,
@@ -119,7 +119,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 3,
             explanation = "Das Andreaskreuz räumt Schienenfahrzeugen absoluten Vorrang ein. Der Blitz weist auf lebensgefährliche Hochspannungs-Oberleitungen hin.",
-            imageUrl = "frage_7.png"
+            imageUrl = "frage_7.png" // Hier wird das Andreaskreuz benötigt
         ),
         DrivingQuestion(
             id = 8,
@@ -133,7 +133,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1),
             errorPoints = 5,
             explanation = "Wenn Kinder am Fahrbahnrand oder zwischen geparkten Autos stehen, muss sofort auf Schrittgeschwindigkeit abgebremst werden. Höchste Bremsbereitschaft ist erforderlich!",
-            imageUrl = "frage_8.png"
+            imageUrl = "frage_8.png" // Hier wird die Cockpit-Ansicht benötigt
         ),
         DrivingQuestion(
             id = 9,
@@ -147,7 +147,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 4,
             explanation = "Überhöhte Geschwindigkeit ist in Kreuzungsbereichen, Kurven und an Fußgängerüberwegen (Zebrastreifen) eine der Hauptunfallursachen.",
-            imageUrl = "frage_9.png"
+            imageUrl = null // Reine Textfrage
         ),
         DrivingQuestion(
             id = 10,
@@ -161,7 +161,7 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1, 2),
             errorPoints = 4,
             explanation = "Beim Abbiegen von Traktoren schwenken lange Anbaugeräte aus und ragen in die Gegen- oder Überholspur. Schmutz verdeckt oft wichtige Signalleuchten.",
-            imageUrl = "frage_10.png"
+            imageUrl = null // Reine Textfrage
         ),
 
         // Dummy-Einträge für Bogen 2 & 3 bleiben vorerst bestehen...

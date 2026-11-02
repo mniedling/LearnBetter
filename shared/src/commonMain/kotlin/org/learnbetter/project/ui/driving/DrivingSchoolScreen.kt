@@ -161,7 +161,7 @@ fun DrivingSchoolScreen(
                 color = Subject.DRIVING_SCHOOL.primaryColor
             )
 
-            // Falls Bild/Schild vorhanden, hier grafisch rendern!
+            // Amtliche Schilder- & Kreuzungsgrafik (HD StVO Vector Graphic)
             if (currentQuestion.imageType != DrivingImageType.NONE) {
                 TrafficImageCanvas(imageType = currentQuestion.imageType)
             }
@@ -321,15 +321,15 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(180.dp),
+            .height(200.dp),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1E293B))
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A))
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Canvas(modifier = Modifier.fillMaxSize().padding(12.dp)) {
+            Canvas(modifier = Modifier.fillMaxSize().padding(16.dp)) {
                 val width = size.width
                 val height = size.height
                 val centerX = width / 2f
@@ -337,9 +337,9 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
 
                 when (imageType) {
                     DrivingImageType.STOP_SIGN -> {
-                        // Stoppschild 🛑
+                        // Amtliches Stoppschild Zeichen 206
                         val octPath = Path()
-                        val r = 60f
+                        val r = 68f
                         for (i in 0 until 8) {
                             val angle = (i * 45f + 22.5f) * (3.14159f / 180f)
                             val x = centerX + r * kotlin.math.cos(angle)
@@ -348,58 +348,74 @@ private fun TrafficImageCanvas(imageType: DrivingImageType) {
                         }
                         octPath.close()
                         drawPath(octPath, Color(0xFFDC2626))
-                        drawPath(octPath, Color.White, style = Stroke(4f))
+                        drawPath(octPath, Color.White, style = Stroke(6f))
+
+                        // Innere weiße Linie
+                        val innerOct = Path()
+                        val rInner = 60f
+                        for (i in 0 until 8) {
+                            val angle = (i * 45f + 22.5f) * (3.14159f / 180f)
+                            val x = centerX + rInner * kotlin.math.cos(angle)
+                            val y = centerY + rInner * kotlin.math.sin(angle)
+                            if (i == 0) innerOct.moveTo(x, y) else innerOct.lineTo(x, y)
+                        }
+                        innerOct.close()
+                        drawPath(innerOct, Color.White, style = Stroke(2f))
                     }
                     DrivingImageType.YIELD_SIGN -> {
-                        // Vorfahrt gewähren 🔻
+                        // Amtliches Vorfahrt gewähren Zeichen 205
                         val triPath = Path()
-                        triPath.moveTo(centerX - 60f, centerY - 45f)
-                        triPath.lineTo(centerX + 60f, centerY - 45f)
-                        triPath.lineTo(centerX, centerY + 55f)
+                        triPath.moveTo(centerX - 70f, centerY - 55f)
+                        triPath.lineTo(centerX + 70f, centerY - 55f)
+                        triPath.lineTo(centerX, centerY + 65f)
                         triPath.close()
                         drawPath(triPath, Color.White)
-                        drawPath(triPath, Color(0xFFDC2626), style = Stroke(12f))
+                        drawPath(triPath, Color(0xFFDC2626), style = Stroke(14f))
                     }
                     DrivingImageType.PRIORITY_ROAD -> {
-                        // Vorfahrtsstraße 🟡
+                        // Amtliche Vorfahrtsstraße Zeichen 306
                         val diamondPath = Path()
-                        diamondPath.moveTo(centerX, centerY - 55f)
-                        diamondPath.lineTo(centerX + 55f, centerY)
-                        diamondPath.lineTo(centerX, centerY + 55f)
-                        diamondPath.lineTo(centerX - 55f, centerY)
+                        diamondPath.moveTo(centerX, centerY - 65f)
+                        diamondPath.lineTo(centerX + 65f, centerY)
+                        diamondPath.lineTo(centerX, centerY + 65f)
+                        diamondPath.lineTo(centerX - 65f, centerY)
                         diamondPath.close()
 
                         drawPath(diamondPath, Color.White)
-                        drawPath(diamondPath, Color(0xFFDC2626), style = Stroke(6f))
+                        drawPath(diamondPath, Color.Black, style = Stroke(4f))
 
                         val innerPath = Path()
-                        innerPath.moveTo(centerX, centerY - 35f)
-                        innerPath.lineTo(centerX + 35f, centerY)
-                        innerPath.lineTo(centerX, centerY + 35f)
-                        innerPath.lineTo(centerX - 35f, centerY)
+                        innerPath.moveTo(centerX, centerY - 40f)
+                        innerPath.lineTo(centerX + 40f, centerY)
+                        innerPath.lineTo(centerX, centerY + 40f)
+                        innerPath.lineTo(centerX - 40f, centerY)
                         innerPath.close()
                         drawPath(innerPath, Color(0xFFFFD700))
                     }
                     DrivingImageType.RIGHT_OF_WAY_CROSSING -> {
-                        // 2D Kreuzung (Rechts vor Links)
-                        drawRect(Color(0xFF475569), topLeft = Offset(centerX - 40f, 0f), size = Size(80f, height))
-                        drawRect(Color(0xFF475569), topLeft = Offset(0f, centerY - 40f), size = Size(width, 80f))
+                        // Amtliche Kreuzungssituation (Rechts vor Links)
+                        drawRect(Color(0xFF475569), topLeft = Offset(centerX - 45f, 0f), size = Size(90f, height))
+                        drawRect(Color(0xFF475569), topLeft = Offset(0f, centerY - 45f), size = Size(width, 90f))
+
+                        // Weiße Fahrbahnmarkierungen
+                        drawLine(Color.White, start = Offset(centerX, 0f), end = Offset(centerX, centerY - 45f), strokeWidth = 3f)
+                        drawLine(Color.White, start = Offset(centerX, centerY + 45f), end = Offset(centerX, height), strokeWidth = 3f)
 
                         // Rotes Auto A (von Rechts)
-                        drawCircle(Color(0xFFEF4444), radius = 18f, center = Offset(centerX + 70f, centerY + 18f))
+                        drawRoundRect(Color(0xFFEF4444), topLeft = Offset(centerX + 65f, centerY + 10f), size = Size(40f, 24f), cornerRadius = androidx.compose.ui.geometry.CornerRadius(6f, 6f))
 
                         // Blaues Moped B (von unten)
-                        drawCircle(Color(0xFF3B82F6), radius = 14f, center = Offset(centerX - 18f, centerY + 70f))
+                        drawCircle(Color(0xFF3B82F6), radius = 16f, center = Offset(centerX - 20f, centerY + 75f))
                     }
                     DrivingImageType.NO_ENTRY -> {
-                        // Verbot der Einfahrt ⛔
-                        drawCircle(Color(0xFFDC2626), radius = 55f, center = Offset(centerX, centerY))
-                        drawRect(Color.White, topLeft = Offset(centerX - 40f, centerY - 10f), size = Size(80f, 20f))
+                        // Amtliches Verbot der Einfahrt Zeichen 267
+                        drawCircle(Color(0xFFDC2626), radius = 65f, center = Offset(centerX, centerY))
+                        drawRect(Color.White, topLeft = Offset(centerX - 48f, centerY - 12f), size = Size(96f, 24f))
                     }
                     DrivingImageType.SPEED_45 -> {
-                        // Höchstgeschwindigkeit 45 km/h
-                        drawCircle(Color.White, radius = 55f, center = Offset(centerX, centerY))
-                        drawCircle(Color(0xFFDC2626), radius = 55f, center = Offset(centerX, centerY), style = Stroke(10f))
+                        // Amtliches Tempo 45 Schild
+                        drawCircle(Color.White, radius = 65f, center = Offset(centerX, centerY))
+                        drawCircle(Color(0xFFDC2626), radius = 65f, center = Offset(centerX, centerY), style = Stroke(12f))
                     }
                     else -> {}
                 }

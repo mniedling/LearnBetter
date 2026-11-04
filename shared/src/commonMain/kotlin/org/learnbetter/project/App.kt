@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.launch
 import org.learnbetter.project.model.RewardExchangeRate
 import org.learnbetter.project.model.RewardState
 import org.learnbetter.project.model.Subject
@@ -36,61 +37,142 @@ enum class NavigationTab(val label: String, val icon: String) {
     QUIZ("Quiz", "📝")
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun App() {
     var selectedSubject by remember { mutableStateOf(Subject.CHEMISTRY) }
     var selectedTab by remember { mutableStateOf(NavigationTab.DASHBOARD) }
-    var totalXp by remember { mutableIntStateOf(0) } // Startet bei 0 XP
+    var totalXp by remember { mutableIntStateOf(0) }
     var streakDays by remember { mutableIntStateOf(1) }
     var redeemedMinutes by remember { mutableIntStateOf(0) }
-    var exchangeRate by remember { mutableStateOf(RewardExchangeRate.BALANCED) } // Default 50 XP = 5 Min
+    var exchangeRate by remember { mutableStateOf(RewardExchangeRate.BALANCED) }
 
     val rewardState = remember(totalXp, redeemedMinutes, exchangeRate) {
         RewardState(totalXp = totalXp, redeemedMinutes = redeemedMinutes, exchangeRate = exchangeRate)
     }
 
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+
     LearnBetterTheme {
-        Scaffold(
-            bottomBar = {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                ModalDrawerSheet(
+                    drawerContainerColor = MaterialTheme.colorScheme.surface
                 ) {
-                    NavigationTab.entries.forEach { tab ->
-                        NavigationBarItem(
-                            selected = selectedTab == tab,
-                            onClick = { selectedTab = tab },
-                            icon = { Text(tab.icon, fontSize = 20.sp) },
-                            label = { Text(tab.label) }
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .padding(16.dp)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Text(
+                            text = "LearnBetter • Fächer & Fahrschule",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(vertical = 12.dp)
                         )
+
+                        HorizontalDivider()
+
+                        Text(
+                            text = "Kategorie auswählen:",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+
+                        Subject.entries.forEach { subject ->
+                            val isSelected = subject == selectedSubject
+                            NavigationDrawerItem(
+                                icon = { Text(subject.icon, fontSize = 22.sp) },
+                                label = {
+                                    Text(
+                                        text = subject.displayName,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
+                                    )
+                                },
+                                selected = isSelected,
+                                onClick = {
+                                    selectedSubject = subject
+                                    scope.launch { drawerState.close() }
+                                },
+                                shape = RoundedCornerShape(16.dp),
+                                colors = NavigationDrawerItemDefaults.colors(
+                                    selectedContainerColor = subject.primaryColor
+                                )
+                            )
+                        }
                     }
                 }
             }
-        ) { paddingValues ->
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-            ) {
-                when (selectedTab) {
-                    NavigationTab.DASHBOARD -> DashboardContent(
-                        selectedSubject = selectedSubject,
-                        rewardState = rewardState,
-                        streakDays = streakDays,
-                        onSubjectSelected = { selectedSubject = it },
-                        onRateChanged = { exchangeRate = it },
-                        onNavigateToLab = { selectedTab = NavigationTab.LAB },
-                        onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ },
-                        onRedeemMinutes = { mins -> redeemedMinutes += mins }
+        ) {
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Text(selectedSubject.icon, fontSize = 20.sp)
+                                Text(selectedSubject.displayName, fontWeight = FontWeight.Bold)
+                            }
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                Text("☰", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                            }
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant
+                        )
                     )
-                    NavigationTab.LAB -> LabHubScreen(
-                        currentSubject = selectedSubject,
-                        onXpEarned = { earned -> totalXp += earned }
-                    )
-                    NavigationTab.QUIZ -> QuizScreen(
-                        currentSubject = selectedSubject,
-                        onXpEarned = { earned -> totalXp += earned }
-                    )
+                },
+                bottomBar = {
+                    NavigationBar(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant
+                    ) {
+                        NavigationTab.entries.forEach { tab ->
+                            NavigationBarItem(
+                                selected = selectedTab == tab,
+                                onClick = { selectedTab = tab },
+                                icon = { Text(tab.icon, fontSize = 20.sp) },
+                                label = { Text(tab.label) }
+                            )
+                        }
+                    }
+                }
+            ) { paddingValues ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)
+                ) {
+                    when (selectedTab) {
+                        NavigationTab.DASHBOARD -> DashboardContent(
+                            selectedSubject = selectedSubject,
+                            rewardState = rewardState,
+                            streakDays = streakDays,
+                            onSubjectSelected = { selectedSubject = it },
+                            onRateChanged = { exchangeRate = it },
+                            onNavigateToLab = { selectedTab = NavigationTab.LAB },
+                            onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ },
+                            onRedeemMinutes = { mins -> redeemedMinutes += mins }
+                        )
+                        NavigationTab.LAB -> LabHubScreen(
+                            currentSubject = selectedSubject,
+                            onXpEarned = { earned -> totalXp += earned }
+                        )
+                        NavigationTab.QUIZ -> QuizScreen(
+                            currentSubject = selectedSubject,
+                            onXpEarned = { earned -> totalXp += earned }
+                        )
+                    }
                 }
             }
         }
@@ -116,11 +198,6 @@ private fun DashboardContent(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         HeaderSection(rewardState = rewardState, streakDays = streakDays)
-
-        SubjectSelectorRow(
-            selectedSubject = selectedSubject,
-            onSubjectSelected = onSubjectSelected
-        )
 
         RewardCard(
             rewardState = rewardState,
@@ -219,51 +296,6 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
                         fontWeight = FontWeight.Bold,
                         color = Color.Black
                     )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun SubjectSelectorRow(
-    selectedSubject: Subject,
-    onSubjectSelected: (Subject) -> Unit
-) {
-    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(
-            text = "Fach auswählen:",
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Subject.entries.forEach { subject ->
-                val isSelected = subject == selectedSubject
-                Surface(
-                    modifier = Modifier.clickable { onSubjectSelected(subject) },
-                    shape = RoundedCornerShape(16.dp),
-                    color = if (isSelected) subject.primaryColor else MaterialTheme.colorScheme.surfaceVariant
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        Text(subject.icon, fontSize = 16.sp)
-                        Text(
-                            text = subject.displayName,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
                 }
             }
         }

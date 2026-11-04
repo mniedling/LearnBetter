@@ -78,7 +78,61 @@ fun DrivingSchoolScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Filter Bogen-Auswahl & Reihenfolge Switcher
+            // Header: Testbogen & Kompakte Fehlerpunkte & Wuerfel-Button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column {
+                    Text(
+                        text = if (selectedBogenNumber == 0) "🛵 Gesamtpool • Klasse AM" else "🛵 Testbogen Nr. $selectedBogenNumber",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = Subject.DRIVING_SCHOOL.primaryColor
+                    )
+                    Text(
+                        text = "Frage ${currentIndex + 1} von ${questions.size}",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    // Wuerfel-Toggle Button (Random vs Sequential)
+                    Surface(
+                        modifier = Modifier.clickable { isRandomOrder = !isRandomOrder },
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isRandomOrder) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                    ) {
+                        Box(
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("🎲", fontSize = 16.sp)
+                        }
+                    }
+
+                    // Kompakte Fehlerpunkte-Anzeige
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.errorContainer
+                    ) {
+                        Text(
+                            text = "${currentQuestion.errorPoints} FP",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+            }
+
+            // Filter Bogen-Auswahl Pills
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -87,7 +141,7 @@ fun DrivingSchoolScreen(
             ) {
                 listOf(1, 2, 3, 0).forEach { bogen ->
                     val isSelected = selectedBogenNumber == bogen
-                    val label = if (bogen == 0) "🎲 Alle Bögen" else "Testbogen $bogen"
+                    val label = if (bogen == 0) "Alle" else "Bogen $bogen"
                     Surface(
                         modifier = Modifier.clickable {
                             selectedBogenNumber = bogen
@@ -103,57 +157,6 @@ fun DrivingSchoolScreen(
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
                     }
-                }
-
-                // Order Switcher (Der Reihe nach vs. Zufall)
-                Surface(
-                    modifier = Modifier.clickable {
-                        isRandomOrder = !isRandomOrder
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    color = if (isRandomOrder) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceVariant
-                ) {
-                    Text(
-                        text = if (isRandomOrder) "🔀 Zufällig" else "🔢 Der Reihe nach",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                    )
-                }
-            }
-
-            // Header: Testbogen & Fehlerpunkte
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column {
-                    Text(
-                        text = if (selectedBogenNumber == 0) "🛵 Gesamtpool • Klasse AM" else "🛵 Testbogen Nr. $selectedBogenNumber • Klasse AM",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Subject.DRIVING_SCHOOL.primaryColor
-                    )
-                    Text(
-                        text = "Frage ${currentIndex + 1} von ${questions.size}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.errorContainer
-                ) {
-                    Text(
-                        text = "Wertigkeit: ${currentQuestion.errorPoints} FP",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onErrorContainer,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
-                    )
                 }
             }
 

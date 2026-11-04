@@ -1,16 +1,31 @@
 package org.learnbetter.project.model
 
+enum class MilitaryBranch {
+    HEER_LUFTWAFFE, // Heer & Luftwaffe
+    MARINE          // Marine (Seestreitkräfte)
+}
+
+enum class RankCategory(val displayName: String, val icon: String) {
+    MANNSCHAFTEN("Mannschaften", "🪖"),
+    UNTEROFFIZIERE("Unteroffiziere", "🎗️"),
+    OFFIZIERE("Offiziere", "⚔️"),
+    GENERALE_ADMIRALE("Generale & Admirale", "⭐")
+}
+
 data class MilitaryRank(
     val id: String,
     val name: String,
-    val rankGroup: String, // Mannschaften, Unteroffiziere, Offiziere
-    val level: Int,        // 1 bis 7 Hierarchie
-    val insigniaIcon: String
+    val branch: MilitaryBranch,
+    val category: RankCategory,
+    val level: Int,             // Hierarchie-Ebene (1 = niedrigst, 10 = höchst)
+    val insigniaCode: String,   // Vektor-Code für die Schulterklappen-Zeichnung
+    val description: String
 )
 
 data class MilitaryQuestion(
     val id: Int,
     val questionText: String,
+    val introduction: String? = null,
     val options: List<String>,
     val correctAnswerIndex: Int,
     val explanation: String,
@@ -19,13 +34,45 @@ data class MilitaryQuestion(
 
 object MilitaryData {
     val ranks = listOf(
-        MilitaryRank("gefreiter", "Gefreiter", "Mannschaften", 1, "🎗️"),
-        MilitaryRank("stabsgefreiter", "Stabsgefreiter", "Mannschaften", 2, "🎗️🎗️"),
-        MilitaryRank("stabsunteroffizier", "Stabsunteroffizier", "Unteroffiziere", 3, "🎖️"),
-        MilitaryRank("feldwebel", "Feldwebel", "Unteroffiziere", 4, "🎖️⭐"),
-        MilitaryRank("leutnant", "Leutnant", "Offiziere", 5, "⭐"),
-        MilitaryRank("hauptmann", "Hauptmann", "Offiziere", 6, "⭐⭐⭐"),
-        MilitaryRank("oberst", "Oberst", "Offiziere", 7, "🦅")
+        // === HEER / LUFTWAFFE - MANNSCHAFTEN ===
+        MilitaryRank("h_schuetze", "Schütze / Flieger", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.MANNSCHAFTEN, 1, "BAR_0", "Unsterster Mannschaftsdienstgrad (Grundwehrdienst/Saz)"),
+        MilitaryRank("h_gefreiter", "Gefreiter", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.MANNSCHAFTEN, 2, "BAR_1", "1 schräger Balken"),
+        MilitaryRank("h_obergefreiter", "Obergefreiter", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.MANNSCHAFTEN, 3, "BAR_2", "2 schräge Balken"),
+        MilitaryRank("h_hauptgefreiter", "Hauptgefreiter", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.MANNSCHAFTEN, 4, "BAR_3", "3 schräge Balken"),
+        MilitaryRank("h_stabsgefreiter", "Stabsgefreiter", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.MANNSCHAFTEN, 5, "BAR_4", "1 Winkelschleife + Balken"),
+        MilitaryRank("h_korporal", "Korporal", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.MANNSCHAFTEN, 6, "KORPORAL", "Spitzendienstgrad Mannschaften mit Doppelwinkel"),
+
+        // === HEER / LUFTWAFFE - UNTEROFFIZIERE ===
+        MilitaryRank("h_unteroffizier", "Unteroffizier", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.UNTEROFFIZIERE, 1, "NCO_1", "Offene U-förmige Tresse"),
+        MilitaryRank("h_stabsunteroffizier", "Stabsunteroffizier", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.UNTEROFFIZIERE, 2, "NCO_2", "Geschlossene U-förmige Tresse"),
+        MilitaryRank("h_feldwebel", "Feldwebel", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.UNTEROFFIZIERE, 3, "NCO_3", "Kopfwinkel mit 1 Kopfwinkel-Spitze"),
+        MilitaryRank("h_oberfeldwebel", "Oberfeldwebel", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.UNTEROFFIZIERE, 4, "NCO_4", "Kopfwinkel mit 2 Kopfwinkeln"),
+        MilitaryRank("h_hauptfeldwebel", "Hauptfeldwebel", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.UNTEROFFIZIERE, 5, "NCO_5", "Kopfwinkel mit Kopfwinkel-Kopfrand"),
+
+        // === HEER / LUFTWAFFE - OFFIZIERE ===
+        MilitaryRank("h_leutnant", "Leutnant", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.OFFIZIERE, 1, "OFF_1", "1 silberner Stern"),
+        MilitaryRank("h_oberleutnant", "Oberleutnant", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.OFFIZIERE, 2, "OFF_2", "2 silberne Sterne"),
+        MilitaryRank("h_hauptmann", "Hauptmann", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.OFFIZIERE, 3, "OFF_3", "3 silberne Sterne"),
+        MilitaryRank("h_major", "Major", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.OFFIZIERE, 4, "OFF_4", "Silbernes Eichenlaubkranz + 1 Stern"),
+        MilitaryRank("h_oberstleutnant", "Oberstleutnant", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.OFFIZIERE, 5, "OFF_5", "Silbernes Eichenlaubkranz + 2 Sterne"),
+        MilitaryRank("h_oberst", "Oberst", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.OFFIZIERE, 6, "OFF_6", "Silbernes Eichenlaubkranz + 3 Sterne"),
+
+        // === HEER / LUFTWAFFE - GENERALE ===
+        MilitaryRank("h_brigadegeneral", "Brigadegeneral", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.GENERALE_ADMIRALE, 1, "GEN_1", "Goldenes Eichenlaub + 1 goldener Stern"),
+        MilitaryRank("h_generalmajor", "Generalmajor", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.GENERALE_ADMIRALE, 2, "GEN_2", "Goldenes Eichenlaub + 2 goldene Sterne"),
+        MilitaryRank("h_generalleutnant", "Generalleutnant", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.GENERALE_ADMIRALE, 3, "GEN_3", "Goldenes Eichenlaub + 3 goldene Sterne"),
+        MilitaryRank("h_general", "General", MilitaryBranch.HEER_LUFTWAFFE, RankCategory.GENERALE_ADMIRALE, 4, "GEN_4", "Goldenes Eichenlaub + 4 goldene Sterne"),
+
+        // === MARINE - MANNSCHAFTEN & BOOTSLEUTE ===
+        MilitaryRank("m_matrose", "Matrose", MilitaryBranch.MARINE, RankCategory.MANNSCHAFTEN, 1, "NAVY_0", "Einfacher Mannschaftsdienstgrad Marine"),
+        MilitaryRank("m_gefreiter", "Gefreiter (Marine)", MilitaryBranch.MARINE, RankCategory.MANNSCHAFTEN, 2, "NAVY_1", "1 Schrägbalken auf dunkelblauem Grund"),
+        MilitaryRank("m_obergefreiter", "Obergefreiter (Marine)", MilitaryBranch.MARINE, RankCategory.MANNSCHAFTEN, 3, "NAVY_2", "2 Schrägbalken auf dunkelblauem Grund"),
+        MilitaryRank("m_maat", "Maat", MilitaryBranch.MARINE, RankCategory.UNTEROFFIZIERE, 1, "NAVY_MAAT", "Goldener Maat-Winkel"),
+        MilitaryRank("m_bootsmann", "Bootsmann", MilitaryBranch.MARINE, RankCategory.UNTEROFFIZIERE, 2, "NAVY_BOOTSMANN", "Goldenes Seemanns-Emblem mit Anker"),
+        MilitaryRank("m_leutnant_z_s", "Leutnant zur See", MilitaryBranch.MARINE, RankCategory.OFFIZIERE, 1, "NAVY_OFF_1", "1 mittelbreite goldene Tresse mit Seesterne"),
+        MilitaryRank("m_kapitaenleutnant", "Kapitänleutnant", MilitaryBranch.MARINE, RankCategory.OFFIZIERE, 2, "NAVY_OFF_2", "2 mittelbreite + 1 schmale goldene Tresse"),
+        MilitaryRank("m_fregattenkapitaen", "Fregattenkapitän", MilitaryBranch.MARINE, RankCategory.OFFIZIERE, 3, "NAVY_OFF_3", "3 mittelbreite + 1 breite goldene Tresse"),
+        MilitaryRank("m_admiral", "Admiral", MilitaryBranch.MARINE, RankCategory.GENERALE_ADMIRALE, 1, "NAVY_ADMIRAL", "Breite Tresse + 3 goldene Sterne + Anker")
     )
 
     val catTestQuestions = listOf(

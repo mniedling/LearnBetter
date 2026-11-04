@@ -2,24 +2,29 @@
 
 Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Fahrschule (Klasse AM), Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
 
-Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen mit Grafiken**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
+Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen mit Grafiken**, **Hamburger Navigation Drawer**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
 
 ---
 
-## 📚 Fächerübersicht & Werkstätten
+## 📚 Fächerübersicht & Hamburger-Menü Navigation
 
-### 🛵 1. Fahrschule (Klasse AM / Moped - ERWEITERT!)
-- **Bogen-Auswahl & Reihenfolge-Schalter:**
-  - **Bogen-Filter:** Wähle gezielt `Testbogen 1`, `Testbogen 2`, `Testbogen 3` oder `🎲 Alle Bögen (Gesamtpool)`.
-  - **Reihenfolge-Schalter:** Wechsle stufenlos zwischen `🔢 Der Reihe nach` und `🔀 Zufällig`.
-- **Grafische Schilder & Kreuzungssituationen:**
-  - Direkt auf der Leinwand gerenderte **Verkehrszeichen & Kreuzungen** (z. B. Stoppschild 🛑, Vorfahrt gewähren 🔻, Vorfahrtsstraße 🟡, Verbot der Einfahrt ⛔, Höchstgeschwindigkeit 45 km/h und Vorfahrts-Kreuzungssituationen).
-- **Amtliche Prüfungsfragen & Auswertung:**
-  - Multi-Select Checkboxes ($\square$), offizielle Fehlerpunkte-Badges (`2 bis 5 FP`), StVO-Erklärungen und Prüfungsauswertung (**Bestanden bei ≤ 10 Fehlerpunkten** +50 XP).
+### ☰ 1. Hamburger Navigation Drawer (Seitenmenü - NEU!)
+- Aufklappbares Material 3 **Hamburger-Seitenmenü (`☰`)** in der Haupt-App.
+- Aufgeräumtes Dashboard mit Schwerpunkt auf **Guthaben-Karte (PC-Zeit)**, **Streak** und den aktiven Fachinhalten.
+- Schneller Wechsel zwischen allen 8 Kategorien (*Chemie, Fahrschule AM, Physik, Biologie, Mathematik, GL, Musik, Deutsch*).
+
+### 🛵 2. Fahrschule (Klasse AM / Moped - KOMPAKT & BILDER!)
+- **Kompakter Header & Würfel-Button (`🎲`):**
+  - Kompaktes Layout im Fragen-Kopf: **`4 FP`**-Badge (statt langer Beschriftung).
+  - **Umschalt-Würfel (`🎲`)**: Umschalten per Klick zwischen `🔢 Der Reihe nach` (Standard) und `🔀 Zufällig`.
+  - **Bogen-Filter Pills:** `[ Bogen 1 ]`, `[ Bogen 2 ]`, `[ Bogen 3 ]`, `[ Alle ]`.
+- **Echte Originalbilder & StVO-Erklärungen:**
+  - 100% offline-fähige Einbindung der hochauflösenden 3D-Bilder aus den amtlichen Fragen.
+  - Einbindung des **Apretext**-Feldes (Einleitungen vor Fragen) und stufenlose Textbereinigung von Variationsklammern `[...]`.
 - **Anhalteweg & Bremsweg Rechner (Werkstatt):**
   - Schieberegler für Tempo $v$ (10 bis 100 km/h) mit Live-Berechnung von Reaktionsweg, Bremsweg, Anhalteweg und Gefahrenbremsung.
 
-### 🧪 2. Chemie
+### 🧪 3. Chemie
 - **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**
   - **Erlenmeyerkolben-Werkstatt:** Interaktives Zuordnen von Säureformeln ($HCl, H_2SO_4, H_3PO_4, HNO_3, H_2CO_3, H_2SO_3, HNO_2$).
   - **Wasser-Dissoziation:** Wasser dazugießen ($H_2O$), Reaktionen beobachten und Säurerest-Ionen ($Cl^-, SO_4^{2-}, PO_4^{3-}, NO_3^-, CO_3^{2-}, SO_3^{2-}, NO_2^-$) sowie deren Namen (*Chlorid, Sulfat, Phosphat, Nitrat, Carbonat, Sulfit, Nitrit*) zuordnen.
@@ -40,7 +45,7 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 - **Magnesiumband entzünden:**
   - Verbrennung über der Bunsenbrennerflamme unter gleißendem Licht zu Magnesiumoxid ($2\,Mg + O_2 \rightarrow 2\,MgO$).
 
-### 🧬 3. Biologie
+### 🧬 4. Biologie
 - **🔬 Virtuelles Mikroskop:**
   - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
   - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
@@ -51,29 +56,29 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
   - **Rechte Werkzeugleiste:** Wähle Skalpell ✂️ und Pinzette 🤏 per Touch aus!
   - **3D-Zellkern Explorer:** Interaktive Erforschung von Kernporen (mRNA-Transport), Chromatin (DNA-Stränge) und Nucleolus (Kernkörperchen).
 
-### ⚙️ 4. Physik
+### ⚙️ 5. Physik
 - **Hookesches Gesetz & Federdehnungs-Werkstatt ($F = D \cdot \Delta s$):**
   - **Spiralfeder-Simulator:** Hänge Gewichte ($0\,\text{N}$ bis $10\,\text{N}$) an die Feder und stelle die Federkonstante $D$ ein.
   - **Elastische Dehnung:** Visualisiert die proportionale Verlängerung $\Delta s$ in cm.
 
-### 📐 5. Mathematik
+### 📐 6. Mathematik
 - **Interaktiver Parabel-Plotter:**
   - Untersuchung quadratischer Funktionen $f(x) = a \cdot x^2 + c$.
 - **3D-Geometrie & Oberflächenrechner:**
   - **Zylinder Oberflächenberechnung:** Grundfläche $G = \pi r^2$, Mantelfläche $M = 2\pi r h$, Oberfläche $O = 2G + M$, Volumen $V$.
   - **Quadratische Pyramide Oberflächenberechnung:** Grundfläche $G = a^2$, Seitenhöhe $h_s = \sqrt{h^2 + (a/2)^2}$, Mantelfläche $M = 2 a h_s$, Oberfläche $O = G + M$, Volumen $V = \frac{1}{3} a^2 h$.
 
-### 🌍 6. Gesellschaftslehre (GL)
+### 🌍 7. Gesellschaftslehre (GL)
 - **Historische Zeitleiste & Grundgesetz-Explorer:**
   - Meilensteine von 1914 bis 1990 (Erster Weltkrieg, Weimarer Republik, NS-Diktatur, Grundgesetz 1949, Mauerfall 1989, Wiedervereinigung 1990).
   - Verankerung von Artikel 1 Abs. 1 GG (*"Die Würde des Menschen ist unantastbar"*).
 
-### 🎵 7. Musik
+### 🎵 8. Musik
 - **Virtuelles Piano & Dreiklang-Trainer:**
   - Interaktives Klaviatur-Tastenfeld ($C, D, E, F, G, A, H, C'$).
   - Gehör- und Bautrainer für $C$-Dur ($C-E-G$) und $A$-Moll ($A-C-E$).
 
-### 📖 8. Deutsch
+### 📖 9. Deutsch
 - **Stilmittel- & Rhetorik-Baukasten:**
   - Interaktives Zuordnen von Stilmitteln aus Gedichten und Texten (Alliteration, Metapher, Personifikation, Anapher) mit Erklärungsboxen.
 
@@ -93,7 +98,7 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 ## 🏗️ Architektur & Tech-Stack
 
 - **Framework:** Kotlin Multiplatform (KMP) & Compose Multiplatform
-- **Design System:** Material 3 mit Fach-spezifischen Farbwelten (Säuregrün, Fahrschulgelb, Rot, Smaragdgrün, Violett, Amber, Karmesinrot, Königsblau)
+- **Design System:** Material 3 mit Hamburger Navigation Drawer (`☰`) & Fach-spezifischen Farbwelten (Säuregrün, Fahrschulgelb, Rot, Smaragdgrün, Violett, Amber, Karmesinrot, Königsblau)
 - **Repository:** Synchronisiert auf GitHub (`https://github.com/mniedling/LearnBetter.git`)
 
 ---

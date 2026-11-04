@@ -20,7 +20,8 @@ data class DrivingQuestion(
     val errorPoints: Int,
     val explanation: String,
     val imageType: DrivingImageType = DrivingImageType.NONE,
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+    val localImageName: String? = null
 )
 
 object DrivingSchoolData {
@@ -33,7 +34,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 4,
             explanation = "Fahrzeuge und Abbieger können unvermittelt Ihren Weg kreuzen.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1107159m.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1107159m.webp",
+            localImageName = "kalaiwa_1107159m.webp"
         ),
         DrivingQuestion(
             id = 2,
@@ -43,7 +45,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0),
             errorPoints = 4,
             explanation = "Beim Anhalten wegen vorausfahrender Lkw oder Fußgänger muss ausreichend Sicherheitsabstand gehalten werden.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1107171a.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1107171a.webp",
+            localImageName = "kalaiwa_1107171a.webp"
         ),
         DrivingQuestion(
             id = 3,
@@ -53,7 +56,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(2),
             errorPoints = 4,
             explanation = "Alkohol wird im Körper nur langsam durch die Leber abgebaut (ca. 0,1 Promille pro Stunde). Kaffee oder Sport beschleunigen den Abbau nicht.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 4,
@@ -63,7 +67,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 3,
             explanation = "Vor der Fahrt mit einem fremden Fahrzeug muss man sich zwingend mit Schaltern, Bremsen und Fahrverhalten vertraut machen.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 5,
@@ -73,7 +78,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 4,
             explanation = "Achten Sie stets auf schwächere Verkehrsteilnehmer (Radfahrer, Fußgänger) und vorausfahrende Pkw.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1107155ma.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1107155ma.webp",
+            localImageName = "kalaiwa_1107155ma.webp"
         ),
         DrivingQuestion(
             id = 6,
@@ -83,7 +89,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 2),
             errorPoints = 5,
             explanation = "Vor Fußgängerüberwegen darf nicht überholt oder gedrängelt werden. Warten Sie geduldig.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1226114.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1226114.webp",
+            localImageName = "kalaiwa_1226114.webp"
         ),
         DrivingQuestion(
             id = 7,
@@ -93,7 +100,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 2),
             errorPoints = 4,
             explanation = "Defensives Fahren an Zebrastreifen schützt Fußgänger und verhindert gefährliche Auffahrunfälle.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 8,
@@ -103,7 +111,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0),
             errorPoints = 4,
             explanation = "Fußgängerüberwege müssen immer freigehalten werden. Bei Stau davor anhalten!",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 9,
@@ -113,7 +122,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1),
             errorPoints = 4,
             explanation = "Bei Unfällen im Tunnel sofort Warnblinklicht einschalten und per Notrufsäule Hilfe rufen.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 10,
@@ -123,7 +133,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1),
             errorPoints = 3,
             explanation = "Signale von Polizeifahrzeugen sind zwingend zu befolgen.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 11,
@@ -133,7 +144,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1),
             errorPoints = 3,
             explanation = "Anhaltesignale der Polizei verpflichten zum Folgen oder Abbiegen.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 12,
@@ -143,7 +155,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 2),
             errorPoints = 3,
             explanation = "Blaues Blinklicht zeigt Einsätze von Rettungskräften oder Gefahrenstellen an.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 13,
@@ -153,7 +166,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0),
             errorPoints = 4,
             explanation = "Spurwechsel rechtzeitig und ohne Gefährdung anderer durchführen.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1207105ma.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1207105ma.webp",
+            localImageName = "kalaiwa_1207105ma.webp"
         ),
         DrivingQuestion(
             id = 14,
@@ -163,7 +177,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 2),
             errorPoints = 3,
             explanation = "Voreinander abbiegen (amerikanisches Abbiegen) ist Pflicht, außer die Kreuzungsform erfordert ein Umeinanderfahren.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 15,
@@ -173,7 +188,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 4,
             explanation = "Beim Linksabbiegen haben entgegenkommende Fahrzeuge und Fußgänger Vorrang.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 16,
@@ -183,7 +199,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 2,
             explanation = "Beim Ausparken gilt höchste Sorgfalt, Blinken und Vorrang des fließenden Verkehrs.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 17,
@@ -193,7 +210,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 3,
             explanation = "Falsch eingestellte oder unzulässige Scheinwerfer blenden den Gegenverkehr lebensgefährlich.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 18,
@@ -203,7 +221,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1, 2),
             errorPoints = 3,
             explanation = "Straßenbahnen werden grundsätzlich rechts überholt.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1220107ma.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1220107ma.webp",
+            localImageName = "kalaiwa_1220107ma.webp"
         ),
         DrivingQuestion(
             id = 19,
@@ -213,7 +232,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1),
             errorPoints = 3,
             explanation = "Beim Ausfahren aus Grundstücken oder Tankstellen haben Fußgänger und der fließende Verkehr Vorrang.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1210006ma.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1210006ma.webp",
+            localImageName = "kalaiwa_1210006ma.webp"
         ),
         DrivingQuestion(
             id = 20,
@@ -223,7 +243,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1),
             errorPoints = 5,
             explanation = "Auf Vorfahrtsstraßen und Vorfahrtsregeln an Kreuzungen achten.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1301125m.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1301125m.webp",
+            localImageName = "kalaiwa_1301125m.webp"
         ),
         DrivingQuestion(
             id = 21,
@@ -233,7 +254,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0),
             errorPoints = 5,
             explanation = "Die Vorfahrtsregel (z.B. Rechts vor Links) bestimmt die Reihenfolge.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1301128m.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1301128m.webp",
+            localImageName = "kalaiwa_1301128m.webp"
         ),
         DrivingQuestion(
             id = 22,
@@ -243,7 +265,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 2),
             errorPoints = 3,
             explanation = "In Kurven Geschwindigkeit verringern und stramm rechts fahren.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1440105.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1440105.webp",
+            localImageName = "kalaiwa_1440105.webp"
         ),
         DrivingQuestion(
             id = 23,
@@ -253,7 +276,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 2,
             explanation = "Das Schild Baustelle warnt vor Arbeitern, Baumaterial und Arbeitsfahrzeugen.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1440116.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1440116.webp",
+            localImageName = "kalaiwa_1440116.webp"
         ),
         DrivingQuestion(
             id = 24,
@@ -263,7 +287,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 2),
             errorPoints = 3,
             explanation = "Bei Stauwarnung sofort gefühlvoll abbremsen und Warnblinker nutzen.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1440118.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1440118.webp",
+            localImageName = "kalaiwa_1440118.webp"
         ),
         DrivingQuestion(
             id = 25,
@@ -273,7 +298,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1),
             errorPoints = 2,
             explanation = "Das Aufhebungszeichen beendet alle vorherigen Streckenverbote.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1441136.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1441136.webp",
+            localImageName = "kalaiwa_1441136.webp"
         ),
         DrivingQuestion(
             id = 26,
@@ -283,7 +309,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(2),
             errorPoints = 3,
             explanation = "Durchgehende Linien (Fahrstreifenbegrenzung) dürfen nicht überfahren werden.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1442145.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1442145.webp",
+            localImageName = "kalaiwa_1442145.webp"
         ),
         DrivingQuestion(
             id = 27,
@@ -293,7 +320,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(1),
             errorPoints = 3,
             explanation = "Zusatzschilder beachten.",
-            imageUrl = "https://video4.kalaiwa.de/assets/1441029.webp"
+            imageUrl = "https://video4.kalaiwa.de/assets/1441029.webp",
+            localImageName = "kalaiwa_1441029.webp"
         ),
         DrivingQuestion(
             id = 28,
@@ -303,7 +331,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0),
             errorPoints = 4,
             explanation = "Bei Gelb ist vor der Kreuzung anzuhalten, wenn gefahrlos möglich.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 29,
@@ -313,7 +342,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1),
             errorPoints = 2,
             explanation = "Motorradjacke und Rückenprotektoren schützen vor schweren Verletzungen.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
         DrivingQuestion(
             id = 30,
@@ -323,7 +353,8 @@ object DrivingSchoolData {
             correctOptionIndices = setOf(0, 1, 2),
             errorPoints = 3,
             explanation = "Auf rutschigem Untergrund droht Rutschgefahr beim harten Bremsen.",
-            imageUrl = null
+            imageUrl = null,
+            localImageName = null
         ),
     )
 

@@ -38,8 +38,8 @@ import org.learnbetter.project.ui.theme.ChemistryColors
 fun DrivingSchoolScreen(
     onXpEarned: (Int) -> Unit = {}
 ) {
-    var selectedBogenNumber by remember { mutableIntStateOf(1) }
-    var isRandomOrder by remember { mutableStateOf(false) }
+    var selectedBogenNumber by remember { mutableIntStateOf(1) } // 1 = Testbogen 1, 0 = Alle Bögen
+    var isRandomOrder by remember { mutableStateOf(false) }       // false = Der Reihe nach, true = Zufall (per Wuerfel 🎲)
 
     val questions = remember(selectedBogenNumber, isRandomOrder) {
         DrivingSchoolData.getQuestionsForBogen(selectedBogenNumber, isRandomOrder)
@@ -80,51 +80,6 @@ fun DrivingSchoolScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // Filter Bogen-Auswahl & Reihenfolge Switcher
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                listOf(1, 2, 3, 0).forEach { bogen ->
-                    val isSelected = selectedBogenNumber == bogen
-                    val label = if (bogen == 0) "🎲 Alle Bögen" else "Testbogen $bogen"
-                    Surface(
-                        modifier = Modifier.clickable {
-                            selectedBogenNumber = bogen
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (isSelected) Subject.DRIVING_SCHOOL.primaryColor else MaterialTheme.colorScheme.surfaceVariant
-                    ) {
-                        Text(
-                            text = label,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                        )
-                    }
-                }
-
-                // Order Switcher (Der Reihe nach vs. Zufall)
-                Surface(
-                    modifier = Modifier.clickable {
-                        isRandomOrder = !isRandomOrder
-                    },
-                    shape = RoundedCornerShape(12.dp),
-                    color = if (isRandomOrder) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceVariant
-                ) {
-                    Text(
-                        text = if (isRandomOrder) "🔀 Zufällig" else "🔢 Der Reihe nach",
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                    )
-                }
-            }
-
             // Header: Testbogen & Kompakte Fehlerpunkte & Wuerfel-Button
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -134,7 +89,7 @@ fun DrivingSchoolScreen(
                 Column {
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(
-                            text = if (selectedBogenNumber == 0) "🛵 Gesamtpool • Klasse AM" else "🛵 Testbogen Nr. $selectedBogenNumber",
+                            text = if (selectedBogenNumber == 0) "🛵 Alle Bögen • Klasse AM" else "🛵 Testbogen Nr. $selectedBogenNumber",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = Subject.DRIVING_SCHOOL.primaryColor
@@ -191,6 +146,34 @@ fun DrivingSchoolScreen(
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+            }
+
+            // Filter Bogen-Auswahl Pills (Kompakt: Nur 'Testbogen 1' und 'Alle Bögen' ohne Würfel)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                listOf(1, 0).forEach { bogen ->
+                    val isSelected = selectedBogenNumber == bogen
+                    val label = if (bogen == 0) "Alle Bögen" else "Testbogen 1"
+                    Surface(
+                        modifier = Modifier.clickable {
+                            selectedBogenNumber = bogen
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isSelected) Subject.DRIVING_SCHOOL.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    ) {
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
                         )
                     }
                 }

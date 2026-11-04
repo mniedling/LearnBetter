@@ -1,19 +1,26 @@
 # LearnBetter – Multi-Fach Lernapp (10. Klasse Gesamtschule)
 
-Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Fahrschule (Klasse AM), Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
+Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Fahrschule (Klasse AM), Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**, sowie Vorbereitung auf Eignungstests.
 
-Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen mit Grafiken**, **Hamburger Navigation Drawer**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
+Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen mit Grafiken**, **Hamburger Navigation Drawer mit Kategorien**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
 
 ---
 
 ## 📚 Fächerübersicht & Hamburger-Menü Navigation
 
-### ☰ 1. Hamburger Navigation Drawer (Seitenmenü - NEU!)
-- Aufklappbares Material 3 **Hamburger-Seitenmenü (`☰`)** in der Haupt-App.
-- Aufgeräumtes Dashboard mit Schwerpunkt auf **Guthaben-Karte (PC-Zeit)**, **Streak** und den aktiven Fachinhalten.
-- Schneller Wechsel zwischen allen 8 Kategorien (*Chemie, Fahrschule AM, Physik, Biologie, Mathematik, GL, Musik, Deutsch*).
+### ☰ 1. Hamburger Navigation Drawer & Startbildschirm (NEU!)
+- **App-Name Header:** Ganz oben neben dem Hamburger-Menü steht immer klar der Name der App (**LearnBetter**).
+- **Startbildschirm (Übersicht):**
+  - Reine **PC-Zeit Belohnungs-Karte**, **Streak** und eine Schnellstart-Karte der aktuell aktiven Kategorie.
+  - Keine starren Chemie-Standard-Karten mehr auf dem Haupt-Dashboard.
+- **Glasklare Kategorisierung im Hamburger-Menü (`☰`):**
+  - **📚 Fächer:** *Chemie, Physik, Biologie, Mathematik, Gesellschaftslehre, Musik, Deutsch*.
+  - **⭐ Andere Kategorien:**
+    - 🛵 *Fahrschule AM* (Führerschein Klasse AM • Testbogen 1).
+    - 👮‍♂️ *Bundespolizei* (Bewerbungstraining & Einstellungstest - Vorbereitet für Zusatzcontent!).
+    - 🎖️ *Bundeswehr* (Eignungstest & Vorbereitung - Vorbereitet für Zusatzcontent!).
 
-### 🛵 2. Fahrschule (Klasse AM / Moped - KOMPAKT & BILDER!)
+### 🛵 2. Fahrschule (Klasse AM / Moped)
 - **Kompakter Header & Würfel-Button (`🎲`):**
   - Kompaktes Layout im Fragen-Kopf: **`4 FP`**-Badge (statt langer Beschriftung).
   - **Umschalt-Würfel (`🎲`)**: Umschalten per Klick zwischen `🔢 Der Reihe nach` (Standard) und `🔀 Zufällig`.

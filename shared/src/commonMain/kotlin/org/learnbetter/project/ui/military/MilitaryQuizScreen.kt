@@ -10,8 +10,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -25,6 +25,7 @@ import org.learnbetter.project.ui.theme.ChemistryColors
 fun MilitaryQuizScreen(
     onXpEarned: (Int) -> Unit = {}
 ) {
+    val uriHandler = LocalUriHandler.current
     val questions = remember { MilitaryData.catTestQuestions.shuffled().take(10) }
 
     var currentIndex by remember { mutableIntStateOf(0) }
@@ -222,6 +223,30 @@ fun MilitaryQuizScreen(
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
+                }
+            }
+
+            // Verifizierung Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text("🔗 Offizielle Prüfungsinformationen:", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().clickable {
+                            uriHandler.openUri("https://www.bundeswehrkarriere.de/einstellungstest/schriftlicher-test")
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        color = MaterialTheme.colorScheme.primaryContainer
+                    ) {
+                        Text("🌐 CAT-Test Infos (bundeswehrkarriere.de) ➔", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.padding(10.dp))
+                    }
                 }
             }
         }

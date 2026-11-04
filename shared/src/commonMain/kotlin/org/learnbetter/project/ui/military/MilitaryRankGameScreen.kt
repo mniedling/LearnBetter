@@ -15,12 +15,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,6 +36,8 @@ import org.learnbetter.project.ui.theme.ChemistryColors
 fun MilitaryRankGameScreen(
     onXpEarned: (Int) -> Unit = {}
 ) {
+    val uriHandler = LocalUriHandler.current
+
     var selectedBranch by remember { mutableStateOf(MilitaryBranch.HEER_LUFTWAFFE) }
     var selectedCategory by remember { mutableStateOf(RankCategory.MANNSCHAFTEN) }
 
@@ -129,7 +131,7 @@ fun MilitaryRankGameScreen(
         }
 
         Text(
-            text = "Ordtne die Schulterklappen in die richtige Rangordnung von niedrig nach hoch! Tippe 2 Karten an, um sie zu tauschen.",
+            text = "Ordne die Schulterklappen in die richtige Rangordnung von niedrig nach hoch! Tippe 2 Karten an, um sie zu tauschen.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
@@ -250,6 +252,30 @@ fun MilitaryRankGameScreen(
                 }
             }
         }
+
+        // Verifizierung Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+        ) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text("🔗 Offizielle Dienstgrad-Übersicht & Verifizierung:", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
+
+                Surface(
+                    modifier = Modifier.fillMaxWidth().clickable {
+                        uriHandler.openUri("https://www.bundeswehrkarriere.de/entdecker/karriere-infos/jugendportal/dienstgrade-der-bundeswehr")
+                    },
+                    shape = RoundedCornerShape(10.dp),
+                    color = MaterialTheme.colorScheme.primaryContainer
+                ) {
+                    Text("🌐 Dienstgrade & Schulterklappen (bundeswehrkarriere.de) ➔", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onPrimaryContainer, modifier = Modifier.padding(10.dp))
+                }
+            }
+        }
     }
 }
 
@@ -268,7 +294,6 @@ private fun InsigniaCanvas(rank: MilitaryRank) {
             val cx = w / 2f
             val cy = h / 2f
 
-            // Schulterklappen Trapez-Umrandung
             val flapPath = Path()
             flapPath.moveTo(4f, 4f)
             flapPath.lineTo(w - 4f, 4f)
@@ -340,7 +365,7 @@ private fun InsigniaCanvas(rank: MilitaryRank) {
                     drawCircle(silverColor, radius = 12f, center = Offset(cx, h - 18f), style = Stroke(3f))
                     val stars = if (rank.insigniaCode == "OFF_4") 1 else if (rank.insigniaCode == "OFF_5") 2 else 3
                     for (s in 0 until stars) {
-                        drawCircle(silverColor, radius = 5f, center = Offset(cx, 16f + (s * 12f)))
+                        drawCircle(silverColor, radius = 5f, center = Offset(cx, 12f + (s * 12f)))
                     }
                 }
                 "GEN_1", "GEN_2", "GEN_3", "GEN_4" -> {

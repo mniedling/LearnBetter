@@ -7,21 +7,17 @@ enum class Subject(
     val displayName: String,
     val icon: String,
     val primaryColor: Color,
-    val subtitle: String
+    val subtitle: String,
+    val isSchoolSubject: Boolean = true,
+    val isAvailable: Boolean = true
 ) {
+    // --- SCHUL FÄCHER ---
     CHEMISTRY(
         id = "chemistry",
         displayName = "Chemie",
         icon = "🧪",
         primaryColor = Color(0xFF006C4C),
         subtitle = "Salzsäure, Säuren & Reaktionen"
-    ),
-    DRIVING_SCHOOL(
-        id = "driving",
-        displayName = "Fahrschule AM",
-        icon = "🛵",
-        primaryColor = Color(0xFFFBC02D),
-        subtitle = "Führerschein Klasse AM • Testbogen 1"
     ),
     PHYSICS(
         id = "physics",
@@ -64,5 +60,33 @@ enum class Subject(
         icon = "📖",
         primaryColor = Color(0xFF1565C0),
         subtitle = "Gedichtanalyse & Stilmittel-Baukasten"
+    ),
+
+    // --- ANDERE KATEGORIEN ---
+    DRIVING_SCHOOL(
+        id = "driving",
+        displayName = "Fahrschule AM",
+        icon = "🛵",
+        primaryColor = Color(0xFFFBC02D),
+        subtitle = "Führerschein Klasse AM • Testbogen 1",
+        isSchoolSubject = false
+    ),
+    POLICE_TRAINING(
+        id = "police",
+        displayName = "Bundespolizei",
+        icon = "👮‍♂️",
+        primaryColor = Color(0xFF0288D1),
+        subtitle = "Bewerbungstraining & Einstellungstest",
+        isSchoolSubject = false,
+        isAvailable = false
+    ),
+    MILITARY_TRAINING(
+        id = "military",
+        displayName = "Bundeswehr",
+        icon = "🎖️",
+        primaryColor = Color(0xFF388E3C),
+        subtitle = "Eignungstest & Vorbereitung",
+        isSchoolSubject = false,
+        isAvailable = false
     )
 }

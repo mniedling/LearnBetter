@@ -55,6 +55,9 @@ fun App() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    val schoolSubjects = remember { Subject.entries.filter { it.isSchoolSubject } }
+    val otherCategories = remember { Subject.entries.filter { !it.isSchoolSubject } }
+
     LearnBetterTheme {
         ModalNavigationDrawer(
             drawerState = drawerState,
@@ -70,25 +73,28 @@ fun App() {
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "LearnBetter • Fächer & Fahrschule",
-                            style = MaterialTheme.typography.titleMedium,
+                            text = "LearnBetter",
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(vertical = 12.dp)
+                            modifier = Modifier.padding(vertical = 8.dp)
                         )
 
                         HorizontalDivider()
 
+                        // --- 1. SCHUL-FÄCHER ---
                         Text(
-                            text = "Kategorie auswählen:",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = "📚 Fächer",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
 
-                        Subject.entries.forEach { subject ->
+                        schoolSubjects.forEach { subject ->
                             val isSelected = subject == selectedSubject
                             NavigationDrawerItem(
-                                icon = { Text(subject.icon, fontSize = 22.sp) },
+                                icon = { Text(subject.icon, fontSize = 20.sp) },
                                 label = {
                                     Text(
                                         text = subject.displayName,
@@ -107,6 +113,60 @@ fun App() {
                                 )
                             )
                         }
+
+                        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+
+                        // --- 2. ANDERE KATEGORIEN ---
+                        Text(
+                            text = "⭐ Andere Kategorien",
+                            style = MaterialTheme.typography.titleSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = Subject.DRIVING_SCHOOL.primaryColor
+                        )
+
+                        otherCategories.forEach { category ->
+                            val isSelected = category == selectedSubject
+                            NavigationDrawerItem(
+                                icon = { Text(category.icon, fontSize = 20.sp) },
+                                label = {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = category.displayName,
+                                            fontWeight = FontWeight.Bold,
+                                            color = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurface
+                                        )
+
+                                        if (!category.isAvailable) {
+                                            Surface(
+                                                shape = RoundedCornerShape(8.dp),
+                                                color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f)
+                                            ) {
+                                                Text(
+                                                    text = "Demnächst",
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                                )
+                                            }
+                                        }
+                                    }
+                                },
+                                selected = isSelected,
+                                onClick = {
+                                    if (category.isAvailable) {
+                                        selectedSubject = category
+                                        scope.launch { drawerState.close() }
+                                    }
+                                },
+                                shape = RoundedCornerShape(16.dp),
+                                colors = NavigationDrawerItemDefaults.colors(
+                                    selectedContainerColor = category.primaryColor
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -115,13 +175,7 @@ fun App() {
                 topBar = {
                     CenterAlignedTopAppBar(
                         title = {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Text(selectedSubject.icon, fontSize = 20.sp)
-                                Text(selectedSubject.displayName, fontWeight = FontWeight.Bold)
-                            }
+                            Text("LearnBetter", fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleLarge)
                         },
                         navigationIcon = {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
@@ -158,7 +212,6 @@ fun App() {
                             selectedSubject = selectedSubject,
                             rewardState = rewardState,
                             streakDays = streakDays,
-                            onSubjectSelected = { selectedSubject = it },
                             onRateChanged = { exchangeRate = it },
                             onNavigateToLab = { selectedTab = NavigationTab.LAB },
                             onNavigateToQuiz = { selectedTab = NavigationTab.QUIZ },
@@ -184,7 +237,6 @@ private fun DashboardContent(
     selectedSubject: Subject,
     rewardState: RewardState,
     streakDays: Int,
-    onSubjectSelected: (Subject) -> Unit,
     onRateChanged: (RewardExchangeRate) -> Unit,
     onNavigateToLab: () -> Unit,
     onNavigateToQuiz: () -> Unit,
@@ -199,21 +251,22 @@ private fun DashboardContent(
     ) {
         HeaderSection(rewardState = rewardState, streakDays = streakDays)
 
+        // HAUPT-FOKUS AUF DEM STARTBILDSCHIRM: PC-ZEIT BELOHNUNGS-KARTE
         RewardCard(
             rewardState = rewardState,
             onRateChanged = onRateChanged,
             onRedeemMinutes = onRedeemMinutes
         )
 
-        SubjectWelcomeCard(subject = selectedSubject)
-
-        QuickLabCard(subject = selectedSubject, onNavigateToLab = onNavigateToLab)
+        ActiveCategorySummaryCard(
+            subject = selectedSubject,
+            onNavigateToLab = onNavigateToLab,
+            onNavigateToQuiz = onNavigateToQuiz
+        )
 
         if (selectedSubject == Subject.CHEMISTRY) {
             PhScalePreviewCard()
         }
-
-        ModulesSection(subject = selectedSubject, onNavigateToQuiz = onNavigateToQuiz)
     }
 }
 
@@ -226,8 +279,8 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
     ) {
         Column {
             Text(
-                text = "LearnBetter",
-                style = MaterialTheme.typography.titleLarge,
+                text = "Willkommen zurück! 👋",
+                style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -303,67 +356,63 @@ private fun HeaderSection(rewardState: RewardState, streakDays: Int) {
 }
 
 @Composable
-private fun SubjectWelcomeCard(subject: Subject) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = subject.primaryColor.copy(alpha = 0.15f)
-        ),
-        shape = RoundedCornerShape(20.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            Text(
-                text = "${subject.icon} ${subject.displayName}",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = subject.primaryColor
-            )
-            Text(
-                text = subject.subtitle,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-        }
-    }
-}
-
-@Composable
-private fun QuickLabCard(subject: Subject, onNavigateToLab: () -> Unit) {
+private fun ActiveCategorySummaryCard(
+    subject: Subject,
+    onNavigateToLab: () -> Unit,
+    onNavigateToQuiz: () -> Unit
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = subject.primaryColor.copy(alpha = 0.12f)
         )
     ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        Column(
+            modifier = Modifier.padding(20.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(subject.icon, fontSize = 36.sp)
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "${subject.displayName}-Werkstatt",
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                )
-                Text(
-                    text = "Starte die interaktive Werkstatt für ${subject.displayName}!",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.8f)
-                )
-            }
-            Button(
-                onClick = onNavigateToLab,
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = subject.primaryColor)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text("Starten", fontWeight = FontWeight.Bold)
+                Text(subject.icon, fontSize = 28.sp)
+                Column {
+                    Text(
+                        text = "Aktive Kategorie: ${subject.displayName}",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = subject.primaryColor
+                    )
+                    Text(
+                        text = subject.subtitle,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onNavigateToLab,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = subject.primaryColor)
+                ) {
+                    Text("🧪 Werkstatt", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (subject == Subject.DRIVING_SCHOOL) Color.Black else Color.White)
+                }
+
+                Button(
+                    onClick = onNavigateToQuiz,
+                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = subject.primaryColor)
+                ) {
+                    Text("📝 Quiz / Test", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (subject == Subject.DRIVING_SCHOOL) Color.Black else Color.White)
+                }
             }
         }
     }
@@ -436,118 +485,6 @@ private fun PhScalePreviewCard() {
                     activeTrackColor = phColor
                 )
             )
-        }
-    }
-}
-
-@Composable
-private fun ModulesSection(subject: Subject, onNavigateToQuiz: () -> Unit) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "Lerneinheiten (${subject.displayName})",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-
-            TextButton(onClick = onNavigateToQuiz) {
-                Text("Quiz starten ➔")
-            }
-        }
-
-        ModuleItem(
-            icon = subject.icon,
-            title = "1. Grundlagen ${subject.displayName}",
-            subtitle = "Kernkonzepte & Grundwissen",
-            progress = 0.85f,
-            accentColor = subject.primaryColor
-        )
-
-        ModuleItem(
-            icon = "⚡",
-            title = "2. Interaktive Werkstatt",
-            subtitle = "Aufgaben & Simulationen",
-            progress = 0.5f,
-            accentColor = subject.primaryColor
-        )
-    }
-}
-
-@Composable
-private fun ModuleItem(
-    icon: String,
-    title: String,
-    subtitle: String,
-    progress: Float,
-    accentColor: Color
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(accentColor.copy(alpha = 0.15f)),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(text = icon, fontSize = 22.sp)
-            }
-
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(6.dp)
-                            .clip(CircleShape),
-                        color = accentColor,
-                        trackColor = accentColor.copy(alpha = 0.2f)
-                    )
-                    Text(
-                        text = "${(progress * 100).toInt()}%",
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
         }
     }
 }

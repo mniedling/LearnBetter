@@ -1,6 +1,7 @@
 package org.learnbetter.project.ui.driving
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -23,6 +24,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import learnbetter.shared.generated.resources.*
+import org.jetbrains.compose.resources.DrawableResource
+import org.jetbrains.compose.resources.painterResource
 import org.learnbetter.project.model.DrivingImageType
 import org.learnbetter.project.model.DrivingQuestion
 import org.learnbetter.project.model.DrivingSchoolData
@@ -161,8 +165,27 @@ fun DrivingSchoolScreen(
                 color = Subject.DRIVING_SCHOOL.primaryColor
             )
 
-            // Falls eine Bild/Video-URL vorhanden ist, lade das Bild über Coil!
-            if (!currentQuestion.imageUrl.isNullOrEmpty()) {
+            // NATIVE LOKALE BILDEINBINDUNG AUS COMPOSE RESOURCES (Offline-fähig & 100% verlässlich)
+            val localDrawable = getLocalDrawableResource(currentQuestion.localImageName)
+
+            if (localDrawable != null) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A))
+                ) {
+                    Image(
+                        painter = painterResource(localDrawable),
+                        contentDescription = "Amtliches Fahrschul-Originalbild",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(20.dp)),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+            } else if (!currentQuestion.imageUrl.isNullOrEmpty()) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -342,6 +365,28 @@ fun DrivingSchoolScreen(
                 }
             }
         }
+    }
+}
+
+private fun getLocalDrawableResource(localImageName: String?): DrawableResource? {
+    if (localImageName == null) return null
+    return when (localImageName) {
+        "kalaiwa_1107159m.webp" -> Res.drawable.kalaiwa_1107159m
+        "kalaiwa_1107171a.webp" -> Res.drawable.kalaiwa_1107171a
+        "kalaiwa_1107155ma.webp" -> Res.drawable.kalaiwa_1107155ma
+        "kalaiwa_1226114.webp" -> Res.drawable.kalaiwa_1226114
+        "kalaiwa_1207105ma.webp" -> Res.drawable.kalaiwa_1207105ma
+        "kalaiwa_1220107ma.webp" -> Res.drawable.kalaiwa_1220107ma
+        "kalaiwa_1210006ma.webp" -> Res.drawable.kalaiwa_1210006ma
+        "kalaiwa_1301125m.webp" -> Res.drawable.kalaiwa_1301125m
+        "kalaiwa_1301128m.webp" -> Res.drawable.kalaiwa_1301128m
+        "kalaiwa_1440105.webp" -> Res.drawable.kalaiwa_1440105
+        "kalaiwa_1440116.webp" -> Res.drawable.kalaiwa_1440116
+        "kalaiwa_1440118.webp" -> Res.drawable.kalaiwa_1440118
+        "kalaiwa_1441136.webp" -> Res.drawable.kalaiwa_1441136
+        "kalaiwa_1442145.webp" -> Res.drawable.kalaiwa_1442145
+        "kalaiwa_1441029.webp" -> Res.drawable.kalaiwa_1441029
+        else -> null
     }
 }
 

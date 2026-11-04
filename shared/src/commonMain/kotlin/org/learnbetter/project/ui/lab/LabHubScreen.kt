@@ -29,8 +29,11 @@ import org.learnbetter.project.ui.military.MilitaryRankGameScreen
 import org.learnbetter.project.ui.music.MusicPianoScreen
 import org.learnbetter.project.ui.physics.PhysicsHookeScreen
 import org.learnbetter.project.ui.phtest.PhTestScreen
+import org.learnbetter.project.ui.police.PoliceDictationScreen
+import org.learnbetter.project.ui.police.PoliceEquipmentScreen
 import org.learnbetter.project.ui.police.PoliceMemoryTrainerScreen
 import org.learnbetter.project.ui.police.PoliceRankGameScreen
+import org.learnbetter.project.ui.police.PoliceScenarioScreen
 import org.learnbetter.project.ui.police.PoliceSportCalculatorScreen
 import org.learnbetter.project.ui.socialstudies.SocialStudiesTimelineScreen
 
@@ -43,7 +46,7 @@ fun LabHubScreen(
     var bioToolMode by remember { mutableIntStateOf(1) } // 1..5
     var mathToolMode by remember { mutableIntStateOf(1) } // 1..2
     var militaryToolMode by remember { mutableIntStateOf(1) } // 1..2
-    var policeToolMode by remember { mutableIntStateOf(1) } // 1..3
+    var policeToolMode by remember { mutableIntStateOf(1) } // 1..6
 
     when {
         currentSubject == Subject.POLICE_TRAINING -> Column(modifier = Modifier.fillMaxSize()) {
@@ -80,12 +83,42 @@ fun LabHubScreen(
                 ) {
                     Text("🏃‍♂️ BPol-Sporttest", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (policeToolMode == 3) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
                 }
+
+                Button(
+                    onClick = { policeToolMode = 4 },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (policeToolMode == 4) Subject.POLICE_TRAINING.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🚨 Szenarien", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (policeToolMode == 4) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { policeToolMode = 5 },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (policeToolMode == 5) Subject.POLICE_TRAINING.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🛡️ Ausrüstung", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (policeToolMode == 5) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { policeToolMode = 6 },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (policeToolMode == 6) Subject.POLICE_TRAINING.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("📝 Diktat", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (policeToolMode == 6) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
             }
 
             when (policeToolMode) {
                 1 -> PoliceRankGameScreen(onXpEarned = onXpEarned)
                 2 -> PoliceMemoryTrainerScreen(onXpEarned = onXpEarned)
-                else -> PoliceSportCalculatorScreen(onXpEarned = onXpEarned)
+                3 -> PoliceSportCalculatorScreen(onXpEarned = onXpEarned)
+                4 -> PoliceScenarioScreen(onXpEarned = onXpEarned)
+                5 -> PoliceEquipmentScreen(onXpEarned = onXpEarned)
+                else -> PoliceDictationScreen(onXpEarned = onXpEarned)
             }
         }
         currentSubject == Subject.MILITARY_TRAINING -> Column(modifier = Modifier.fillMaxSize()) {

@@ -34,6 +34,34 @@ data class PoliceQuestion(
     val category: String
 )
 
+data class PoliceScenario(
+    val id: Int,
+    val title: String,
+    val situationText: String,
+    val options: List<String>,
+    val correctOptionIndex: Int,
+    val legalBasis: String,
+    val explanation: String
+)
+
+data class PoliceEquipment(
+    val id: String,
+    val name: String,
+    val icon: String,
+    val category: String,
+    val description: String,
+    val safetyRule: String
+)
+
+data class DictationTask(
+    val id: Int,
+    val reportTitle: String,
+    val sentenceParts: List<String>,
+    val gapOptions: List<List<String>>,
+    val correctGapIndices: List<Int>,
+    val grammarRule: String
+)
+
 object PoliceData {
     val ranks = listOf(
         // Mittlerer Dienst (Blaue Sterne)
@@ -80,6 +108,108 @@ object PoliceData {
             licensePlate = "M-BP 119",
             escapeDirection = "Hauptbahnhof Vorplatz Ost",
             suspectDescription = "Zwei männliche Personen, ca. 20 Jahre alt, schwarze Caps, neon-grüne Turnschuhe."
+        )
+    )
+
+    val scenarios = listOf(
+        PoliceScenario(
+            id = 1,
+            title = "Luftsicherheit - Herrenloses Gepäckstück",
+            situationText = "Am Flughafen Terminal 2 steht seit 20 Minuten ein unbeaufsichtigter Koffer neben der Bank. Wie verhalten Sie sich rechtlich und taktisch richtig?",
+            options = listOf(
+                "Den Koffer sofort selbst öffnen, um nach Namensschildern zu suchen",
+                "Den Bereich sofort weiträumig absperren, Passanten auffordern den Bereich zu verlassen und den Entschärfungsdienst verständigen",
+                "Den Koffer zum Fundbüro am Ausgang tragen"
+            ),
+            correctOptionIndex = 1,
+            legalBasis = "Gefahrenabwehr & EOD-Sicherheitskonzept BPol",
+            explanation = "Unbeaufsichtigtes Gepäck an Flughäfen birgt Sprengstoffgefahr. Erst sichern & absperren, niemals selbst anfassen!"
+        ),
+        PoliceScenario(
+            id = 2,
+            title = "Bahnpolizei - Fahrgast ohne Ticket",
+            situationText = "Im ICE weigert sich ein Fahrgast, dem Zugbegleiter seinen Ausweis zu zeigen und droht mit Fäusten. Wie reagieren Sie als Streife?",
+            options = listOf(
+                "Sofort Pfefferspray einsetzen",
+                "Deeskalierend ansprechen, Sicherheitsabstand halten und Verhältnismäßigkeit zur Identitätsfeststellung wahren",
+                "Den Fahrgast sofort zu Boden ringen"
+            ),
+            correctOptionIndex = 1,
+            legalBasis = "§ 23 BPolG - Identitätsfeststellung",
+            explanation = "Zuerst kommunikative Deeskalation! Zwangsmittel dürfen nur als letztes Mittel verhältnismäßig eingesetzt werden."
+        ),
+        PoliceScenario(
+            id = 3,
+            title = "Grenzschutz - Einreisekontrolle",
+            situationText = "Bei der Grenzkontrolle legt ein Fahrer einen Reisepass vor, bei dem das Lichtbild sichtbar manipulierte Ränder aufweist. Welche Maßnahme ergreifen Sie?",
+            options = listOf(
+                "Den Fahrer unverzüglich weiterfahren lassen",
+                "Pass sicherstellen, die Person zur Dienststelle begleiten und Urkundenfälschung prüfen",
+                "Den Pass sofort zerreißen"
+            ),
+            correctOptionIndex = 1,
+            legalBasis = "§ 267 StGB - Urkundenfälschung & § 43 BPolG",
+            explanation = "Verdacht auf Urkundenfälschung rechtfertigt die Sicherstellung des Dokuments und die Einleitung von Ermittlungen."
+        )
+    )
+
+    val equipment = listOf(
+        PoliceEquipment(
+            id = "p30",
+            name = "Dienstpistole HK P30",
+            icon = "🔫",
+            category = "Schusswaffe",
+            description = "Halbautomatische Dienstpistole im Kaliber 9 x 19 mm mit Polizeisicherung.",
+            safetyRule = "Mündung stets in eine sichere Richtung halten! Der Finger liegt am Abzugsbügel, bis die Zielaufnahme erfolgt ist."
+        ),
+        PoliceEquipment(
+            id = "rsg4",
+            name = "Pfefferspray RSG 4",
+            icon = "🧪",
+            category = "Reizstoffgerät",
+            description = "Reizstoffsprühgerät mit Flüssigstrahl zur Abwehr von Angreifern.",
+            safetyRule = "Windrichtung beachten! Strahl gezielt auf Augen/Gesicht des Angreifers ausrichten."
+        ),
+        PoliceEquipment(
+            id = "eka",
+            name = "Einsatzstock EKA",
+            icon = "🦯",
+            category = "Schlagstock",
+            description = "Einsatzstock kurz, ausziehbar (Teleskopschlagstock) zur Abwehr von Angriffen.",
+            safetyRule = "Trefferzonen beachten: Schläge gegen den Kopf, Hals oder Gelenke vermeiden (Verhältnismäßigkeit!)."
+        ),
+        PoliceEquipment(
+            id = "weste",
+            name = "Ballistische Schutzweste",
+            icon = "🛡️",
+            category = "Schutzausrüstung",
+            description = "Unterziehweste zum Schutz vor Stich- und Schussverletzungen.",
+            safetyRule = "Vor jedem Dienstantritt auf korrekten Sitz und Unversehrtheit des Keramik/Kevlar-Inlays prüfen."
+        )
+    )
+
+    val dictationTasks = listOf(
+        DictationTask(
+            id = 1,
+            reportTitle = "Einsatzbericht: Personenfeststellung am Hauptbahnhof",
+            sentenceParts = listOf("Die Streife wurde alarmiert, ", " eine tatverdächtige Person flüchtig war. Die Beamtin stellte fest, ", " der Ausweis gefälscht war."),
+            gapOptions = listOf(
+                listOf("weil", "dass", "das"),
+                listOf("dass", "das", "daß")
+            ),
+            correctGapIndices = listOf(0, 0),
+            grammarRule = "'dass' steht als Bindewort nach Komma, wenn es nicht durch 'welches' ersetzt werden kann."
+        ),
+        DictationTask(
+            id = 2,
+            reportTitle = "Einsatzbericht: Sicherstellung am Flughafen",
+            sentenceParts = listOf("Der Beamte veranlasste die umgehende ", " des herrenlosen Koffers zur ", " der Gefahr."),
+            gapOptions = listOf(
+                listOf("Sicherstellung", "sicherstellung", "Sicher stellung"),
+                listOf("Abwehr", "abwehr", "Abwer")
+            ),
+            correctGapIndices = listOf(0, 0),
+            grammarRule = "Nomen und Substantivierungen schreibt man im Deutschen stets groß."
         )
     )
 

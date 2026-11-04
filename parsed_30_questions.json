@@ -1,0 +1,361 @@
+[
+  {
+    "id": 1,
+    "frage_id": 2711,
+    "points": 4,
+    "text": "Worauf müssen Sie sich hier einstellen?",
+    "image": "https://video4.kalaiwa.de/assets/1107159m.webp",
+    "options": [
+      "Fahrzeuge biegen auf die Fahrbahn ein",
+      "Entgegenkommende Fahrzeuge biegen nach links ab",
+      "Personen betreten die Fahrbahn"
+    ]
+  },
+  {
+    "id": 2,
+    "frage_id": 3005,
+    "points": 4,
+    "text": "Warum müssen Sie jetzt anhalten?",
+    "image": "https://video4.kalaiwa.de/assets/1107171a.webp",
+    "options": [
+      "Wegen des Lkws",
+      "Wegen der Fußgänger",
+      "Wegen der Radfahrerin"
+    ]
+  },
+  {
+    "id": 3,
+    "frage_id": 2584,
+    "points": 4,
+    "text": "Wodurch lässt sich die Fahrtüchtigkeit nach übermäßigem Alkoholkonsum kurzfristig wiederherstellen?",
+    "image": "",
+    "options": [
+      "Durch 15 Minuten Sport",
+      "Durch das Trinken von 2 Tassen Kaffee",
+      "Durch gar nichts"
+    ]
+  },
+  {
+    "id": 4,
+    "frage_id": 2510,
+    "points": 3,
+    "text": "Sie sollen ein Ihnen unbekanntes Kraftfahrzeug fahren. Warum müssen Sie dabei zunächst besonders vorsichtig sein?",
+    "image": "",
+    "options": [
+      "- im Lenkverhalten",
+      "- im Bremsverhalten",
+      "- in der Anordnung und der Funktion der Bedienelemente"
+    ]
+  },
+  {
+    "id": 5,
+    "frage_id": 2514,
+    "points": 4,
+    "text": "Worauf müssen Sie jetzt achten?",
+    "image": "https://video4.kalaiwa.de/assets/1107155ma.webp",
+    "options": [
+      "Auf [den Radfahrer] links",
+      "Auf [den grünen Pkw]",
+      "Auf [die Radfahrerin] rechts"
+    ]
+  },
+  {
+    "id": 6,
+    "frage_id": 1941,
+    "points": 5,
+    "text": "Wie verhalten Sie sich in dieser Situation?",
+    "image": "https://video4.kalaiwa.de/assets/1226114.webp",
+    "options": [
+      "Ich lasse den Fußgänger die Fahrbahn überqueren",
+      "Ich schließe unmittelbar zum blauen Fahrzeug auf",
+      "Ich warte vor dem Fußgängerüberweg, bis das blaue Fahrzeug abgebogen ist"
+    ]
+  },
+  {
+    "id": 7,
+    "frage_id": 1942,
+    "points": 4,
+    "text": "Warum ist eine defensive Fahrweise beim Annähern an Fußgängerüberwege besonders wichtig?",
+    "image": "",
+    "options": [
+      "Damit Fußgänger nicht verunsichert werden",
+      "Damit nachfolgende Fahrzeuge leichter überholen können",
+      "Damit Auffahrunfälle vermieden werden"
+    ]
+  },
+  {
+    "id": 8,
+    "frage_id": 1945,
+    "points": 4,
+    "text": "Vor Ihnen befindet sich ein Fußgängerüberweg, hinter dem der Verkehr auf Ihrem Fahrstreifen stockt. Wie verhalten Sie sich?",
+    "image": "",
+    "options": [
+      "Vor dem Fußgängerüberweg warten, um Personen das Überqueren zu ermöglichen",
+      "Auf dem Fußgängerüberweg warten, um den Fahrzeugrückstau zu verkürzen",
+      "Auf dem Fußgängerüberweg warten, wenn keine Personen zu sehen sind"
+    ]
+  },
+  {
+    "id": 9,
+    "frage_id": 1487,
+    "points": 4,
+    "text": "Sie bemerken im Tunnel einen Unfall. Was ist zu tun?",
+    "image": "",
+    "options": [
+      "Notdienste über Notrufstation informieren",
+      "Warnblinklicht einschalten",
+      "Fahrzeug nicht verlassen"
+    ]
+  },
+  {
+    "id": 10,
+    "frage_id": 2255,
+    "points": 3,
+    "text": "Ein Polizeifahrzeug überholt Sie und schert unmittelbar vor Ihnen ein. Auf dem Dach erscheint in roter Leuchtschrift „BITTE FOLGEN“. Wie müssen Sie sich verhalten?",
+    "image": "",
+    "options": [
+      "- anhalten, wenn das Polizeifahrzeug anhält",
+      "- dem Polizeifahrzeug folgen",
+      "- nach dem Anhalten den Motor laufen lassen"
+    ]
+  },
+  {
+    "id": 11,
+    "frage_id": 2257,
+    "points": 3,
+    "text": "Aus einem unmittelbar vor Ihnen fahrenden Fahrzeug wird Ihnen mit der „Polizeikelle“ Zeichen gegeben. Was bedeutet dies?",
+    "image": "",
+    "options": [
+      "Ich muss dem Fahrzeug folgen, bis es anhält",
+      "Ich muss in die gezeigte Richtung abbiegen",
+      "Ich darf das Fahrzeug nicht überholen"
+    ]
+  },
+  {
+    "id": 12,
+    "frage_id": 309,
+    "points": 3,
+    "text": "Was kann es bedeuten, wenn an einem Fahrzeug blaues Blinklicht - jedoch kein Einsatzhorn - eingeschaltet ist?",
+    "image": "",
+    "options": [
+      "An einer Unfallstelle wird vor Gefahren gewarnt",
+      "Ein Abschleppwagen fährt zu einem Einsatz",
+      "Es wird vor einer Einsatzstelle der Feuerwehr gewarnt"
+    ]
+  },
+  {
+    "id": 13,
+    "frage_id": 3009,
+    "points": 4,
+    "text": "Wie verhalten Sie sich in dieser Situation richtig?",
+    "image": "https://video4.kalaiwa.de/assets/1207105ma.webp",
+    "options": [
+      "Ich wechsle in etwa 200 m auf den rechten Fahrstreifen",
+      "Ich wechsle jetzt auf den rechten Fahrstreifen",
+      "Ich darf die auf dem rechten Fahrstreifen fahrenden Fahrzeuge überholen"
+    ]
+  },
+  {
+    "id": 14,
+    "frage_id": 2720,
+    "points": 3,
+    "text": "Zwei Fahrzeuge kommen sich auf einer Kreuzung entgegen. Beide Fahrzeuge möchten jeweils nach links abbiegen. In welchem Ausnahmefall müssen sie hintereinander abbiegen?",
+    "image": "",
+    "options": [
+      "Wenn die Verkehrslage es erfordert",
+      "Wenn eine gleichrangige Kreuzung befahren wird",
+      "Wenn die Gestaltung der Kreuzung es erfordert"
+    ]
+  },
+  {
+    "id": 15,
+    "frage_id": 1913,
+    "points": 4,
+    "text": "Sie möchten nach links abbiegen. Wem müssen Sie Vorrang gewähren?",
+    "image": "",
+    "options": [
+      "Fußgängern, welche die Straße überqueren wollen, in die ich einbiege",
+      "Entgegenkommenden Kraftfahrzeugen",
+      "Entgegenkommenden Radfahrern"
+    ]
+  },
+  {
+    "id": 16,
+    "frage_id": 2311,
+    "points": 2,
+    "text": "Sie möchten mit Ihrem Fahrzeug aus einer Parklücke in den fließenden Verkehr einfahren. Wie müssen Sie sich verhalten?",
+    "image": "",
+    "options": [
+      "Ich muss den rückwärtigen Verkehr beobachten",
+      "Ich muss vor dem Anfahren blinken",
+      "Ich darf den fließenden Verkehr nicht gefährden"
+    ]
+  },
+  {
+    "id": 17,
+    "frage_id": 2730,
+    "points": 3,
+    "text": "Wie kann verhindert werden, dass der Gegenverkehr mit dem Abblendlicht geblendet wird?",
+    "image": "",
+    "options": [
+      "Nach jeder Reparatur am Scheinwerfer sollte eine Überprüfung der Einstellung erfolgen",
+      "Die Leuchtweite ist in Abhängigkeit vom Beladungszustand des Fahrzeugs zu regulieren",
+      "Es dürfen nur für den jeweiligen Scheinwerfer zulässige Leuchtmittel verwendet werden"
+    ]
+  },
+  {
+    "id": 18,
+    "frage_id": 2458,
+    "points": 3,
+    "text": "Wie verhalten Sie sich in dieser Situation richtig?",
+    "image": "https://video4.kalaiwa.de/assets/1220107ma.webp",
+    "options": [
+      "Ich überhole die Straßenbahn links",
+      "Ich bleibe hinter der Straßenbahn",
+      "Ich fahre rechts an der Straßenbahn vorbei"
+    ]
+  },
+  {
+    "id": 19,
+    "frage_id": 3232,
+    "points": 3,
+    "text": "Sie möchten aus [der Tankstelle] ausfahren. Was ist richtig?",
+    "image": "https://video4.kalaiwa.de/assets/1210006ma.webp",
+    "options": [
+      "Ich habe Vorfahrt vor von links kommenden Fahrzeugen",
+      "Ich muss querenden Fußgängern Vorrang gewähren",
+      "Ich darf in beide Richtungen ausfahren"
+    ]
+  },
+  {
+    "id": 20,
+    "frage_id": 2314,
+    "points": 5,
+    "text": "Welches Verhalten ist richtig?",
+    "image": "https://video4.kalaiwa.de/assets/1301125m.webp",
+    "options": [
+      "Ich muss dem [blauen Pkw] Vorfahrt gewähren",
+      "Ich muss dem [roten Pkw] Vorfahrt gewähren",
+      "Ich habe Vorfahrt vor dem [blauen Pkw]"
+    ]
+  },
+  {
+    "id": 21,
+    "frage_id": 2735,
+    "points": 5,
+    "text": "Wer darf in dieser Situation zuerst fahren?",
+    "image": "https://video4.kalaiwa.de/assets/1301128m.webp",
+    "options": [
+      "Ich selbst",
+      "Der [blaue] Traktor",
+      "Der [rote] Pkw"
+    ]
+  },
+  {
+    "id": 22,
+    "frage_id": 365,
+    "points": 3,
+    "text": "Wie verhalten Sie sich bei diesem Verkehrszeichen?",
+    "image": "https://video4.kalaiwa.de/assets/1440105.webp",
+    "options": [
+      "Geschwindigkeit vermindern",
+      "Gleich nach der Rechtskurve kräftig beschleunigen",
+      "Möglichst weit rechts fahren"
+    ]
+  },
+  {
+    "id": 23,
+    "frage_id": 376,
+    "points": 2,
+    "text": "Womit müssen Sie bei diesem Verkehrszeichen rechnen?",
+    "image": "https://video4.kalaiwa.de/assets/1440116.webp",
+    "options": [
+      "Mit Verkehr von Baustellenfahrzeugen",
+      "Mit Baumaterial auf der Fahrbahn",
+      "Mit Arbeitern auf der Fahrbahn"
+    ]
+  },
+  {
+    "id": 24,
+    "frage_id": 378,
+    "points": 3,
+    "text": "Womit müssen Sie bei diesem Verkehrszeichen rechnen?",
+    "image": "https://video4.kalaiwa.de/assets/1440118.webp",
+    "options": [
+      "Mit plötzlichem Bremsen der Vorausfahrenden",
+      "Mit Erweiterung der Fahrbahn auf drei Fahrstreifen",
+      "Mit einem Stau"
+    ]
+  },
+  {
+    "id": 25,
+    "frage_id": 443,
+    "points": 2,
+    "text": "Was endet hier?",
+    "image": "https://video4.kalaiwa.de/assets/1441136.webp",
+    "options": [
+      "Eine Zone mit absolutem Haltverbot",
+      "Vorausgegangene Streckenverbote",
+      "Eine Zone mit eingeschränktem Haltverbot"
+    ]
+  },
+  {
+    "id": 26,
+    "frage_id": 2429,
+    "points": 3,
+    "text": "Was müssen Sie in Verkehrssituationen wie dieser beachten?",
+    "image": "https://video4.kalaiwa.de/assets/1442145.webp",
+    "options": [
+      "- überfahren, um zu überholen",
+      "- nicht überfahren, wenn dadurch der Verkehr gefährdet wird",
+      "- überfahren, um an Hindernissen vorbeizufahren"
+    ]
+  },
+  {
+    "id": 27,
+    "frage_id": 3241,
+    "points": 3,
+    "text": "Worauf weist dieses Verkehrszeichen hin?",
+    "image": "https://video4.kalaiwa.de/assets/1441029.webp",
+    "options": [
+      "- mit Schrittgeschwindigkeit befahren",
+      "- als Anlieger befahren",
+      "- nicht befahren"
+    ]
+  },
+  {
+    "id": 28,
+    "frage_id": 927,
+    "points": 4,
+    "text": "Sie fahren mit ungefähr 40 km/h. Etwa 40 m vor Ihnen wechselt die Ampel von „Grün“ auf „Gelb“. Wie verhalten Sie sich?",
+    "image": "",
+    "options": [
+      "Anhalten",
+      "Weiterfahren"
+    ]
+  },
+  {
+    "id": 29,
+    "frage_id": 2789,
+    "points": 2,
+    "text": "Was gehört zur geeigneten Schutzkleidung für Kraftradfahrer?",
+    "image": "",
+    "options": [
+      "Rückenprotektor",
+      "Eng anliegende Motorradjacke",
+      "Halbschuhe"
+    ]
+  },
+  {
+    "id": 30,
+    "frage_id": 1163,
+    "points": 3,
+    "text": "In welchen Fällen darf man nur sehr gefühlvoll bremsen?",
+    "image": "",
+    "options": [
+      "Auf Straßenbahnschienen, Kanaldeckeln und Fahrbahnmarkierungen",
+      "Auf Fahrbahnen mit Rollsplitt oder Streusand",
+      "Bei der ersten Fahrt mit neuen Reifen"
+    ]
+  }
+]

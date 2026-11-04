@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import org.learnbetter.project.model.DrivingImageType
-import learnbetter.shared.generated.resources.*
 import org.learnbetter.project.model.DrivingQuestion
 import org.learnbetter.project.model.DrivingSchoolData
 import org.learnbetter.project.model.Subject
@@ -162,8 +161,7 @@ fun DrivingSchoolScreen(
                 color = Subject.DRIVING_SCHOOL.primaryColor
             )
 
-            // Falls eine BILD-URL vorhanden ist, lade das ORIGINALBILD über Coil,
-            // ansonsten lade ein lokales Bild aus dem drawable Ordner, falls imageUrl ein lokaler Dateiname ist.
+            // Falls eine Bild/Video-URL vorhanden ist, lade das Bild über Coil!
             if (!currentQuestion.imageUrl.isNullOrEmpty()) {
                 Card(
                     modifier = Modifier
@@ -172,43 +170,16 @@ fun DrivingSchoolScreen(
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A))
                 ) {
-                    if (currentQuestion.imageUrl.startsWith("http")) {
-                        AsyncImage(
-                            model = currentQuestion.imageUrl,
-                            contentDescription = "Amtliches Fahrschul-Originalbild",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .clip(RoundedCornerShape(20.dp)),
-                            contentScale = ContentScale.Fit
-                        )
-                    } else {
-                        // Lade lokales Bild mit dem Helfer aus Compose Resources
-                        // Da Resource-Ids dynamisch sein muessen, verwenden wir ein Mapping
-                        val imgRes = when (currentQuestion.imageUrl) {
-                            "frage_1.png" -> Res.drawable.frage_1
-                            "frage_2.png" -> Res.drawable.frage_2
-                            "frage_3.png" -> Res.drawable.frage_3
-                            "frage_4.png" -> Res.drawable.frage_4
-                            "frage_5.png" -> Res.drawable.frage_5
-                            "frage_6.png" -> Res.drawable.frage_6
-                            "frage_7.png" -> Res.drawable.frage_7
-                            "frage_8.png" -> Res.drawable.frage_8
-                            "frage_9.png" -> Res.drawable.frage_9
-                            "frage_10.png" -> Res.drawable.frage_10
-                            else -> null
-                        }
-                        if (imgRes != null) {
-                            androidx.compose.foundation.Image(
-                                painter = org.jetbrains.compose.resources.painterResource(imgRes),
-                                contentDescription = "Lokales Bild",
-                                modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
-                                contentScale = ContentScale.Fit
-                            )
-                        }
-                    }
+                    AsyncImage(
+                        model = currentQuestion.imageUrl,
+                        contentDescription = "Amtliches Fahrschul-Originalbild",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(20.dp)),
+                        contentScale = ContentScale.Fit
+                    )
                 }
             } else if (currentQuestion.imageType != DrivingImageType.NONE) {
-                // Fallback StVO Vector-Grafik
                 TrafficImageCanvas(imageType = currentQuestion.imageType)
             }
 
@@ -220,7 +191,10 @@ fun DrivingSchoolScreen(
                     containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
-                Column(modifier = Modifier.padding(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Text(
                         text = currentQuestion.questionText,
                         style = MaterialTheme.typography.titleMedium,
@@ -542,7 +516,7 @@ private fun DrivingExamResultScreen(
                 color = MaterialTheme.colorScheme.tertiaryContainer
             ) {
                 Text(
-                    text = "⭐ +50 XP Belohnung erhalten!",
+                    text = "⭐ +17 XP Belohnung erhalten!",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onTertiaryContainer,

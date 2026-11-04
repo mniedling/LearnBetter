@@ -1,5 +1,6 @@
 package org.learnbetter.project.ui.driving
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -47,6 +48,7 @@ fun DrivingSchoolScreen(
     var currentIndex by remember(selectedBogenNumber, isRandomOrder) { mutableIntStateOf(0) }
     var userSelectedIndices by remember(selectedBogenNumber, isRandomOrder, currentIndex) { mutableStateOf(setOf<Int>()) }
     var isSubmitted by remember(selectedBogenNumber, isRandomOrder, currentIndex) { mutableStateOf(false) }
+    var showVideoEndFrame by remember(selectedBogenNumber, isRandomOrder, currentIndex) { mutableStateOf(false) }
 
     var totalErrorPointsIncurred by remember(selectedBogenNumber, isRandomOrder) { mutableIntStateOf(0) }
     var examFinished by remember(selectedBogenNumber, isRandomOrder) { mutableStateOf(false) }
@@ -78,6 +80,51 @@ fun DrivingSchoolScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
+            // Filter Bogen-Auswahl & Reihenfolge Switcher
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                listOf(1, 2, 3, 0).forEach { bogen ->
+                    val isSelected = selectedBogenNumber == bogen
+                    val label = if (bogen == 0) "🎲 Alle Bögen" else "Testbogen $bogen"
+                    Surface(
+                        modifier = Modifier.clickable {
+                            selectedBogenNumber = bogen
+                        },
+                        shape = RoundedCornerShape(12.dp),
+                        color = if (isSelected) Subject.DRIVING_SCHOOL.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    ) {
+                        Text(
+                            text = label,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+
+                // Order Switcher (Der Reihe nach vs. Zufall)
+                Surface(
+                    modifier = Modifier.clickable {
+                        isRandomOrder = !isRandomOrder
+                    },
+                    shape = RoundedCornerShape(12.dp),
+                    color = if (isRandomOrder) MaterialTheme.colorScheme.tertiaryContainer else MaterialTheme.colorScheme.surfaceVariant
+                ) {
+                    Text(
+                        text = if (isRandomOrder) "🔀 Zufällig" else "🔢 Der Reihe nach",
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
+            }
+
             // Header: Testbogen & Kompakte Fehlerpunkte & Wuerfel-Button
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -85,12 +132,29 @@ fun DrivingSchoolScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column {
-                    Text(
-                        text = if (selectedBogenNumber == 0) "🛵 Gesamtpool • Klasse AM" else "🛵 Testbogen Nr. $selectedBogenNumber",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Subject.DRIVING_SCHOOL.primaryColor
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            text = if (selectedBogenNumber == 0) "🛵 Gesamtpool • Klasse AM" else "🛵 Testbogen Nr. $selectedBogenNumber",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Subject.DRIVING_SCHOOL.primaryColor
+                        )
+
+                        if (!currentQuestion.videoEndImageName.isNullOrEmpty()) {
+                            Surface(
+                                shape = RoundedCornerShape(8.dp),
+                                color = MaterialTheme.colorScheme.primaryContainer
+                            ) {
+                                Text(
+                                    text = "🎬 Video",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                                )
+                            }
+                        }
+                    }
+
                     Text(
                         text = "Frage ${currentIndex + 1} von ${questions.size}",
                         style = MaterialTheme.typography.labelMedium,
@@ -132,34 +196,6 @@ fun DrivingSchoolScreen(
                 }
             }
 
-            // Filter Bogen-Auswahl Pills
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                listOf(1, 2, 3, 0).forEach { bogen ->
-                    val isSelected = selectedBogenNumber == bogen
-                    val label = if (bogen == 0) "Alle" else "Bogen $bogen"
-                    Surface(
-                        modifier = Modifier.clickable {
-                            selectedBogenNumber = bogen
-                        },
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (isSelected) Subject.DRIVING_SCHOOL.primaryColor else MaterialTheme.colorScheme.surfaceVariant
-                    ) {
-                        Text(
-                            text = label,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = if (isSelected) Color.Black else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                        )
-                    }
-                }
-            }
-
             LinearProgressIndicator(
                 progress = { (currentIndex + 1) / questions.size.toFloat() },
                 modifier = Modifier
@@ -168,25 +204,55 @@ fun DrivingSchoolScreen(
                 color = Subject.DRIVING_SCHOOL.primaryColor
             )
 
-            // NATIVE LOKALE BILDEINBINDUNG AUS COMPOSE RESOURCES (Offline-fähig & 100% verlässlich)
-            val localDrawable = getLocalDrawableResource(currentQuestion.localImageName)
+            // NATIVE LOKALE BILDEINBINDUNG MIT VIDEO-WECHSEL (Startbild -> Endbild)
+            val activeImageName = if (showVideoEndFrame && !currentQuestion.videoEndImageName.isNullOrEmpty()) {
+                currentQuestion.videoEndImageName
+            } else {
+                currentQuestion.localImageName
+            }
+
+            val localDrawable = getLocalDrawableResource(activeImageName)
 
             if (localDrawable != null) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp),
+                        .height(210.dp),
                     shape = RoundedCornerShape(20.dp),
                     colors = CardDefaults.cardColors(containerColor = Color(0xFF0F172A))
                 ) {
-                    Image(
-                        painter = painterResource(localDrawable),
-                        contentDescription = "Amtliches Fahrschul-Originalbild",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(20.dp)),
-                        contentScale = ContentScale.Fit
-                    )
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Crossfade(targetState = localDrawable, label = "videoSwitch") { drawable ->
+                            Image(
+                                painter = painterResource(drawable),
+                                contentDescription = "Amtliches Fahrschul-Originalbild",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(20.dp)),
+                                contentScale = ContentScale.Fit
+                            )
+                        }
+
+                        // VIDEO CONTROL OVERLAY BUTTON
+                        if (!currentQuestion.videoEndImageName.isNullOrEmpty()) {
+                            Surface(
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .padding(12.dp)
+                                    .clickable { showVideoEndFrame = !showVideoEndFrame },
+                                shape = RoundedCornerShape(14.dp),
+                                color = Subject.DRIVING_SCHOOL.primaryColor
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    Text(if (showVideoEndFrame) "⏪ Szene zurücksetzen" else "▶️ Szene abspielen", fontWeight = FontWeight.Bold, color = Color.Black, fontSize = 12.sp)
+                                }
+                            }
+                        }
+                    }
                 }
             } else if (!currentQuestion.imageUrl.isNullOrEmpty()) {
                 Card(
@@ -350,6 +416,7 @@ fun DrivingSchoolScreen(
                             currentIndex++
                             userSelectedIndices = emptySet()
                             isSubmitted = false
+                            showVideoEndFrame = false
                         } else {
                             examFinished = true
                         }
@@ -376,11 +443,16 @@ private fun getLocalDrawableResource(localImageName: String?): DrawableResource?
     return when (localImageName) {
         "kalaiwa_1107159m.webp" -> Res.drawable.kalaiwa_1107159m
         "kalaiwa_1107171a.webp" -> Res.drawable.kalaiwa_1107171a
+        "kalaiwa_1107171e.webp" -> Res.drawable.kalaiwa_1107171e
         "kalaiwa_1107155ma.webp" -> Res.drawable.kalaiwa_1107155ma
+        "kalaiwa_1107155me.webp" -> Res.drawable.kalaiwa_1107155me
         "kalaiwa_1226114.webp" -> Res.drawable.kalaiwa_1226114
         "kalaiwa_1207105ma.webp" -> Res.drawable.kalaiwa_1207105ma
+        "kalaiwa_1207105me.webp" -> Res.drawable.kalaiwa_1207105me
         "kalaiwa_1220107ma.webp" -> Res.drawable.kalaiwa_1220107ma
+        "kalaiwa_1220107me.webp" -> Res.drawable.kalaiwa_1220107me
         "kalaiwa_1210006ma.webp" -> Res.drawable.kalaiwa_1210006ma
+        "kalaiwa_1210006me.webp" -> Res.drawable.kalaiwa_1210006me
         "kalaiwa_1301125m.webp" -> Res.drawable.kalaiwa_1301125m
         "kalaiwa_1301128m.webp" -> Res.drawable.kalaiwa_1301128m
         "kalaiwa_1440105.webp" -> Res.drawable.kalaiwa_1440105

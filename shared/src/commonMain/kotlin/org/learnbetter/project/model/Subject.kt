@@ -71,21 +71,21 @@ enum class Subject(
         subtitle = "Führerschein Klasse AM • Testbogen 1",
         isSchoolSubject = false
     ),
+    MILITARY_TRAINING(
+        id = "military",
+        displayName = "Bundeswehr",
+        icon = "🎖️",
+        primaryColor = Color(0xFF388E3C),
+        subtitle = "CAT-Test, Dienstgrade & BFT Fitness",
+        isSchoolSubject = false,
+        isAvailable = true
+    ),
     POLICE_TRAINING(
         id = "police",
         displayName = "Bundespolizei",
         icon = "👮‍♂️",
         primaryColor = Color(0xFF0288D1),
         subtitle = "Bewerbungstraining & Einstellungstest",
-        isSchoolSubject = false,
-        isAvailable = false
-    ),
-    MILITARY_TRAINING(
-        id = "military",
-        displayName = "Bundeswehr",
-        icon = "🎖️",
-        primaryColor = Color(0xFF388E3C),
-        subtitle = "Eignungstest & Vorbereitung",
         isSchoolSubject = false,
         isAvailable = false
     )

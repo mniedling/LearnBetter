@@ -1,37 +1,44 @@
 # LearnBetter – Multi-Fach Lernapp (10. Klasse Gesamtschule)
 
-Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Fahrschule (Klasse AM), Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**, sowie Vorbereitung auf Eignungstests.
+Ein interaktives, modernes Lernprogramm zur Unterstützung von Schülern der 10. Klasse der Gesamtschule in den Fächern **Chemie, Fahrschule (Klasse AM), Bundeswehr (Eignungstest), Physik, Biologie, Mathematik, Gesellschaftslehre, Musik und Deutsch**.
 
-Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen mit Grafiken**, **Hamburger Navigation Drawer mit Kategorien**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
+Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**, **amtlichen Führerschein-Testbögen**, **Bundeswehr Dienstgrad- & BFT-Trainern**, **Hamburger Navigation Drawer**, **Quizzen** und einem **pädagogischen Computerzeit-Belohnungssystem**.
 
 ---
 
 ## 📚 Fächerübersicht & Hamburger-Menü Navigation
 
-### ☰ 1. Hamburger Navigation Drawer & Startbildschirm (NEU!)
+### ☰ 1. Hamburger Navigation Drawer & Startbildschirm
 - **App-Name Header:** Ganz oben neben dem Hamburger-Menü steht immer klar der Name der App (**LearnBetter**).
 - **Startbildschirm (Übersicht):**
   - Reine **PC-Zeit Belohnungs-Karte**, **Streak** und eine Schnellstart-Karte der aktuell aktiven Kategorie.
-  - Keine starren Chemie-Standard-Karten mehr auf dem Haupt-Dashboard.
 - **Glasklare Kategorisierung im Hamburger-Menü (`☰`):**
   - **📚 Fächer:** *Chemie, Physik, Biologie, Mathematik, Gesellschaftslehre, Musik, Deutsch*.
   - **⭐ Andere Kategorien:**
     - 🛵 *Fahrschule AM* (Führerschein Klasse AM • Testbogen 1).
+    - 🎖️ *Bundeswehr* (CAT-Test, Dienstgrade & BFT Fitness - NEU!).
     - 👮‍♂️ *Bundespolizei* (Bewerbungstraining & Einstellungstest - Vorbereitet für Zusatzcontent!).
-    - 🎖️ *Bundeswehr* (Eignungstest & Vorbereitung - Vorbereitet für Zusatzcontent!).
 
-### 🛵 2. Fahrschule (Klasse AM / Moped)
+### 🎖️ 2. Bundeswehr (Eignungstest & Vorbereitung - NEU!)
+- **Dienstgrad-Rangordnung Trainer (Werkstatt):**
+  - Interaktiver Schulterklappen-Trainer: Bringe die 7 Ränge (Gefreiter, Stabsgefreiter, Stabsunteroffizier, Feldwebel, Leutnant, Hauptmann, Oberst) per Klick in die richtige Hierarchie.
+- **BFT Basis-Fitness-Test Rechner (Werkstatt):**
+  - Rechner & Timer für die 3 BFT-Disziplinen (11x10m Sprint, Klimmhang, 1000m Lauf) mit Punkteberechnung (0-1200 Pkt.) und **BFT Bestanden** Auswertung!
+- **CAT-Test Trainingszentrum (Quiz):**
+  - 15+ Prüfungsfragen für den Computer-Assistierten Test (Staatsbürgerkunde, Art. 87a GG, Dreisatz, Wortanalogien, Zahlenreihen, Mechanik, Technik).
+
+### 🛵 3. Fahrschule (Klasse AM / Moped)
 - **Kompakter Header & Würfel-Button (`🎲`):**
   - Kompaktes Layout im Fragen-Kopf: **`4 FP`**-Badge (statt langer Beschriftung).
   - **Umschalt-Würfel (`🎲`)**: Umschalten per Klick zwischen `🔢 Der Reihe nach` (Standard) und `🔀 Zufällig`.
-  - **Bogen-Filter Pills:** `[ Bogen 1 ]`, `[ Bogen 2 ]`, `[ Bogen 3 ]`, `[ Alle ]`.
+  - **Bogen-Filter Pills:** `[ Bogen 1 ]`, `[ Alle Bögen ]`.
 - **Echte Originalbilder & StVO-Erklärungen:**
   - 100% offline-fähige Einbindung der hochauflösenden 3D-Bilder aus den amtlichen Fragen.
   - Einbindung des **Apretext**-Feldes (Einleitungen vor Fragen) und stufenlose Textbereinigung von Variationsklammern `[...]`.
 - **Anhalteweg & Bremsweg Rechner (Werkstatt):**
   - Schieberegler für Tempo $v$ (10 bis 100 km/h) mit Live-Berechnung von Reaktionsweg, Bremsweg, Anhalteweg und Gefahrenbremsung.
 
-### 🧪 3. Chemie
+### 🧪 4. Chemie
 - **Säuren- & Ion-Laborkolben (Dissoziations-Werkstatt):**
   - **Erlenmeyerkolben-Werkstatt:** Interaktives Zuordnen von Säureformeln ($HCl, H_2SO_4, H_3PO_4, HNO_3, H_2CO_3, H_2SO_3, HNO_2$).
   - **Wasser-Dissoziation:** Wasser dazugießen ($H_2O$), Reaktionen beobachten und Säurerest-Ionen ($Cl^-, SO_4^{2-}, PO_4^{3-}, NO_3^-, CO_3^{2-}, SO_3^{2-}, NO_2^-$) sowie deren Namen (*Chlorid, Sulfat, Phosphat, Nitrat, Carbonat, Sulfit, Nitrit*) zuordnen.
@@ -52,7 +59,7 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
 - **Magnesiumband entzünden:**
   - Verbrennung über der Bunsenbrennerflamme unter gleißendem Licht zu Magnesiumoxid ($2\,Mg + O_2 \rightarrow 2\,MgO$).
 
-### 🧬 4. Biologie
+### 🧬 5. Biologie
 - **🔬 Virtuelles Mikroskop:**
   - Stufenlose Zoomstufen ($10\text{x}, 100\text{x}, 1000\text{x}$).
   - $1000\text{x}$ Subzelluläre Ebene: Nahaufnahme von Chloroplasten-Thylakoiden (Fotosynthese) und Zellkern-Chromatin (DNA).
@@ -63,29 +70,29 @@ Das Projekt kombiniert Fachwissen mit **interaktiven Werkstätten/Simulatoren**,
   - **Rechte Werkzeugleiste:** Wähle Skalpell ✂️ und Pinzette 🤏 per Touch aus!
   - **3D-Zellkern Explorer:** Interaktive Erforschung von Kernporen (mRNA-Transport), Chromatin (DNA-Stränge) und Nucleolus (Kernkörperchen).
 
-### ⚙️ 5. Physik
+### ⚙️ 6. Physik
 - **Hookesches Gesetz & Federdehnungs-Werkstatt ($F = D \cdot \Delta s$):**
   - **Spiralfeder-Simulator:** Hänge Gewichte ($0\,\text{N}$ bis $10\,\text{N}$) an die Feder und stelle die Federkonstante $D$ ein.
   - **Elastische Dehnung:** Visualisiert die proportionale Verlängerung $\Delta s$ in cm.
 
-### 📐 6. Mathematik
+### 📐 7. Mathematik
 - **Interaktiver Parabel-Plotter:**
   - Untersuchung quadratischer Funktionen $f(x) = a \cdot x^2 + c$.
 - **3D-Geometrie & Oberflächenrechner:**
   - **Zylinder Oberflächenberechnung:** Grundfläche $G = \pi r^2$, Mantelfläche $M = 2\pi r h$, Oberfläche $O = 2G + M$, Volumen $V$.
   - **Quadratische Pyramide Oberflächenberechnung:** Grundfläche $G = a^2$, Seitenhöhe $h_s = \sqrt{h^2 + (a/2)^2}$, Mantelfläche $M = 2 a h_s$, Oberfläche $O = G + M$, Volumen $V = \frac{1}{3} a^2 h$.
 
-### 🌍 7. Gesellschaftslehre (GL)
+### 🌍 8. Gesellschaftslehre (GL)
 - **Historische Zeitleiste & Grundgesetz-Explorer:**
   - Meilensteine von 1914 bis 1990 (Erster Weltkrieg, Weimarer Republik, NS-Diktatur, Grundgesetz 1949, Mauerfall 1989, Wiedervereinigung 1990).
   - Verankerung von Artikel 1 Abs. 1 GG (*"Die Würde des Menschen ist unantastbar"*).
 
-### 🎵 8. Musik
+### 🎵 9. Musik
 - **Virtuelles Piano & Dreiklang-Trainer:**
   - Interaktives Klaviatur-Tastenfeld ($C, D, E, F, G, A, H, C'$).
   - Gehör- und Bautrainer für $C$-Dur ($C-E-G$) und $A$-Moll ($A-C-E$).
 
-### 📖 9. Deutsch
+### 📖 10. Deutsch
 - **Stilmittel- & Rhetorik-Baukasten:**
   - Interaktives Zuordnen von Stilmitteln aus Gedichten und Texten (Alliteration, Metapher, Personifikation, Anapher) mit Erklärungsboxen.
 

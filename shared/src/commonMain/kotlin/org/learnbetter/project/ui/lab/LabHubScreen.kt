@@ -24,6 +24,8 @@ import org.learnbetter.project.ui.driving.DrivingFormulaCalculatorScreen
 import org.learnbetter.project.ui.german.GermanRhetoricScreen
 import org.learnbetter.project.ui.math.MathGeometryScreen
 import org.learnbetter.project.ui.math.MathParabolaScreen
+import org.learnbetter.project.ui.military.BftCalculatorScreen
+import org.learnbetter.project.ui.military.MilitaryRankGameScreen
 import org.learnbetter.project.ui.music.MusicPianoScreen
 import org.learnbetter.project.ui.physics.PhysicsHookeScreen
 import org.learnbetter.project.ui.phtest.PhTestScreen
@@ -36,9 +38,44 @@ fun LabHubScreen(
 ) {
     var activeExperimentId by remember(currentSubject) { mutableStateOf<String?>(null) }
     var bioToolMode by remember { mutableIntStateOf(1) } // 1..5
-    var mathToolMode by remember { mutableIntStateOf(1) } // 1..3
+    var mathToolMode by remember { mutableIntStateOf(1) } // 1..2
+    var militaryToolMode by remember { mutableIntStateOf(1) } // 1..2
 
     when {
+        currentSubject == Subject.MILITARY_TRAINING -> Column(modifier = Modifier.fillMaxSize()) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = { militaryToolMode = 1 },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (militaryToolMode == 1) Subject.MILITARY_TRAINING.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🎖️ Dienstgrade", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (militaryToolMode == 1) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+
+                Button(
+                    onClick = { militaryToolMode = 2 },
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (militaryToolMode == 2) Subject.MILITARY_TRAINING.primaryColor else MaterialTheme.colorScheme.surfaceVariant
+                    )
+                ) {
+                    Text("🏋️‍♂️ BFT Fitness", fontWeight = FontWeight.Bold, fontSize = 12.sp, color = if (militaryToolMode == 2) androidx.compose.ui.graphics.Color.White else MaterialTheme.colorScheme.onSurfaceVariant)
+                }
+            }
+
+            if (militaryToolMode == 1) {
+                MilitaryRankGameScreen(onXpEarned = onXpEarned)
+            } else {
+                BftCalculatorScreen(onXpEarned = onXpEarned)
+            }
+        }
         currentSubject == Subject.DRIVING_SCHOOL -> DrivingFormulaCalculatorScreen(
             onXpEarned = onXpEarned
         )

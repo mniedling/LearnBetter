@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import org.learnbetter.project.model.QuizData
 import org.learnbetter.project.model.Subject
 import org.learnbetter.project.ui.driving.DrivingSchoolScreen
+import org.learnbetter.project.ui.military.MilitaryQuizScreen
 import org.learnbetter.project.ui.theme.ChemistryColors
 
 @Composable
@@ -25,6 +26,13 @@ fun QuizScreen(
     currentSubject: Subject = Subject.CHEMISTRY,
     onXpEarned: (Int) -> Unit = {}
 ) {
+    if (currentSubject == Subject.MILITARY_TRAINING) {
+        MilitaryQuizScreen(
+            onXpEarned = onXpEarned
+        )
+        return
+    }
+
     if (currentSubject == Subject.DRIVING_SCHOOL) {
         DrivingSchoolScreen(
             onXpEarned = onXpEarned
@@ -270,7 +278,7 @@ private fun QuizResultScreen(
             color = MaterialTheme.colorScheme.tertiaryContainer
         ) {
             Text(
-                text = "⭐ +${score * 20} XP erhalten!",
+                text = "⭐ +${score * 7} XP erhalten!",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onTertiaryContainer,
